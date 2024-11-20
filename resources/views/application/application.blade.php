@@ -2,9 +2,13 @@
 
 @section('content')
 
+{{-- Page Title --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
-        <h4 class="text-white"><i class='bx bx-list-plus'>&nbsp;</i>Application</h4>
+        <div class="d-flex align-items-center">
+            <i class='bx bx-list-plus text-white' style="font-size: 24px;">&nbsp;</i>
+            <h4 class="text-white mb-0">Application</h4>
+        </div>
     </div>
 </div>
 
@@ -109,6 +113,24 @@
                       </select>
                       <small class="text-danger" id="validateSource">Please Select Source</small>
                   </div>
+                  <div class="mb-4">
+                    <div class="row mb-2">
+                        <div class="col-md">
+                            <label for="edit_bank_id" class="form-label required">Bank</label>
+                            <select class="form-control" id="edit_bank_id" name="bank_id">
+                                <option value="">Select a Bank</option>
+                            </select>
+                            <small class="text-danger" id="validateBank">Please Select a Bank</small>
+                        </div>
+                        <div class="col-md">
+                            <label for="edit_status_id" class="form-label required">Status</label>
+                            <select class="form-control" id="edit_status_id" name="status_id">
+                                <option value="">Select a Status</option>
+                            </select>
+                            <small class="text-danger" id="validateStatus">Please Select a Status</small>
+                        </div>
+                    </div>
+                </div>
               </div>
               <div class="row mb-2">
                   <div class="col-md">
@@ -226,6 +248,19 @@
                                 <option value="Saturation">Saturation</option>
                             </select>
                             <small class="text-danger" id="validateSource">Please Select Source</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="row mb-2">
+                            <div class="col-md">
+                                <label for="bank_id" class="form-label required">Bank</label>
+                                <select class="form-control" id="bank_id" name="bank_id">
+                                    <option value="">Select a Bank</option>
+                                </select>
+                                <small class="text-danger" id="validateBank">Please Select a Bank</small>
+                            </div>
+                           
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -428,6 +463,40 @@
     $(document).ready(function () {
 
         $.ajax({
+            url: '{{ route('application.getBanks') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let bankSelect = $('#bank_id, #edit_bank_id');
+                bankSelect.empty();
+                bankSelect.append('<option value="">Select Banks...</option>');
+                data.forEach(function(item) {
+                    bankSelect.append(`<option value="${item.id}">${item.bank_name}</option>`);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading banks:', error);
+            }
+        });
+
+        $.ajax({
+            url: '{{ route('application.getStatus') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let statusSelect = $('#edit_status_id');
+                statusSelect.empty();
+                statusSelect.append('<option value="">Select Status...</option>');
+                data.forEach(function(item) {
+                    statusSelect.append(`<option value="${item.id}">${item.status}</option>`);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading status:', error);
+            }
+        });
+
+        $.ajax({
             url: '{{ route('leads.getUnit') }}',
             type: 'GET',
             dataType: 'json',
@@ -555,6 +624,8 @@
             isValid = validateField('#gender', 'Please Select Gender') && isValid;
             isValid = validateField('#car_variant', 'Please Select a Variant') && isValid;
             isValid = validateField('#address', 'Enter Address') && isValid;
+            isValid = validateField('#bank_id', 'Please Select a Bank') && isValid;
+
 
             // Special validation for mobile number
             const mobileNumber = $('#mobile_number').val();
@@ -618,6 +689,8 @@
             isValid = validateField('#edit_source', 'Please Select Source') && isValid;
             isValid = validateField('#edit_gender', 'Please Select Gender') && isValid;
             isValid = validateField('#edit_address', 'Enter Address') && isValid;
+            isValid = validateField('#edit_bank_id', 'Please Select a Bank') && isValid;
+            isValid = validateField('#edit_status_id', 'Please Select a Status') && isValid;
 
             // Special validation for mobile number
             const mobileNumber = $('#edit_mobile_number').val();
@@ -650,6 +723,7 @@
             // Proceed with AJAX request if the form is valid
             const formData = $(this).serialize();
             const applicationId = originalValues.id; // Assuming you set data-id on the form
+            console.log(applicationId);
 
             $.ajax({
                 url: `/application/update/${applicationId}`, // Adjust URL as needed
@@ -766,8 +840,10 @@
         $.ajax({
             url: `{{ url('application/edit') }}/${applicationId}`,
             type: 'GET',
-            success: function(data) {
-                console.log(data);
+            success: function(response) {
+                const data = response.application;
+                const statuses = response.statuses;
+                const banks = response.banks;
                 // Populate the form fields with the inquiry data
                 $('#edit_id').val(data.id);
                 $('#edit_first_name').val(data.customer.customer_first_name);
@@ -776,7 +852,9 @@
                 $('#edit_age').val(data.customer.age);
                 $('#edit_mobile_number').val(data.customer.contact_number);
                 $('#edit_address').val(data.customer.address);
+                $('#edit_bank_id').val();
                 $('#edit_car_unit').val(data.vehicle.unit).trigger('change');
+
 
                 $.ajax({
                     url: '{{ route("leads.getVariants") }}',
@@ -816,42 +894,64 @@
                     });
                 })
 
-                    $('#edit_transaction').val(data.transaction);
-                    $('#edit_source').val(data.customer.source);
-                    $('#edit_remarks').val(data.remarks);
+                $('#edit_transaction').val(data.transaction);
+                $('#edit_source').val(data.customer.source);
+                $('#edit_remarks').val(data.remarks);
 
-
-                    // Store original values
-                    originalValues = {
-                        id: data.id,
-                        firstName: data.customer.customer_first_name,
-                        lastName: data.customer.customer_last_name,
-                        gender: data.customer.gender,
-                        age: data.customer.age,
-                        mobileNumber: data.customer.contact_number,
-                        address: data.customer.address,
-                        carUnit: data.vehicle.unit,
-                        carVariant: data.vehicle.variant,
-                        carColor: data.vehicle.color,
-                        transaction: data.transaction,
-                        source: data.customer.source,
-                        remarks: data.remarks
-                    };
-                    $('#editApplicationFormModal').modal('show');
-
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Could not fetch Application data.'
+                const statusSelect = $('#edit_status_id');
+                statusSelect.empty(); // Clear existing options
+                statusSelect.append('<option value="">Select Status...</option>'); // Default option
+                statuses.forEach(function(status) {
+                    statusSelect.append(`<option value="${status.id}" ${status.id === data.status_id ? 'selected' : ''}>${status.status}</option>`);
+                });
+ 
+                // Populate the bank dropdown
+                if (data.bank && data.bank.id) { // Only run this if bank has value and is not null
+                    const editBankSelect = $('#edit_bank_id');
+                    editBankSelect.empty(); // Clear existing options
+                    editBankSelect.append('<option value="">Select Bank...</option>'); // Default option
+                    banks.forEach(function(bank) {
+                       
+                        editBankSelect.append(`<option value="${bank.id}" ${bank.id === data.bank_id ? 'selected' : ''}>${bank.bank_name}</option>`);
                     });
                 }
-            });
+
+
+        
+                // Store original values
+                originalValues = {
+                    id: data.id,
+                    firstName: data.customer.customer_first_name,
+                    lastName: data.customer.customer_last_name,
+                    gender: data.customer.gender,
+                    age: data.customer.age,
+                    mobileNumber: data.customer.contact_number,
+                    address: data.customer.address,
+                    carUnit: data.vehicle.unit,
+                    carVariant: data.vehicle.variant,
+                    carColor: data.vehicle.color,
+                    transaction: data.transaction,
+                    source: data.customer.source,
+                    remarks: data.remarks,
+                    banks: data.bank ? data.bank.id : '', // Ensure no error if bank_id is null
+                    status: data.status ? data.status.id : '' // Ensure no error if status_id is null
+                };
+
+                $('#editApplicationFormModal').modal('show');
+
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Could not fetch Application data.'
+                });
+            }
+        });
     });
 
-    
-    
+
+
 
 
 

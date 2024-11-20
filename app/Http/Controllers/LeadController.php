@@ -97,6 +97,8 @@ class LeadController extends Controller
                     // Update the transaction table's application_id with the latest inserted application's id
                     $transaction->application_id = $application->id;
                     $transaction->status = Status::where('status', 'like', 'approved')->first()->id;
+                    $transaction->application_transaction_date = now();
+                    $transaction->transaction_updated_date = now();
                     $transaction->save();
                 }
 
@@ -220,6 +222,8 @@ class LeadController extends Controller
                  // Update the transaction table's application_id with the latest inserted application's id
                  $transaction->application_id = $application->id;
                  $transaction->status =  $application->status_id;
+                 $transaction->application_transaction_date = now();
+                 $transaction->transaction_updated_date = now();
                  $transaction->save();
             }
 
