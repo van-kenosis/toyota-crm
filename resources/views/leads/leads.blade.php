@@ -5,7 +5,10 @@
 {{-- Page Title --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
-        <h4 class="text-white"><i class='bx bxs-layer-plus'>&nbsp;</i>Leads</h4>
+        <div class="d-flex align-items-center">
+            <i class='bx bxs-layer-plus text-white' style="font-size: 24px;">&nbsp;</i>
+            <h4 class="text-white mb-0">Leads</h4>
+        </div>
     </div>
 </div>
 
@@ -346,7 +349,7 @@
             },
             pageLength: 10,
             paging: true,
-            responsive: true,
+            responsive: false,
             dom: '<"top"lf>rt<"bottom"ip>',
             language: {
                 search: "",

@@ -8,6 +8,7 @@ use App\Models\Status;
 use App\Models\Team;
 use App\Models\Transactions;
 use App\Models\Vehicle;
+use App\Models\Banks;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,7 @@ class ApplicationController extends Controller
                 'additional_info' => 'nullable|string',
                 'gender' => 'required|string',
                 'address' => 'required',
+                'bank_id' => 'required',
             ]);
 
             $customer = new Customer();
@@ -74,6 +76,7 @@ class ApplicationController extends Controller
                 $application->vehicle_id = $vehicle->id;
                 $application->transaction_id = $transaction->id;
                 $application->status_id = $approved_status->id;
+                $application->bank_id = $validated['bank_id'];
                 $application->transaction = $validated['transaction'];
                 $application->created_by = Auth::id();
                 $application->updated_by = Auth::id();
@@ -82,6 +85,8 @@ class ApplicationController extends Controller
                 // Update the transaction table's application_id with the latest inserted application's id
                 $transaction->application_id = $application->id;
                 $transaction->status = Status::where('status', 'like', 'approved')->first()->id;
+                $transaction->application_transaction_date = now();
+                $transaction->transaction_updated_date = now();
                 $transaction->save();
 
             }else{
@@ -92,10 +97,18 @@ class ApplicationController extends Controller
                 $application->vehicle_id = $vehicle->id;
                 $application->transaction_id = $transaction->id;
                 $application->status_id = $pending_status->id;
+                $application->bank_id = $validated['bank_id'];
                 $application->transaction = $validated['transaction'];
                 $application->created_by = Auth::id();
                 $application->updated_by = Auth::id();
                 $application->save();
+
+                $transaction->application_id = $application->id;
+                $transaction->status = $pending_status->id;
+                $transaction->application_transaction_date = now();
+                $transaction->transaction_updated_date = now();
+                $transaction->save();
+
             }
 
 
@@ -117,6 +130,7 @@ class ApplicationController extends Controller
         $status = Status::where('status', 'like', 'approved')->first();
         $query = Application::with([ 'user', 'customer', 'vehicle', 'trans'])
                         ->whereNull('deleted_at')
+                        ->whereNotIn('transaction', ['cash', 'po'])
                         ->where('status_id', $status->id)
                         ;
 
@@ -354,10 +368,10 @@ class ApplicationController extends Controller
 
         // dd($request->start_date);
         $pending_status = Status::where('status', 'like', 'pending')->first();
-        $query = Application::with([ 'user', 'customer', 'vehicle', 'trans'])
+        $query = Application::with(['user', 'customer', 'vehicle', 'trans'])
                         ->whereNull('deleted_at')
-                        ->where('status_id',$pending_status->id)
-                        ;
+                        ->whereNotIn('transaction', ['cash', 'po'])
+                        ->where('status_id', $pending_status->id);
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -433,9 +447,20 @@ class ApplicationController extends Controller
     public function edit($id)
     {
         // Fetch the Application data by ID
-       $decryptedId = decrypt($id);
-       $data = Application::with([ 'user', 'customer', 'vehicle', 'trans', 'status'])->where('id', $decryptedId)->first();
-        return response()->json($data);
+        $decryptedId = decrypt($id);
+        $data = Application::with(['user', 'customer', 'vehicle', 'trans', 'status', 'bank'])
+            ->where('id', $decryptedId)
+            ->first();
+
+        // Include the status options
+        $statuses = Status::all();
+        $banks = Banks::all();
+
+        return response()->json([
+            'application' => $data,
+            'statuses' => $statuses,
+            'banks' => $banks
+        ]);
     }
 
     // public function update(Request $request, $id)
@@ -528,6 +553,8 @@ class ApplicationController extends Controller
                 'additional_info' => 'nullable|string',
                 'gender' => 'required|string',
                 'address' => 'required',
+                'status_id' => 'required',
+                'bank_id' => 'required',
             ]);
 
             // Find the inquiry and related customer and vehicle
@@ -551,6 +578,8 @@ class ApplicationController extends Controller
 
             // Update inquiry data
             $application->vehicle_id = $vehicle->id;
+            $application->status_id = $validated['status_id'];
+            $application->bank_id = $validated['bank_id'];
             $application->transaction = $validated['transaction'];
             $application->remarks = $validated['additional_info'];
             $application->updated_by = Auth::id();
@@ -573,7 +602,6 @@ class ApplicationController extends Controller
                 
             }
             
-
             return response()->json([
                 'success' => true,
                 'message' => 'Application updated successfully'
@@ -585,5 +613,17 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+
+
+    public function getBanks(){
+        $data = Banks::all();
+        return response()->json($data);
+    }
+
+    public function getStatus(){
+        $data = Status::all();
+        return response()->json($data);
+    }
+
 
 }

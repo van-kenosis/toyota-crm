@@ -6,7 +6,7 @@
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <i class='bx bxs-car text-white' style="font-size: 24px;">&nbsp;</i>
+            <i class='bx bxs-right-top-arrow-circle text-white' style="font-size: 24px;">&nbsp;</i>
             <h4 class="text-white mb-0">Vehicle Releases</h4>
         </div>
     </div>
@@ -65,6 +65,7 @@
     </div>
 </div>
 
+{{-- Filter Start and End Date --}}
 <div class="row mb-2">
     <div class="col">
         <div class="card custom-card">
@@ -95,6 +96,57 @@
 @section('components.specific_page_scripts')
 
 <script>
+
+//Date filter
+flatpickr("#date-range-picker", {
+        mode: "range",
+        dateFormat: "m/d/Y",
+        onChange: function(selectedDates, dateStr, instance) {
+            // Check if both start and end dates are selected
+            if (selectedDates.length === 2) {
+                // Check if the end date is earlier than or equal to the start date
+                if (selectedDates[1] <= selectedDates[0]) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Warning!',
+                        text: 'Please select a valid date range.',
+                    });
+                } else {
+                    // Reload the tables if a valid range is selected
+                    inquiryTable.ajax.reload(null, false);
+                }
+            }
+        },
+        // Add clear button
+        onReady: function(selectedDates, dateStr, instance) {
+            // Create a "Clear" button
+            const clearButton = document.createElement("button");
+            clearButton.innerHTML = "Clear";
+            clearButton.classList.add("clear-btn");
+
+            // Create a "Close" button
+            const closeButton = document.createElement("button");
+            closeButton.innerHTML = "Close";
+            closeButton.classList.add("close-btn");
+
+            // Append the buttons to the flatpickr calendar
+            instance.calendarContainer.appendChild(clearButton);
+            instance.calendarContainer.appendChild(closeButton);
+
+            // Add event listener to clear the date and reload the tables
+            clearButton.addEventListener("click", function() {
+                instance.clear(); // Clear the date range
+                inquiryTable.ajax.reload(null, false); // Reload the tables
+            });
+
+            // Add event listener to close the calendar
+            closeButton.addEventListener("click", function() {
+                instance.close(); // Close the flatpickr calendar
+            });
+        }
+    });
+
+
 // DataTable initialization
 const releasedUnitsTable = $('#releasedUnitsTable').DataTable({
     processing: true,

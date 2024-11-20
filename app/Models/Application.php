@@ -31,5 +31,9 @@ class Application extends Model
     public function status(){
         return $this->belongsTo(Status::class, 'status_id', 'id');
     }
+
+    public function bank(){
+        return $this->belongsTo(Banks::class, 'bank_id', 'id');
+    }
     
 }

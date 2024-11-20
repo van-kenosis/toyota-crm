@@ -7,6 +7,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\VehicleReservationController;
 use App\Http\Controllers\VehicleReleasesController;
+use App\Http\Controllers\VehicleInventoryController;
 
 
 
@@ -43,11 +44,19 @@ Route::get('/list/cash', [ApplicationController::class, 'list_cash'])->name('app
 Route::post('/application/store', [ApplicationController::class, 'store'])->name('application.store');
 Route::get('application/edit/{id}', [ApplicationController::class, 'edit'])->name('application.edit');
 Route::post('/application/update/{id}', [ApplicationController::class, 'update'])->name('application.update');
+Route::get('/getBanks', [ApplicationController::class, 'getBanks'])->name('application.getBanks');
+Route::get('/getStatus', [ApplicationController::class, 'getStatus'])->name('application.getStatus');
+
 
 
 
 // VEHICLE RESERVATION
 Route::get('vehicle-reservation', [VehicleReservationController::class, 'index'])->name('vehicle.reservation');
 
+
 // VEHICLE RELEASES
 Route::get('vehicle-releases', [VehicleReleasesController::class, 'index'])->name('vehicle.releases');
+
+
+// VEHICLE INVENTORY
+Route::get('vehicle-inventory', [VehicleInventoryController::class, 'index'])->name('vehicle.inventory');

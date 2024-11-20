@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             VehicleSeeder::class,
             StatusSeeder::class,
             UserSeeder::class,
+            BankSeeder::class,
            
         ]);
 
