@@ -24,6 +24,8 @@ class VehicleSeeder extends Seeder
                         'unit' => $unit,
                         'variant' => $variant,
                         'color' => $color,
+                        'created_by' => 1,
+                        'updated_by' => 1,
                     ]);
                 }
             }

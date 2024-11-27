@@ -27,12 +27,12 @@ class Inquiry extends Model
         'source',
         'remarks',
         'date',
-        'transactional_status',
+        'status_id',
         'updated_by'
     ];
 
     public function user(){
-        return $this->belongsTo(User::class, 'users_id', 'id');
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
     public function customer(){
@@ -41,5 +41,13 @@ class Inquiry extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id', 'id');
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class, 'status_id', 'id');
+    }
+
+    public function inquiryType(){
+        return $this->belongsTo(InquryType::class, 'inquiry_type_id', 'id');
     }
 }

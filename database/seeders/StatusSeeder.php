@@ -19,5 +19,6 @@ class StatusSeeder extends Seeder
         Status::create(['status' => 'Cancel']);
         Status::create(['status' => 'Denied']);
         Status::create(['status' => 'Cash']);
+        Status::create(['status' => 'Released']);
     }
 }

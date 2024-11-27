@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehicle', function (Blueprint $table) {
+        Schema::create('inquiry_type', function (Blueprint $table) {
             $table->id();
-            $table->string('unit');
-            $table->string('variant');
-            $table->string('color');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->string('inquiry_type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vechicle');
+        Schema::dropIfExists('inquiry_type');
     }
 };

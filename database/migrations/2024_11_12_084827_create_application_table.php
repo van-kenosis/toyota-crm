@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vehicle_id');
             $table->unsignedBigInteger('transaction_id');
             $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('bank_id')->nullable();
+            $table->json('bank_id')->nullable();
             $table->string('transaction');
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('created_by');
