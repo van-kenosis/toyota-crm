@@ -29,22 +29,6 @@ class Application extends Model
         return $this->belongsTo(Vehicle::class, 'vehicle_id', 'id');
     }
 
-    public function trans(){
-        return $this->belongsTo(Transactions::class, 'transaction_id', 'id');
-    }
-
-    public function inquiry()
-    {
-        return $this->hasOneThrough(
-            Inquiry::class,
-            Transactions::class,
-            'id', // Foreign key on the transactions table
-            'id', // Foreign key on the inquiry table
-            'transaction_id', // Local key on the application table
-            'inquiry_id' // Local key on the transactions table
-        )->with('inquiryType'); // Eager load the inquiry_type relationship
-    }
-
     public function status(){
         return $this->belongsTo(Status::class, 'status_id', 'id');
     }
@@ -52,5 +36,11 @@ class Application extends Model
     public function bank(){
         return $this->belongsTo(Banks::class, 'bank_id', 'id');
     }
+
+    public function transactions(){
+        return $this->hasMany(Transactions::class, 'application_id', 'id');
+    }
+
+
     
 }

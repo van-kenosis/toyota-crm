@@ -328,7 +328,7 @@
                             </div>
                             <div class="col-md d-none" id="quantityColumnField">
                                 <label for="quantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="" />
+                                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="" value="1" />
                             </div>
                         </div>
                     </div>
@@ -791,7 +791,6 @@
             $errorMsg.hide();
             return true;
         }
-
 
         // Validate form on submit
         $("#leadFormData").on("submit", function (e) {

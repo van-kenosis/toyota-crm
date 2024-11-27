@@ -171,7 +171,7 @@
                     </div>
                     <div class="col-md d-none" id="editQuantityColumnField">
                         <label for="edit_quantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="edit_quantity" name="quantity" placeholder="" />
+                        <input type="number" class="form-control" id="edit_quantity" name="quantity" placeholder="" readonly/>
                     </div>
                 </div>
             </div>
@@ -688,6 +688,9 @@
                 const data = response.application;
                 const statuses = response.statuses;
                 const banks = response.banks;
+                const inquiry = response.inquiry;
+                const inquiry_type = response.inquirytype;
+                const firstTransaction = response.firstTransaction;
 
                 // Populate the form fields with the inquiry data
                 $('#edit_id').val(data.id);
@@ -698,10 +701,10 @@
                 $('#edit_mobile_number').val(data.customer.contact_number);
                 $('#edit_address').val(data.customer.address);
                 $('#edit_car_unit').val(data.vehicle.unit).trigger('change');
-                $('#edit_inquiry_type').val(data.inquiry.inquiry_type.inquiry_type);
-                $('#edit_category').val(data.inquiry.category).trigger('change');
-                $('#edit_quantity').val(data.inquiry.quantity);
-                $('#edit_payment_status').val(data.trans.reservation_status).trigger('change');
+                $('#edit_inquiry_type').val(inquiry_type);
+                $('#edit_category').val(inquiry.category).trigger('change');
+                $('#edit_quantity').val(inquiry.quantity);
+                $('#edit_payment_status').val(firstTransaction.reservation_status).trigger('change');
 
 
                 const edit_inquiry_type =  $('#edit_inquiry_type').val();
@@ -807,8 +810,8 @@
                     fleet: data.customer.company_name,
                     company: data.customer.company_name,
                     government: data.customer.department_name,
-                    quantity: data.inquiry.quantity,
-                    category: data.inquiry.category,
+                    quantity: inquiry.quantity,
+                    category: inquiry.category,
                 };
 
                 $('#editApplicationFormModal').modal('show');
