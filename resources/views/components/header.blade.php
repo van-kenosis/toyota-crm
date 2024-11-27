@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="assets/css/demo.css" />
     <!-- Custom Style -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    {{-- <link rel="stylesheet" href="assets/css/custom.css"> --}}
 
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
@@ -67,5 +67,6 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="assets/css/system_color.css">
     <link rel="stylesheet" href="assets/css/table.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
 
   </head>

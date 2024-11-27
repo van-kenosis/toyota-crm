@@ -13,15 +13,19 @@ return new class extends Migration
     {
         Schema::create('inquiry', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('users_id');
-            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('inquiry_type_id');
+            $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('vehicle_id');
             $table->string('transaction');
+            $table->string('category');
+            $table->integer('quantity')->nullable();
             $table->longText('remarks')->nullable();
             $table->string('date')->nullable(); //monthname day
-            $table->string('transactional_status')->default('pending');
+            $table->string('status_id');
             $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('status_updated_by')->nullable();
+            $table->date('status_updated_at')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -12,34 +12,96 @@
     </div>
 </div>
 
+{{-- View Remarks Modal --}}
+<div class="modal fade" id="viewRemarksModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center gap-2">
+        <i class='bx bxs-message-rounded-detail'></i>
+        <h5 class="modal-title" id="largeModalLabel">Remarks</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="remarksContent">
+            <input type="hidden" name="remarks_id" id="remarks_id">
+            <textarea class="form-control mb-2 d-none" id="remarks" name="remarks" rows="5" placeholder="">
+            {{-- display remarks here --}}
+            </textarea>
+            <p class="fs-5 text-dark" id="remarksParagraph">
+            </p>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-label-success" id="editRemarksButton">Edit</button>
+            <button class="btn btn-dark d-none save-remark" id="saveEditRemarksButton">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-{{-- Edit Application Modal --}}
+{{-- Edit Inquiry Modal --}}
 <div class="modal fade" id="editInquiryFormModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="largeModalLabel">Edit</h5>
+        <h5 class="modal-title" id="largeModalLabel">Inquiry Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="editInquiryFormData">
             <div class="mb-4">
+                {{-- Inquiry Type Field --}}
+                <div class="row mb-2">
+                    <div class="col-md">
+                        <label for="edit_inquiry_type" class="form-label required">Select Inquiry Type</label>
+                        <input type="text" class="form-control" id="edit_inquiry_type" name="edit_inquiry_type" placeholder="" / disabled>
+                        <small class="text-danger" id="validateInquiryType">Please Select Inquiry Type</small>
+                    </div>
+                    <input type="hidden" class="form-control" id="edit_inquiry_type_id" name="inquiry_type_id" placeholder="" />
+                </div>
+
                 <div class="row mb-2">
                     <div class="col-md">
                         <input type="hidden" class="form-control" id="edit_id" name="id" />
-                        <label for="first_name" class="form-label required">First Name</label>
+                        <label for="edit_first_name" class="form-label required">First Name</label>
                         <input type="text" class="form-control" id="edit_first_name" name="first_name" placeholder="" />
                         <small class="text-danger" id="validateFirstname">Enter Customer First Name</small>
                     </div>
                     <div class="col-md">
-                        <label for="last_name" class="form-label required">Last Name</label>
+                        <label for="edit_last_name" class="form-label required">Last Name</label>
                         <input type="text" class="form-control" id="edit_last_name" name="last_name" placeholder="" />
                         <small class="text-danger" id="validateLastname">Enter Customer Last Name</small>
                     </div>
                 </div>
-                <div class="row mb-2">
+
+                 {{-- Fleet Field --}}
+                 <div class="row mb-2 d-none" id="editFleetColumnField">
                     <div class="col-md">
-                        <label for="gender" class="form-label required">Gender</label>
+                        <label for="edit_fleet" class="form-label required">Fleet</label>
+                        <input type="text" class="form-control" id="edit_fleet" name="fleet" placeholder="" />
+                        <small class="text-danger" id="validateFleet">Enter Fleet Name</small>
+                    </div>
+                </div>
+                {{-- Company Field --}}
+                <div class="row mb-2 d-none" id="editCompanyColumnField">
+                    <div class="col-md">
+                        <label for="edit_company" class="form-label required">Company</label>
+                        <input type="text" class="form-control" id="edit_company" name="company" placeholder="" />
+                        <small class="text-danger" id="validateCompany">Enter Company Name</small>
+                    </div>
+                </div>
+                {{-- Government Field --}}
+                <div class="row mb-2 d-none" id="editGovernmentColumnField">
+                    <div class="col-md">
+                        <label for="edit_government" class="form-label required">Government</label>
+                        <input type="text" class="form-control" id="edit_government" name="government" placeholder="" />
+                        <small class="text-danger" id="validateGovernment">Enter Government Agency</small>
+                    </div>
+                </div>
+                {{-- Gender and Age Field --}}
+                <div class="row mb-2">
+                    <div class="col-md" id="editGenderColumnField">
+                        <label for="edit_gender" class="form-label required">Gender</label>
                         <select class="form-control" id="edit_gender" name="gender">
                             <option value="">Select Gender</option>
                             <option value="Female">Female</option>
@@ -47,25 +109,27 @@
                         </select>
                         <small class="text-danger" id="validateGender">Please Select Gender</small>
                     </div>
-                    <div class="col-md">
-                        <label for="age" class="form-label required">Age</label>
+                    <div class="col-md" id="editAgeColumnField">
+                        <label for="edit_age" class="form-label required">Age</label>
                         <input type="number" class="form-control" id="edit_age" name="age" placeholder="" />
                         <small class="text-danger" id="validateLastname">Enter Customer Age</small>
                     </div>
+                </div>
+
+                <div class="row mb-2">
                     <div class="col-md">
                         <label for="mobile_number" class="form-label required">Mobile Number</label>
                         <input type="text" class="form-control" id="edit_mobile_number" name="mobile_number" placeholder="09" />
                         <small class="text-danger" id="validateMobileNumber">Enter Valid Mobile Number</small>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md">
-                    <label for="edit_address" class="form-label required">Address</label>
-                    <input type="text" class="form-control" id="edit_address" name="address" placeholder="" />
-                    <small class="text-danger" id="validateAddress">Enter <Address></Address></small>
-                </div>
+                        <label for="edit_address" class="form-label required">Address</label>
+                        <input type="text" class="form-control" id="edit_address" name="address" placeholder="" />
+                        <small class="text-danger" id="validateAddress">Enter <Address></Address></small>
+                    </div>
                 </div>
             </div>
+
             <div class="mb-4">
                 <div class="row mb-2">
                     <div class="col-md">
@@ -86,8 +150,13 @@
                         <label for="car_color" class="form-label required">Color</label>
                         <select class="form-control" id="edit_car_color" name="car_color">
                             <option value="">Select Color</option>
+                            <option value="any_color">Any Color</option>
                         </select>
                         <small class="text-danger" id="validateColor">Please Select Color</small>
+                    </div>
+                    <div class="col-md d-none" id="editQuantityColumnField">
+                        <label for="edit_quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="edit_quantity" name="quantity" placeholder="" />
                     </div>
                 </div>
             </div>
@@ -115,6 +184,18 @@
                     <small class="text-danger" id="validateSource">Please Select Source</small>
                 </div>
             </div>
+            <div class="row mb-4">
+                <div class="col-md">
+                    <label for="edit_category" class="form-label required">Category</label>
+                    <select class="form-control" id="edit_category" name="category">
+                        <option value="">Select Category</option>
+                        <option class="" value="Hot" style="color: #ff0000; font-weight: bold;">Hot</option>
+                        <option class="text-warning" value="Warm" style="font-weight: bold;">Warm</option>
+                        <option class="text-info" value="Cold" style="font-weight: bold;">Cold</option>
+                    </select>
+                    <small class="text-danger" id="validateCategory">Please Select Category</small>
+                </div>
+            </div>
             <div class="row mb-2">
                 <div class="col-md">
                     <label for="additional_info" class="form-label">Remarks</label>
@@ -123,8 +204,9 @@
             </div>
             <div class="row">
                 <div class="col-md d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-label-danger" id="cancelEditInquiryFormButton">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-success" id="editInquiryModalButton">Edit Details</button>
+                    <button type="button" class="btn btn-label-danger d-none" id="cancelInquiryModalButton">Cancel</button>
+                    <button type="submit" class="btn btn-dark d-none" id="saveEditInquiryModalButton">Save Changes</button>
                 </div>
             </div>
         </form>
@@ -134,7 +216,7 @@
 </div>
 
 {{-- Inquiry Form --}}
-<div class="row mb-2">
+<div class="row mb-4">
     <div class="col-md">
         <div class="card" id="inquiryFormCard" style="display: none;">
             <div class="card-header">
@@ -143,6 +225,18 @@
             <div class="card-body">
                 <form id="leadFormData">
                     <div class="mb-4">
+                        {{-- Inquiry Type Field --}}
+                        <div class="row mb-4">
+                            <div class="col-md">
+                                <label for="inquiry_type" class="form-label required">Select Inquiry Type</label>
+                                <select class="form-control" id="inquiry_type" name="inquiry_type">
+                                    <option value="">Select Inquiry Type</option>
+                                </select>
+                                <small class="text-danger" id="validateInquiryType">Please Select Inquiry Type</small>
+                            </div>
+                            <input type="hidden" class="form-control" id="inquiry_type_id" name="inquiry_type_id" placeholder="" />
+                        </div>
+                        {{-- Customer First and Last Name Field --}}
                         <div class="row mb-2">
                             <div class="col-md">
                                 <label for="first_name" class="form-label required">First Name</label>
@@ -155,8 +249,33 @@
                                 <small class="text-danger" id="validateLastname">Enter Customer Last Name</small>
                             </div>
                         </div>
-                        <div class="row mb-2">
+                        {{-- Fleet Field --}}
+                        <div class="row mb-2 d-none" id="fleetColumnField">
                             <div class="col-md">
+                                <label for="fleet" class="form-label required">Fleet</label>
+                                <input type="text" class="form-control" id="fleet" name="fleet" placeholder="" />
+                                <small class="text-danger" id="validateFleet">Enter Fleet Name</small>
+                            </div>
+                        </div>
+                        {{-- Company Field --}}
+                        <div class="row mb-2 d-none" id="companyColumnField">
+                            <div class="col-md">
+                                <label for="company" class="form-label required">Company</label>
+                                <input type="text" class="form-control" id="company" name="company" placeholder="" />
+                                <small class="text-danger" id="validateCompany">Enter Company Name</small>
+                            </div>
+                        </div>
+                        {{-- Government Field --}}
+                        <div class="row mb-2 d-none" id="governmentColumnField">
+                            <div class="col-md">
+                                <label for="government" class="form-label required">Government</label>
+                                <input type="text" class="form-control" id="government" name="government" placeholder="" />
+                                <small class="text-danger" id="validateGovernment">Enter Government Agency</small>
+                            </div>
+                        </div>
+                        {{-- Gender and Age Field --}}
+                        <div class="row mb-2">
+                            <div class="col-md" id="genderColumnField">
                                 <label for="gender" class="form-label required">Gender</label>
                                 <select class="form-control" id="gender" name="gender">
                                     <option value="">Select Gender</option>
@@ -165,23 +284,23 @@
                                 </select>
                                 <small class="text-danger" id="validateGender">Please Select Gender</small>
                             </div>
-                            <div class="col-md">
+                            <div class="col-md" id="ageColumnField">
                                 <label for="age" class="form-label required">Age</label>
                                 <input type="number" class="form-control" id="age" name="age" placeholder="" />
                                 <small class="text-danger" id="validateLastname">Enter Customer Age</small>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md">
                                 <label for="mobile_number" class="form-label required">Mobile Number</label>
                                 <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="09" />
                                 <small class="text-danger" id="validateMobileNumber">Enter Valid Mobile Number</small>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md">
-                            <label for="address" class="form-label required">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" placeholder="" />
-                            <small class="text-danger" id="validateAddress">Enter <Address></Address></small>
-                        </div>
+                                <label for="address" class="form-label required">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="House/Number and Street, Barangay/Subdivision, City/Municipality, Province" />
+                                <small class="text-danger" id="validateAddress">Enter <Address></Address></small>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-4">
@@ -206,6 +325,10 @@
                                     <option value="">Select Color</option>
                                 </select>
                                 <small class="text-danger" id="validateColor">Please Select Color</small>
+                            </div>
+                            <div class="col-md d-none" id="quantityColumnField">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="" />
                             </div>
                         </div>
                     </div>
@@ -233,6 +356,18 @@
                             <small class="text-danger" id="validateSource">Please Select Source</small>
                         </div>
                     </div>
+                    <div class="row mb-4">
+                        <div class="col-md">
+                            <label for="category" class="form-label required">Category</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="">Select Category</option>
+                                <option class="" value="Hot" style="color: #ff0000; font-weight: bold;">Hot</option>
+                                <option class="text-warning" value="Warm" style="font-weight: bold;">Warm</option>
+                                <option class="text-info" value="Cold" style="font-weight: bold;">Cold</option>
+                            </select>
+                            <small class="text-danger" id="validateCategory">Please Select Category</small>
+                        </div>
+                    </div>
                     <div class="row mb-2">
                         <div class="col-md">
                             <label for="additional_info" class="form-label">Remarks</label>
@@ -250,6 +385,7 @@
         </div>
     </div>
 </div>
+
 {{-- Trigger Inquiry Form Button --}}
 <div class="row mb-2">
     <div class="col-md d-flex justify-content-end">
@@ -262,7 +398,7 @@
     <div class="col">
         <div class="card custom-card">
             <div class="card-body">
-                <div class="row">
+                <div class="row mb-2">
                     <div class="d-flex w-50 gap-2">
                         <div class="mb-3">
                             <div class="input-group">
@@ -271,8 +407,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="btn-group w-100" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-label-dark active" data-route="{{ route('leads.individual.list') }}">Individual</button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.fleet.list') }}">Fleet</button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.company.list') }}">Company</button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.government.list') }}">Government</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
-                    <table id="inquiryTable" class="table table-striped table-hover" style="width:100%">
+                    <table id="inquiryTable" class="table table-bordered table-hover" style="width:100%">
                         <tbody>
                         </tbody>
                     </table>
@@ -341,7 +487,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{ route("leads.list") }}',
+                url: '{{ route("leads.individual.list") }}',
                 data: function(d) {
                     // Include the date range in the AJAX request
                     d.date_range = $('#date-range-picker').val();
@@ -358,18 +504,28 @@
         columns: [
             { data: 'team', name: 'team', title: 'Team' },
             { data: 'agent', name: 'agent', title: 'Agent' },
-            { data: 'customer_name', name: 'customer_name', title: 'Customer Name' },
+            { data: 'client_name', name: 'client_name', title: 'Client Name' },
             { data: 'contact_number', name: 'contact_number', title: 'Contact No.' },
             { data: 'unit', name: 'unit', title: 'Unit' },
             { data: 'variant', name: 'variant', title: 'Variant' },
             { data: 'color', name: 'color', title: 'Color' },
             { data: 'transaction', name: 'transaction', title: 'Transaction' },
-            { data: 'gender', name: 'gender', title: 'Gender' },
-            { data: 'age', name: 'age', title: 'Age' },
             { data: 'source', name: 'source', title: 'Source' },
-            { data: 'address', name: 'address', title: 'Address' },
-            { data: 'transactional_status', name: 'transactional_status', title: 'Status', render: function(data) { return data.charAt(0).toUpperCase() + data.slice(1); } },
-            { data: 'remarks', name: 'remarks', title: 'Remarks' },
+            { data: 'status', name: 'status', title: 'Status', render: function(data) { return data.charAt(0).toUpperCase() + data.slice(1); } },
+            {
+                data: 'id',
+                name: 'id',
+                title: 'Remarks',
+                render: function(data) {
+                    return `
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-icon me-2 btn-label-secondary border remarks-btn" data-bs-toggle="modal" data-bs-target="#viewRemarksModal" data-id="${data}">
+                                <span class="tf-icons bx bxs-message-rounded-detail bx-22px"></span>
+                            </button>
+                        </div>
+                            `;
+                }
+            },
             { data: 'date', name: 'date', title: 'Date' },
             {
                 data: 'id',
@@ -380,13 +536,13 @@
                     return `
                         <div class="d-flex">
                             <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editInquiryFormModal" data-id="${data}">
-                                <span class="tf-icons bx bx-pencil bx-22px"></span>
+                                <span class="tf-icons bx bxs-show bx-22px"></span>
                             </button>
                             <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
                                 <span class="tf-icons bx bxs-check-circle bx-22px"></span>
                             </button>
                             <button type="button" class="btn btn-icon me-2 btn-danger delete-btn" data-id="${data}">
-                                <span class="tf-icons bx bxs-x-circle bx-22px"></span>
+                                <span class="tf-icons bx bxs-trash bx-22px"></span>
                             </button>
                         </div>
                     `;
@@ -403,9 +559,47 @@
 
     });
 
+    // Change DataTable route based on button click
+    $('.btn-group .btn').on('click', function (e) {
+        e.preventDefault();
+
+        // Clear the date range picker
+        $('#date-range-picker').val(''); // Clear the date range input
+
+        // Reload the table without resetting the paging
+        inquiryTable.ajax.reload(null, false);
+
+        // Get the route from the clicked button
+        var route = $(this).data('route');
+        inquiryTable.ajax.url(route).load();
+
+        // Remove 'active' class from all buttons
+        $('.btn-group .btn').removeClass('active');
+
+        // Add 'active' class to the clicked button
+        $(this).addClass('active');
+    });
 
     // Inquiry Form Validation
     $(document).ready(function () {
+
+        $.ajax({
+            url: '{{ route('leads.getInquiryType') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let typeSelect = $('#inquiry_type, #edit_inquiry_type');
+                typeSelect.empty();
+                typeSelect.append('<option value="">Select Type...</option>');
+                data.forEach(function(item) {
+                    typeSelect.append(`<option value="${item.inquiry_type}" data-id="${item.id}">${item.inquiry_type}</option>`);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading type:', error);
+            }
+        });
+
         $.ajax({
             url: '{{ route('leads.getUnit') }}',
             type: 'GET',
@@ -422,6 +616,7 @@
                 console.error('Error loading unit:', error);
             }
         });
+
 
          // Load variants and colors based on selected unit
         $('#car_unit, #edit_car_unit').on('change', function() {
@@ -450,13 +645,12 @@
                     }
                 });
             } else {
-                console.log('here');
                 // Clear the selects if no unit is selected
                 $('#car_variant').empty().append('<option value="">Select Variants...</option>');
             }
         });
 
-        $('#car_variant, #edit_car_variant').on('change', function() {
+        $('#car_variant').on('change', function() {
             const selectedVariant = $(this).val();
             if (selectedVariant) {
                 $.ajax({
@@ -466,7 +660,7 @@
                     dataType: 'json',
                     success: function(data) {
 
-                        let colorSelect = $('#car_color, #edit_car_color');
+                        let colorSelect = $('#car_color');
                         colorSelect.empty();
                         colorSelect.append('<option value="">Select Color...</option>');
                         // Check if data.colors is an array or a single value
@@ -477,13 +671,54 @@
                         } else {
                             colorSelect.append(`<option value="${data.colors}">${data.colors}</option>`);
                         }
+
+                        if (!Array.isArray(data.colors) || !data.colors.includes('Any Color')) {
+                            colorSelect.append('<option value="Any Color">Any Color</option>');
+                        }
                     },
                     error: function(error) {
                         console.error('Error loading variants and colors:', error);
                     }
                 });
             } else {
-                console.log('here');
+                // Clear the selects if no unit is selected
+                $('#car_color').empty().append('<option value="">Select Color...</option>');
+            }
+        });
+
+
+        $('#edit_car_variant').on('change', function() {
+            const selectedVariant = $(this).val();
+            if (selectedVariant) {
+                $.ajax({
+                    url: '{{ route("leads.getColor") }}',
+                    type: 'GET',
+                    data: { variant: selectedVariant },
+                    dataType: 'json',
+                    success: function(data) {
+
+                        let colorSelect = $('#edit_car_color');
+                        colorSelect.empty();
+                        colorSelect.append('<option value="">Select Color...</option>');
+                        // Check if data.colors is an array or a single value
+                        if (Array.isArray(data.colors)) {
+                            data.colors.forEach(function(color) {
+                                colorSelect.append(`<option value="${color}">${color}</option>`);
+                            });
+                        } else {
+                            colorSelect.append(`<option value="${data.colors}">${data.colors}</option>`);
+                        }
+
+                        if (!Array.isArray(data.colors) || !data.colors.includes('Any Color')) {
+                            colorSelect.append('<option value="Any Color">Any Color</option>');
+                        }
+
+                    },
+                    error: function(error) {
+                        console.error('Error loading variants and colors:', error);
+                    }
+                });
+            } else {
                 // Clear the selects if no unit is selected
                 $('#car_color').empty().append('<option value="">Select Color...</option>');
             }
@@ -499,104 +734,179 @@
             });
         }
 
-        // Validation function
+        function handleInquiryTypeChange() {
+            const inquiryType = $('#inquiry_type').val();
+
+                // $('#first_name, #last_name').closest('.row').hide(); // Show first and last name by default
+                // $('#companyColumnField, #governmentColumnField, #quantityColumnField').addClass('d-none');
+                // $('#first_name, #last_name, #company, #government, #quantity').removeClass('is-invalid border-danger').siblings('small').hide();
+                // $('#gender, #age').closest('.row').hide();
+
+            if (inquiryType === 'Individual') {
+                // No special validation changes for individual, just hide others
+                $('#first_name, #last_name').closest('.row').show(); // Show first and last name by default
+                $('#companyColumnField, #governmentColumnField, #quantityColumnField').addClass('d-none');
+                $('#quantityColumnField').addClass('d-none');
+                $('#companyColumnField').addClass('d-none');
+                $('#gender, #age').closest('.row').show();
+
+                $('#fleetColumnField').addClass('d-none');
+            } else if (inquiryType === 'Fleet' || inquiryType === 'Company') {
+                // Hide first and last name, show quantity
+                $('#first_name, #last_name').closest('.row').hide();
+                $('#quantityColumnField').removeClass('d-none');
+                $('#companyColumnField').toggleClass('d-none', inquiryType !== 'Company');
+                $('#fleetColumnField').toggleClass('d-none', inquiryType !== 'Fleet');
+                $('#gender, #age').closest('.row').hide(); // Hide gender and age for fleet and company
+                $('#governmentColumnField').addClass('d-none');
+            } else if (inquiryType === 'Government') {
+                // Hide first name, last name, and company, show government field
+                $('#fleetColumnField').addClass('d-none');
+                $('#first_name, #last_name').closest('.row').hide();
+                $('#quantityColumnField').removeClass('d-none');
+                $('#companyColumnField').addClass('d-none');
+                $('#governmentColumnField').removeClass('d-none');
+                $('#gender, #age').closest('.row').hide(); // Hide gender and age for fleet and company
+            }
+        }
+
+
+        $('#inquiry_type').on('change', function () {
+            let selectedId = $(this).find(':selected').data('id');
+            $('#inquiry_type_id').val(selectedId || '');
+
+            handleInquiryTypeChange();
+        });
+
+
         function validateField(field, message) {
             const $field = $(field);
             const $errorMsg = $field.siblings('small');
-
             if (!$field.val()) {
                 $field.addClass('is-invalid border-danger');
                 $errorMsg.show();
                 return false;
             }
-
             $field.removeClass('is-invalid border-danger');
             $errorMsg.hide();
             return true;
         }
+
 
         // Validate form on submit
         $("#leadFormData").on("submit", function (e) {
             e.preventDefault();
             let isValid = true;
 
-             // Validate required fields
-            isValid = validateField('#first_name', 'Enter Customer First Name') && isValid;
-            isValid = validateField('#last_name', 'Enter Customer Last Name') && isValid;
-            isValid = validateField('#age', 'Enter Customer Age') && isValid;
+            const inquiryType = $('#inquiry_type').val();
+
+            // Always validate inquiry type
+            isValid = validateField('#inquiry_type', 'Select Inquiry Type') && isValid;
+
+            if (inquiryType === 'Individual' || inquiryType === '') {
+                isValid = validateField('#first_name', 'Enter Customer First Name') && isValid;
+                isValid = validateField('#last_name', 'Enter Customer Last Name') && isValid;
+                isValid = validateField('#age', 'Enter Customer Age') && isValid;
+                isValid = validateField('#gender', 'Please Select Gender') && isValid;
+
+            } else if (inquiryType === 'Fleet') {
+                isValid = validateField('#fleet', 'Enter Fleet Name') && isValid;
+
+            } else if (inquiryType === 'Company') {
+                isValid = validateField('#company', 'Enter Company Name') && isValid;
+
+            } else if (inquiryType === 'Government') {
+                isValid = validateField('#government', 'Enter Government Agency') && isValid;
+            }
+
+            // Validate shared required fields
             isValid = validateField('#mobile_number', 'Enter Valid Mobile Number') && isValid;
             isValid = validateField('#car_unit', 'Please Select Unit') && isValid;
             isValid = validateField('#car_variant', 'Please Select Variant') && isValid;
             isValid = validateField('#car_color', 'Please Select Color') && isValid;
             isValid = validateField('#transaction', 'Please Select Transaction') && isValid;
             isValid = validateField('#source', 'Please Select Source') && isValid;
-            isValid = validateField('#gender', 'Please Select Gender') && isValid;
-            isValid = validateField('#car_variant', 'Please Select a Variant') && isValid;
             isValid = validateField('#address', 'Enter Address') && isValid;
+            isValid = validateField('#category', 'Please Select a Category') && isValid;
 
-            // Special validation for mobile number
-            const mobileNumber = $('#mobile_number').val();
-            if (mobileNumber && !mobileNumber.match(/^09\d{9}$/)) {
-                $('#mobile_number').addClass('is-invalid border-danger');
-                $('#validateMobileNumber').show();
-                isValid = false;
+
+            console.log(isValid);
+
+            if (!isValid) {
+                return; // Stop execution if validation fails
             }
 
-            if (isValid) {
-                const formData = $(this).serialize();
-                $.ajax({
-                    url: '{{ route("leads.store") }}',
-                    type: 'POST',
-                    data: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                             Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.message,
-                            });
-                            // Reset form and hide it
-                            $("#leadFormData")[0].reset();
-                            $("#inquiryFormCard").hide();
-                            $("#addNewInquiryButton").show();
-
-                            // Clear all validation states
-                            $(".text-danger").hide();
-                            $("input, select").removeClass("is-invalid border-danger");
-                            inquiryTable.ajax.reload();
-                        }
-                    },
-                    error: function(xhr) {
+            const formData = $(this).serialize();
+            $.ajax({
+                url: '{{ route("leads.store") }}',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: xhr.responseJSON?.message || 'Something went wrong!'
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
                         });
+                        // Reset form and hide it
+                        $("#leadFormData")[0].reset();
+                        $("#inquiryFormCard").hide();
+                        $("#addNewInquiryButton").show();
+
+                        // Clear all validation states
+                        $(".text-danger").hide();
+                        $("input, select").removeClass("is-invalid border-danger");
+                        inquiryTable.ajax.reload();
                     }
-                });
-            }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Something went wrong!'
+                    });
+                }
+            });
+
         });
 
-
-        // Validate form on submit
+         // Validate form on submit
         $("#editInquiryFormData").on("submit", function (e) {
             e.preventDefault();
             let isValid = true;
 
+            const edit_inquiryType = $('#edit_inquiry_type').val();
+
+
+            // Always validate inquiry type
+            isValid = validateField('#edit_inquiry_type', 'Select Inquiry Type') && isValid;
+
+            if (edit_inquiryType === 'Individual') {
+                isValid = validateField('#edit_first_name', 'Enter Customer First Name') && isValid;
+                isValid = validateField('#edit_last_name', 'Enter Customer Last Name') && isValid;
+                isValid = validateField('#edit_age', 'Enter Customer Age') && isValid;
+                isValid = validateField('#edit_gender', 'Please Select Gender') && isValid;
+
+            } else if (edit_inquiryType === 'Fleet') {
+                isValid = validateField('#edit_fleet', 'Enter Fleet Name') && isValid;
+
+            } else if (edit_inquiryType === 'Company') {
+                isValid = validateField('#edit_company', 'Enter Company Name') && isValid;
+
+            } else if (edit_inquiryType === 'Government') {
+                isValid = validateField('#edit_government', 'Enter Government Agency') && isValid;
+            }
+
             // Validate required fields
-            isValid = validateField('#edit_first_name', 'Enter Customer First Name') && isValid;
-            isValid = validateField('#edit_last_name', 'Enter Customer Last Name') && isValid;
-            isValid = validateField('#edit_age', 'Enter Customer Age') && isValid;
             isValid = validateField('#edit_mobile_number', 'Enter Valid Mobile Number') && isValid;
             isValid = validateField('#edit_car_unit', 'Please Select Unit') && isValid;
             isValid = validateField('#edit_car_variant', 'Please Select Variant') && isValid;
             isValid = validateField('#edit_car_color', 'Please Select Color') && isValid;
             isValid = validateField('#edit_transaction', 'Please Select Transaction') && isValid;
             isValid = validateField('#edit_source', 'Please Select Source') && isValid;
-            isValid = validateField('#edit_gender', 'Please Select Gender') && isValid;
             isValid = validateField('#edit_address', 'Enter Address') && isValid;
 
             // Special validation for mobile number
@@ -613,16 +923,32 @@
             // Restore original values on invalid fields
             if (!isValid) {
                 $('#edit_id').val(originalValues.id);
-                $('#edit_first_name').val(originalValues.firstName);
-                $('#edit_last_name').val(originalValues.lastName);
-                $('#edit_age').val(originalValues.age);
+
                 $('#edit_car_unit').val(originalValues.carUnit);
                 $('#edit_car_variant').val(originalValues.carVariant);
                 $('#edit_car_color').val(originalValues.carColor);
                 $('#edit_transaction').val(originalValues.transaction);
                 $('#edit_source').val(originalValues.source);
-                $('#edit_gender').val(originalValues.gender);
                 $('#edit_address').val(originalValues.address);
+                $('#edit_quantity').val(originalValues.quantity);
+                $('#edit_mobile_number').val(originalValues.mobileNumber);
+                $('#edit_category').val(originalValues.category);
+
+                if (edit_inquiry_type === 'Individual') {
+                    $('#edit_first_name').val(originalValues.firstName);
+                    $('#edit_last_name').val(originalValues.lastName);
+                    $('#edit_age').val(originalValues.age);
+                    $('#edit_gender').val(originalValues.gender);
+
+                } else if (edit_inquiry_type === 'Fleet' || edit_inquiry_type === 'Company') {
+
+                    $('#edit_fleet').val(edit_inquiry_type === 'Company' ? '' : originalValues.fleet);
+                    $('#edit_company').val(edit_inquiry_type === 'Fleet' ? '' : originalValues.company);
+
+                } else if (edit_inquiry_type === 'Government') {
+                    $('#edit_government').val(originalValues.government);
+                }
+
                 return; // Stop execution if validation fails
             }
 
@@ -669,8 +995,8 @@
             $(this).val(capitalizeWords($(this).val()));
         });
 
-
     });
+
 
     // Mobile Number Validation
     $(document).ready(function () {
@@ -707,20 +1033,68 @@
 
     // Add this inside your <script> tag in the Blade file
     $(document).on('click', '.edit-btn', function() {
+        // Clear all validation messages before opening the modal
+        $(".text-danger").hide();
+        $("input, select").removeClass("is-invalid border-danger");
+
         const inquiryId = $(this).data('id');
         $.ajax({
             url: `{{ url('leads/edit') }}/${inquiryId}`,
             type: 'GET',
             success: function(data) {
+                // console.log(data);
                 // Populate the form fields with the inquiry data
                 $('#edit_id').val(data.id);
-                $('#edit_first_name').val(data.customer.customer_first_name);
-                $('#edit_last_name').val(data.customer.customer_last_name);
-                $('#edit_gender').val(data.customer.gender);
-                $('#edit_age').val(data.customer.age);
                 $('#edit_mobile_number').val(data.customer.contact_number);
                 $('#edit_address').val(data.customer.address);
                 $('#edit_car_unit').val(data.vehicle.unit).trigger('change');
+                $('#edit_category').val(data.category).trigger('change');
+                $('#edit_inquiry_type').val(data.inquiry_type.inquiry_type);
+                $('#edit_quantity').val(data.quantity);
+
+                const edit_inquiry_type =  $('#edit_inquiry_type').val();
+
+                console.log(edit_inquiry_type);
+
+                if (edit_inquiry_type === 'Individual') {
+                    // No special validation changes for individual, just hide others
+                    $('#edit_first_name, #edit_first_name').closest('.row').show(); // Show first and last name by default
+                    $('#editCompanyColumnField, #editGovernmentColumnField, #editQuantityColumnField').addClass('d-none');
+                    $('#editQuantityColumnField').addClass('d-none');
+                    $('#editCompanyColumnField').addClass('d-none');
+                    $('#edit_gender, #edit_age').closest('.row').show();
+                    $('#editFleetColumnField').addClass('d-none');
+
+                    $('#edit_first_name').val(data.customer.customer_first_name);
+                    $('#edit_last_name').val(data.customer.customer_last_name);
+                    $('#edit_gender').val(data.customer.gender);
+                    $('#edit_age').val(data.customer.age);
+
+                } else if (edit_inquiry_type === 'Fleet' || edit_inquiry_type === 'Company') {
+                    // Hide first and last name, show quantity
+                    $('#edit_first_name, #edit_first_name').closest('.row').hide();
+                    $('#editQuantityColumnField').removeClass('d-none');
+                    $('#editCompanyColumnField').toggleClass('d-none', edit_inquiry_type !== 'Company');
+                    $('#editFleetColumnField').toggleClass('d-none', edit_inquiry_type !== 'Fleet');
+                    $('#edit_gender, #edit_age').closest('.row').hide(); // Hide gender and age for fleet and company
+                    $('#editGovernmentColumnField').addClass('d-none');
+
+                    $('#edit_fleet').val(edit_inquiry_type === 'Company' ? '' : data.customer.company_name);
+                    $('#edit_company').val(edit_inquiry_type === 'Fleet' ? '' : data.customer.company_name);
+
+                } else if (edit_inquiry_type === 'Government') {
+                    // Hide first name, last name, and company, show government field
+                    $('#editFleetColumnField').addClass('d-none');
+                    $('#edit_first_name, #edit_first_name').closest('.row').hide();
+                    $('#editQuantityColumnField').removeClass('d-none');
+                    $('#editCompanyColumnField').addClass('d-none');
+                    $('#editGovernmentColumnField').removeClass('d-none');
+                    $('#edit_gender, #edit_age').closest('.row').hide(); // Hide gender and age for fleet and company
+
+                    $('#edit_government').val(data.customer.department_name);
+
+                }
+
 
                 // Get variants and colors based on the selected unit
                 $.ajax({
@@ -750,7 +1124,10 @@
                             data: { variant: data.vehicle.variant },
                             dataType: 'json',
                             success: function(colorsData) {
-                                $('#edit_car_color').val(data.vehicle.color); // Automatically select the color
+                                // $('#edit_car_color').val(data.vehicle.color); // Automatically select the color
+
+                                const colorValue = data.vehicle.color || 'any';
+                                $('#edit_car_color').val(colorValue);
                             },
                             error: function(xhr) {
                                 Swal.fire({
@@ -781,9 +1158,40 @@
                     carColor: data.vehicle.color,
                     transaction: data.transaction,
                     source: data.customer.source,
-                    remarks: data.remarks
+                    remarks: data.remarks,
+                    fleet: data.customer.company_name,
+                    company: data.customer.company_name,
+                    government: data.customer.department_name,
+                    quantity: data.quantity,
+                    category: data.category,
                 };
                 $('#editInquiryFormModal').modal('show');
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Could not fetch inquiry data.'
+                });
+            }
+        });
+    });
+
+    // Add this inside your <script> tag in the Blade file
+    $(document).on('click', '.remarks-btn', function() {
+        // Clear all validation messages before opening the modal
+        $(".text-danger").hide();
+        $("input, select").removeClass("is-invalid border-danger");
+
+        const inquiryId = $(this).data('id');
+        $.ajax({
+            url: `{{ url('leads/edit') }}/${inquiryId}`,
+            type: 'GET',
+            success: function(data) {
+
+                $('#remarks').val(data.remarks);
+                $('#remarks_id').val(data.id);
+                $('#remarksParagraph').text(data.remarks);
             },
             error: function(xhr) {
                 Swal.fire({
@@ -817,6 +1225,99 @@
                 $(".text-danger").hide();
                 $("input, select").removeClass("is-invalid border-danger");
             });
+    });
+
+    // Edit Modal Fields disabled state -> Editable State
+    $(document).ready(function () {
+        // Function to reset the modal to its initial uneditable state
+        function resetModalToInitialState() {
+            // Disable all input fields except the Edit button
+            $("#editInquiryFormData :input").not("#editInquiryModalButton").prop("disabled", true);
+
+            // Show the Edit button
+            $("#editInquiryModalButton").removeClass("d-none");
+
+            // Hide the Save and Cancel buttons
+            $("#saveEditInquiryModalButton").addClass("d-none");
+            $("#cancelInquiryModalButton").addClass("d-none");
+        }
+
+        // Initially, reset the modal to its initial state when the page is ready
+        resetModalToInitialState();
+
+        // When the Edit button is clicked
+        $("#editInquiryModalButton").on("click", function () {
+            // Enable all input fields except hidden fields
+            $("#editInquiryFormData :input").not("[type='hidden']").prop("disabled", false);
+
+            // Hide the Edit button
+            $(this).addClass("d-none");
+
+            // Show the Save Changes and Cancel buttons
+            $("#saveEditInquiryModalButton").removeClass("d-none");
+            $("#cancelInquiryModalButton").removeClass("d-none");
+        });
+
+        // When the Cancel button is clicked
+        $("#cancelInquiryModalButton").on("click", function () {
+            // Close the modal properly
+            $("#editInquiryFormModal").modal("hide");
+
+            // Reset the modal to its initial uneditable state when reopened
+            resetModalToInitialState();
+        });
+
+        // Reset the modal when it's closed (using Bootstrap modal `hidden.bs.modal` event)
+        $("#editInquiryFormModal").on("hidden.bs.modal", function () {
+            resetModalToInitialState();
+        });
+    });
+
+    $(document).on('click', '.save-remark', function() {
+        const ID =  $('#remarks_id').val();
+        const remarksData =  $('#remarks').val();
+        $.ajax({
+            url: '{{ route("leads.updateRemarks") }}',
+            type: 'POST',
+            data: {
+                id: ID,
+                remarks:remarksData,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire(
+                        'Updated!',
+                        response.message,
+                        'success'
+                    );
+                    $('#viewRemarksModal').modal('hide'); // Hide the modal
+
+                     // Show the textarea and save button
+                    $("#remarks").addClass("d-none");
+                    $("#saveEditRemarksButton").addClass("d-none");
+
+                    $("#remarksParagraph").removeClass("d-none");
+                    $("#editRemarksButton").removeClass("d-none");
+                }
+            },
+            error: function(xhr) {
+                Swal.fire(
+                    'Error!',
+                    xhr.responseJSON?.message || 'Something went wrong!',
+                    'error'
+                );
+                $("#remarks").addClass("d-none");
+                $("#saveEditRemarksButton").addClass("d-none");
+
+                $("#remarksParagraph").removeClass("d-none");
+                $("#editRemarksButton").removeClass("d-none");
+                
+            }
+        });
+
     });
 
     //Process Data
@@ -907,6 +1408,18 @@
         });
     });
 
+    // Edit Remarks hide show
+    $(document).ready(function () {
+        $("#editRemarksButton").on("click", function () {
+            // Hide the remarks paragraph and edit button
+            $("#remarksParagraph").addClass("d-none");
+            $("#editRemarksButton").addClass("d-none");
+
+            // Show the textarea and save button
+            $("#remarks").removeClass("d-none");
+            $("#saveEditRemarksButton").removeClass("d-none");
+        });
+    });
 
 
 </script>

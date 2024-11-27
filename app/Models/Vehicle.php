@@ -10,6 +10,18 @@ use Illuminate\Notifications\Notifiable;
 class Vehicle extends Model
 {
     use HasFactory, Notifiable, SoftDeletes;
-    
+
     protected $table = 'vehicle';
+
+    protected $fillable = [
+        'unit',
+        'variant',
+        'color',
+        'created_by',
+        'updated_by',
+    ];
+    
+    public function inventory(){
+        return $this->hasMany(Inventory::class, 'vehicle_id', 'id');
+    }
 }
