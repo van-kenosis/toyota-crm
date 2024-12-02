@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('application', function (Blueprint $table) {
+        Schema::create('bank_transaction', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('vehicle_id');
-            $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('bank_id')->nullable();
-            $table->string('transaction');
-            $table->string('remarks')->nullable();
+            $table->unsignedBigInteger('application_id');
+            $table->unsignedBigInteger('bank_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
+            $table->date('approval_date')->nullable();
+            $table->boolean('is_preferred')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('application');
+        Schema::dropIfExists('bank_transaction');
     }
 };

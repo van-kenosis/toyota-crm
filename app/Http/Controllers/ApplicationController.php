@@ -12,6 +12,7 @@ use App\Models\Banks;
 use App\Models\Inquiry;
 use App\Models\Inventory;
 use App\Models\InquryType;
+use App\Models\BankTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -133,7 +134,6 @@ class ApplicationController extends Controller
         $status = Status::where('status', 'like', 'approved')->first();
         $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
-                        ->whereNotIn('transaction', ['cash', 'po'])
                         ->where('status_id', $status->id)
                         ;
 
@@ -215,6 +215,11 @@ class ApplicationController extends Controller
 
         ->addColumn('transaction', function($data) {
             return $data->transaction;
+        })
+        
+        ->addColumn('reservation_status', function($data) {
+            $transaction = $data->transactions->first();
+            return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
         ->editColumn('date', function($data) {
@@ -310,6 +315,11 @@ class ApplicationController extends Controller
         ->addColumn('transaction', function($data) {
             return $data->transaction;
         })
+        
+        ->addColumn('reservation_status', function($data) {
+            $transaction = $data->transactions->first();
+            return $transaction ? $transaction->reservation_status : 'N/A';
+        })
 
         ->editColumn('date', function($data) {
             return $data->created_at->format('m/d/Y');
@@ -321,7 +331,7 @@ class ApplicationController extends Controller
     public function list_cash(Request $request){
 
         // dd($request->start_date);
-        $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processing'])->pluck('id')->toArray();
+        $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
         $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->whereNotIn('status_id', $statusIds)
@@ -404,6 +414,11 @@ class ApplicationController extends Controller
 
         ->addColumn('transaction', function($data) {
             return $data->transaction;
+        })
+
+        ->addColumn('reservation_status', function($data) {
+            $transaction = $data->transactions->first();
+            return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
         ->editColumn('date', function($data) {
@@ -500,6 +515,11 @@ class ApplicationController extends Controller
         ->addColumn('transaction', function($data) {
             return $data->transaction;
         })
+        
+        ->addColumn('reservation_status', function($data) {
+            $transaction = $data->transactions->first();
+            return $transaction ? $transaction->reservation_status : 'N/A';
+        })
 
         ->editColumn('date', function($data) {
             return $data->created_at->format('m/d/Y');
@@ -510,29 +530,28 @@ class ApplicationController extends Controller
 
     public function edit($id)
     {
-        // Fetch the Application data by ID
         $decryptedId = decrypt($id);
-        $data = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+        $data = Application::with(['user', 'customer', 'vehicle', 'status', 'bank', 'transactions'])
             ->where('id', $decryptedId)
             ->first();
+        
         $firstTransaction = $data->transactions->first();
         if ($firstTransaction) {
-
             $inquiry = Inquiry::where('id', $firstTransaction->inquiry_id)->first();
             $inquirytype = InquryType::where('id', $inquiry->inquiry_type_id)->first()->inquiry_type;
         }
 
-            $statuses = Status::all();
-            $banks = Banks::all();
-    
-            return response()->json([
-                'firstTransaction' => $firstTransaction,
-                'inquiry' => $inquiry,
-                'inquirytype' => $inquirytype,
-                'application' => $data,
-                'statuses' => $statuses,
-                'banks' => $banks
-            ]);
+        $statuses = Status::all();
+        $banks = Banks::all();
+
+        return response()->json([
+            'firstTransaction' => $firstTransaction,
+            'inquiry' => $inquiry,
+            'inquirytype' => $inquirytype,
+            'application' => $data,
+            'statuses' => $statuses,
+            'banks' => $banks
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -647,7 +666,7 @@ class ApplicationController extends Controller
             $approved_status = Status::where('status', 'like', 'approved')->first()->id;
             $pending_status = Status::where('status', 'like', 'pending')->first()->id;
             $cancel_status = Status::where('status', 'like', 'cancel')->first()->id;
-            $processing_status = Status::where('status', 'like', 'Processing')->first()->id;
+            $processing_status = Status::where('status', 'like', 'Processed')->first()->id;
 
             $application = Application::findOrFail(decrypt($request->id));
 
@@ -665,33 +684,26 @@ class ApplicationController extends Controller
 
                 foreach ($transactions as $transaction) {
 
-                    $inventory = Inventory::where('vehicle_id', $application->vehicle_id)
-                    ->where('CS_number_status', 'available')
-                    ->where('status', 'available')
-                    ->first();
+                    // $inventory = Inventory::where('vehicle_id', $application->vehicle_id)
+                    // ->where('CS_number_status', 'available')
+                    // ->where('status', 'available')
+                    // ->first();
 
-                    // Check if inventory is found
-                    if (!$inventory) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Low in inventory for this vehicle.',
-                        ], 400);
-                    }
+                    // // Check if inventory is found
+                    // if (!$inventory) {
+                    //     return response()->json([
+                    //         'success' => false,
+                    //         'message' => 'Low in inventory for this vehicle.',
+                    //     ], 400);
+                    // }
 
                     $transaction = Transactions::findOrFail($transaction->id);
                     $transaction->status = $approved_status;
                     $transaction->reservation_id = Transactions::max('reservation_id') + 1;
                     $transaction->reservation_transaction_status = $pending_status;
-                    $transaction->reservation_date = now();
-                    $transaction->inventory_id = $inventory->id;
                     $transaction->team_id = Auth::user()->team_id;
                     $transaction->save();
 
-                    $invt = Inventory::findOrFail($inventory->id);
-                    $invt->status = 'reserved';
-                    $invt->CS_number_status = 'reserved';
-                    $invt->updated_at = now();
-                    $invt->save();
                 }
 
                 $application->status_id = $processing_status;
@@ -742,8 +754,37 @@ class ApplicationController extends Controller
     public function updateBanks(Request $request){
         try {
         $application = Application::findOrFail(decrypt($request->application_id));
-        $application->bank_id =json_encode($request->bank_id);
-        $application->save();
+
+        $banksArray = $request->bank_id;
+
+        // Fetch all existing bank transactions for the application
+        $existingBankTransactions = BankTransaction::where('application_id', decrypt($request->application_id))
+            ->pluck('bank_id');
+
+        // Check for banks that were removed from the array and soft delete them
+        foreach ($existingBankTransactions as $existingBank) {
+            if (!in_array($existingBank, $banksArray)) {
+                BankTransaction::where('application_id', decrypt($request->application_id))
+                    ->where('bank_id', $existingBank)
+                    ->first()
+                    ->delete();
+            }
+        }
+
+        // Process each bank in the request
+        foreach ($banksArray as $bank) {
+            // Check if the bank already exists for the application
+            if (!$existingBankTransactions->contains($bank)) {
+                $bankTrans = new BankTransaction;
+                $bankTrans->application_id = decrypt($request->application_id);
+                $bankTrans->bank_id = $bank;
+                $bankTrans->created_by = Auth::id();
+                $bankTrans->updated_by = Auth::id();
+                $bankTrans->save();
+            }
+        }
+
+       
 
         return response()->json([
             'success' => true,
@@ -758,7 +799,104 @@ class ApplicationController extends Controller
         }
 
     }
-    
 
+    public function getBanksForApplication($id)
+    {
+        try {
+            $decryptedId = decrypt($id);
+            
+            // Get all bank transactions for this application
+            $bankTransactions = BankTransaction::with('bank')
+                ->where('application_id', $decryptedId)
+                ->get()
+                ->map(function($transaction) {
+                    return [
+                        'bank_id' => $transaction->bank_id,
+                        'bank_name' => $transaction->bank->bank_name,
+                        'approval_date' => $transaction->approval_date,
+                        'is_preferred' => $transaction->is_preferred
+                    ];
+                });
+            
+            return response()->json([
+                'success' => true,
+                'banks' => $bankTransactions,
+                'id' => $decryptedId,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching banks: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateBankApproval(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'bank_ids' => 'required|array',
+                'bank_ids.*' => 'required|exists:banks,id',
+                'approval_dates' => 'required|array',
+                'approval_dates.*' => 'nullable|date',
+                'preferred_bank' => 'required|exists:banks,id'
+            ]);
+
+            // Update approval dates and preferred status for each bank
+            foreach ($validated['bank_ids'] as $index => $bankId) {
+                BankTransaction::where('application_id', decrypt($id))
+                ->where('bank_id', $bankId)
+                    ->update([
+                        'approval_date' => $validated['approval_dates'][$index],
+                        'is_preferred' => $bankId == $validated['preferred_bank'],
+                        'updated_by' => Auth::id()
+                    ]);
+            }
+
+            $application = Application::findOrFail(decrypt($id));
+            $application->bank_id = $validated['preferred_bank'];
+            $application->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bank approval dates updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating bank approval dates: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getApplicationBanks($id)
+    {
+        try {
+            $decryptedId = decrypt($id);
+            
+            // Get all bank transactions for this application
+            $bankTransactions = BankTransaction::with('bank')
+                ->where('application_id', $decryptedId)
+                ->get()
+                ->map(function($transaction) {
+                    return [
+                        'bank_id' => $transaction->bank_id,
+                        'bank_name' => $transaction->bank->bank_name,
+                        'approval_date' => $transaction->approval_date,
+                        'is_preferred' => $transaction->is_preferred
+                    ];
+                });
+            
+            return response()->json([
+                'success' => true,
+                'banks' => $bankTransactions
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching banks: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
 }

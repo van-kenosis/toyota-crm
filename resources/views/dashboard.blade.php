@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="row g-6">
+{{-- <div class="row g-6">
     <!-- Card Border Shadow -->
     <div class="col-lg-3 col-sm-6">
       <div class="card card-border-shadow-primary h-100">
@@ -89,7 +89,7 @@
           </p>
         </div>
       </div>
-    </div>
+  </div> --}}
 
 
 

@@ -1313,7 +1313,7 @@
 
                 $("#remarksParagraph").removeClass("d-none");
                 $("#editRemarksButton").removeClass("d-none");
-                
+
             }
         });
 

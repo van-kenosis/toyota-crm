@@ -1,8 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+//Revert CS number to available if not released within 2 days
+Schedule::command('csnumber:revert')->dailyAt('00:00');

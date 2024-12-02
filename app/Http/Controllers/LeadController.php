@@ -30,7 +30,7 @@ class LeadController extends Controller
     public function individualList(Request $request){
 
         // dd($request->start_date);
-        $status = Status::where('status', 'like', 'Processing')->first()->id;
+        $status = Status::where('status', 'like', 'Processed')->first()->id;
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
@@ -105,7 +105,7 @@ class LeadController extends Controller
     public function fleetList(Request $request){
 
         // dd($request->start_date);
-        $status = Status::where('status', 'like', 'Processing')->first()->id;
+        $status = Status::where('status', 'like', 'Processed')->first()->id;
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
@@ -180,7 +180,7 @@ class LeadController extends Controller
     public function companyList(Request $request){
 
         // dd($request->start_date);
-        $status = Status::where('status', 'like', 'Processing')->first()->id;
+        $status = Status::where('status', 'like', 'Processed')->first()->id;
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
@@ -256,7 +256,7 @@ class LeadController extends Controller
     public function governmentList(Request $request){
 
         // dd($request->start_date);
-        $status = Status::where('status', 'like', 'Processing')->first()->id;
+        $status = Status::where('status', 'like', 'Processed')->first()->id;
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
@@ -624,7 +624,7 @@ class LeadController extends Controller
     public function processing(Request $request){
         try {
 
-            $status = Status::where('status', 'like', 'Processing')->first()->id;
+            $status = Status::where('status', 'like', 'Processed')->first()->id;
             $inquiry = Inquiry::findOrFail(decrypt($request->id));
             $inquiry->status_id =  $status;
             $inquiry->status_updated_by = Auth::user()->id;
@@ -673,7 +673,7 @@ class LeadController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Lead status updated to processing'
+                'message' => 'Lead status updated to processed'
             ]);
 
         } catch (\Exception $e) {

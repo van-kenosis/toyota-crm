@@ -39,6 +39,7 @@ class Application extends Model
 
     public function transactions(){
         return $this->hasMany(Transactions::class, 'application_id', 'id');
+        // return $this->hasMany(Transactions::class, 'application_id');
     }
 
 
