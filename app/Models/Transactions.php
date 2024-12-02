@@ -9,8 +9,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Transactions extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $table = 'transactions';
+
+    protected $fillable = [
+        'inquiry_id',
+        'application_id',
+        'reservation_id',
+        'reservation_transaction_status',
+        'reservation_status',
+        'inventory_id',
+        'team_id',
+        'application_transaction_date',
+        'transaction_updated_date',
+        'reservation_date',
+        'released_date',
+        'status',
+    ];
 
     public function inquiry(){
         return $this->belongsTo(Inquiry::class, 'inquiry_id', 'id')->with(['inquiryType', 'customer']);
@@ -28,5 +43,5 @@ class Transactions extends Model
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
-   
+
 }

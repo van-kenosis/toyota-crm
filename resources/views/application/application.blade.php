@@ -54,6 +54,30 @@
     </div>
 </div>
 
+{{-- Bank Approval Date Modal --}}
+<div class="modal fade" id="bankApprovalDateModal" tabindex="-1" role="dialog" aria-labelledby="bankApprovalDateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bankApprovalDateModalLabel">Bank Approval Date</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bankApprovalDateForm">
+                    <div class="row d-flex align-items-center mb-2">
+                    </div>
+                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" name="preferred_bank">
+                        <option selected>Select Prefered Bank</option>
+                    </select>                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-dark" form="bankApprovalDateForm">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- Edit Application Modal --}}
 <div class="modal fade" id="editApplicationFormModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
@@ -171,7 +195,7 @@
                     </div>
                     <div class="col-md d-none" id="editQuantityColumnField">
                         <label for="edit_quantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="edit_quantity" name="quantity" placeholder="" />
+                        <input type="number" class="form-control" id="edit_quantity" name="quantity" placeholder="" readonly/>
                     </div>
                 </div>
             </div>
@@ -240,6 +264,7 @@
     </div>
 </div>
 
+
 {{-- Datatables Tabs --}}
 <div class="row mb-2">
     <div class="col">
@@ -257,10 +282,10 @@
                 <div class="row">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-label-dark active" data-route="{{ route('application.pending') }}">Pending</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('application.approved') }}">Approved</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('application.cancel') }}">Denied/Canceled</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('application.cash') }}">Cash</button>
+                            <button id="pending-tab" type="button" class="btn btn-label-dark active" data-route="{{ route('application.pending') }}">Pending Applications</button>
+                            <button id="cash-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cash') }}">Cash/PO Applications</button>
+                            <button id="approved-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.approved') }}">Approved Applications</button>
+                            <button id="canceled-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cancel') }}">Denied/Canceled Applications</button>
                         </div>
                     </div>
                 </div>
@@ -302,7 +327,7 @@
                 }
             }
         },
-        // Add clear button
+        // Add clear button 
         onReady: function(selectedDates, dateStr, instance) {
             // Create a "Clear" button
             const clearButton = document.createElement("button");
@@ -360,26 +385,45 @@
             { data: 'variant', name: 'variant', title: 'Variant' },
             { data: 'color', name: 'color', title: 'Color' },
             { data: 'transaction', name: 'transaction', title: 'Transaction' },
+            { data: 'reservation_status', name: 'reservation_status', title: 'Reservation Status' },
             { data: 'source', name: 'source', title: 'Source' },
             { data: 'date', name: 'date', title: 'Date' },
+            
             {
                 data: 'id',
                 title: 'Bank',
                 orderable: false,
                 searchable: false,
-                render: function(data) {
-                    return `
+                render: function (data, type, row) {
+                    // Check if the transaction type is not 'cash'
+                    if (row.transaction !== 'cash') {
+                        // Determine the active tab
+                        let activeTab = $('.btn-group .active').attr('id'); // Get the ID of the active tab
+                        let isPendingTab = activeTab === 'pending-tab';
+                        let isApprovedTab = activeTab === 'approved-tab';
+                        let isCashTab = activeTab === 'cash-tab';
+                        let isCanceledTab = activeTab === 'canceled-tab';
+                        
+                        // Hide or show buttons based on the active tab
+                        let bankBtnStyle =  isCashTab || isCanceledTab ? 'display: none;' : ''; // Hide for Approved and Cash tabs
+                        let approvalDateBtnStyle = isPendingTab || isCashTab || isCanceledTab ? 'display: none;' : ''; // Hide for Pending tab
+
+                        return `
                             <div class="d-flex">
-                                <button type="button" class="btn btn-icon me-2 btn-warning bank-btn" data-bs-toggle="modal" data-bs-target="#selectBankModal" data-id="${data}">
+                                <button type="button" class="btn btn-icon me-2 btn-warning bank-btn" data-bs-toggle="modal" data-bs-target="#selectBankModal" data-id="${data}" style="${bankBtnStyle}">
                                     <span class="tf-icons bx bxs-bank bx-22px"></span>
                                 </button>
-                                <button type="button" class="btn btn-icon me-2 btn-info bank-btn" data-bs-toggle="modal" data-bs-target="#bankApprovalDateModal" data-id="">
-                                    <span class="tf-icons bx bxs-bank bx-22px"></span>
+                                <button type="button" class="btn btn-icon me-2 btn-info bank-approval-date-btn" data-bs-toggle="modal" data-bs-target="#bankApprovalDateModal" data-id="${data}" style="${approvalDateBtnStyle}">
+                                    <span class="tf-icons bx bxs-calendar-plus bx-22px"></span>
                                 </button>
                             </div>
-                            `;
+                        `;
+                    } else {
+                        return ''; // Return empty string if transaction type is 'cash'
+                    }
                 }
             },
+
             {
                 data: 'id',
                 title: 'Action',
@@ -411,6 +455,16 @@
         ],
     });
 
+    // displaying of bank buttons based on active tab
+    $('.btn-group button').on('click', function () {
+        // Remove active class from all buttons and set it to the clicked one
+        $('.btn-group button').removeClass('active');
+        $(this).addClass('active');
+
+        // Redraw DataTable to apply new button visibility
+        $('#applicationTable').DataTable().ajax.reload(null, false); // Reloads data without resetting pagination
+    });
+
     // Change DataTable route based on button click
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
@@ -432,11 +486,8 @@
         });
     });
 
-     // Inquiry Form Validation
-     $(document).ready(function () {
-
-
-
+    // Application Form Validation
+    $(document).ready(function () {
         $.ajax({
             url: '{{ route('leads.getUnit') }}',
             type: 'GET',
@@ -688,6 +739,9 @@
                 const data = response.application;
                 const statuses = response.statuses;
                 const banks = response.banks;
+                const inquiry = response.inquiry;
+                const inquiry_type = response.inquirytype;
+                const firstTransaction = response.firstTransaction;
 
                 // Populate the form fields with the inquiry data
                 $('#edit_id').val(data.id);
@@ -698,10 +752,10 @@
                 $('#edit_mobile_number').val(data.customer.contact_number);
                 $('#edit_address').val(data.customer.address);
                 $('#edit_car_unit').val(data.vehicle.unit).trigger('change');
-                $('#edit_inquiry_type').val(data.inquiry.inquiry_type.inquiry_type);
-                $('#edit_category').val(data.inquiry.category).trigger('change');
-                $('#edit_quantity').val(data.inquiry.quantity);
-                $('#edit_payment_status').val(data.trans.reservation_status).trigger('change');
+                $('#edit_inquiry_type').val(inquiry_type);
+                $('#edit_category').val(inquiry.category).trigger('change');
+                $('#edit_quantity').val(inquiry.quantity);
+                $('#edit_payment_status').val(firstTransaction.reservation_status).trigger('change');
 
 
                 const edit_inquiry_type =  $('#edit_inquiry_type').val();
@@ -807,8 +861,8 @@
                     fleet: data.customer.company_name,
                     company: data.customer.company_name,
                     government: data.customer.department_name,
-                    quantity: data.inquiry.quantity,
-                    category: data.inquiry.category,
+                    quantity: inquiry.quantity,
+                    category: inquiry.category,
                 };
 
                 $('#editApplicationFormModal').modal('show');
@@ -987,22 +1041,85 @@
 
     // Fetch banks from the server
     function fetchBanks(targetSelect = null) {
-        $.ajax({
-            url: '{{ route('application.getBanks') }}',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                populateBankSelects(data, targetSelect); // Populate only the target select if provided
-            },
-            error: function (error) {
-                console.error('Error loading banks:', error);
-            },
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '{{ route('application.getBanks') }}',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    populateBankSelects(data, targetSelect);
+                    resolve(data);
+                },
+                error: function (error) {
+                    console.error('Error loading banks:', error);
+                    reject(error);
+                },
+            });
         });
     }
-
+    
+    // Display selected banks on modal
     $(document).on('click', '.bank-btn', function () {
-        $('#application_id').val($(this).data('id'));
-        fetchBanks(); // Initial fetch of banks
+        const applicationId = $(this).data('id');
+        $('#application_id').val(applicationId);
+        
+        // Clear existing bank fields
+        $("#bankFieldsContainer .bank-field:not(:first)").remove();
+        $("select[name='bank_id[]']").val('');
+        
+        // Fetch existing banks for this application
+        $.ajax({
+            url: `/application/banks/${applicationId}`,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const existingBanks = response.banks;
+                    
+                    // If there are existing banks, create fields for each one
+                    if (existingBanks.length > 0) {
+                        // Remove the default empty field if it exists
+                        $("#bankFieldsContainer .bank-field:first").remove();
+                        
+                        existingBanks.forEach((bank, index) => {
+                            const newBankField = `
+                                <div class="row mb-2 bank-field">
+                                    <div class="col-md d-flex align-items-center gap-2">
+                                        <select class="form-control" name="bank_id[]">
+                                            <option value="">Select Banks...</option>
+                                        </select>
+                                        ${index > 0 ? `
+                                            <button type="button" class="btn btn-icon me-2 btn-label-danger removeBankFieldButton">
+                                                <span class="tf-icons bx bxs-trash bx-22px"></span>
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `;
+                            
+                            $("#bankFieldsContainer").append(newBankField);
+                        });
+                        
+                        // Fetch and populate all bank options, then set selected values
+                        fetchBanks().then(() => {
+                            existingBanks.forEach((bank, index) => {
+                                $("select[name='bank_id[]']").eq(index).val(bank.bank_id);
+                            });
+                        });
+                    } else {
+                        // If no existing banks, just fetch banks for the default single field
+                        fetchBanks();
+                    }
+                }
+            },
+            error: function(xhr) {
+                console.error('Error fetching existing banks:', xhr);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON?.message || 'Could not fetch existing banks.'
+                });
+            }
+        });
     });
 
     $("#addBankFieldButton").on("click", function (e) {
@@ -1045,7 +1162,7 @@
         }
     });
 
-
+    // Selecting Bank on submit
     $('#selectBankForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -1086,6 +1203,98 @@
                     xhr.responseJSON?.message || 'Something went wrong!',
                     'error'
                 );
+            }
+        });
+    });
+
+    // When bank approval date button is clicked
+    $(document).on('click', '.bank-approval-date-btn', function() {
+        const applicationId = $(this).data('id');
+        
+        // Update the form action with the application ID
+        $('#bankApprovalDateForm').attr('action', `/application/banks/approval/${applicationId}`);
+        
+        // Fetch banks associated with this application
+        $.ajax({
+            url: `/application/banks/${applicationId}`,
+            type: 'GET',
+            success: function(response) {
+                // Clear existing bank fields
+                $('#bankApprovalDateForm .bank-approval-row').remove();
+                
+                // Add fields for each bank
+                let bankFields = '';
+                response.banks.forEach(bank => {
+                    bankFields += `
+                        <div class="row d-flex align-items-center mb-2 bank-approval-row">
+                            <div class="col-md-4">
+                                <b class="">${bank.bank_name}</b>
+                                <input type="hidden" name="bank_ids[]" value="${bank.bank_id}">
+                            </div>
+                            <div class="col-md-8">
+                                <input type="date" 
+                                    class="form-control" 
+                                    name="approval_dates[]" 
+                                    value="${bank.approval_date || ''}"
+                                    ${bank.approval_date ? 'readonly' : ''}>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Insert bank fields before the preferred bank select
+                $(bankFields).insertBefore('#bankApprovalDateForm .mb-2');
+                
+                // Update preferred bank dropdown options
+                let bankSelectOptions = '<option value="">Select Preferred Bank</option>';
+                response.banks.forEach(bank => {
+                    bankSelectOptions += `
+                        <option value="${bank.bank_id}" ${bank.is_preferred ? 'selected' : ''}>
+                            ${bank.bank_name}
+                        </option>`;
+                });
+                $('#exampleFormControlSelect1').html(bankSelectOptions);
+                
+                $('#bankApprovalDateModal').modal('show');
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON?.message || 'Could not fetch bank data.'
+                });
+            }
+        });
+    });
+
+    // Handle bank approval date form submission
+    $('#bankApprovalDateForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: $(this).attr('action'), // Use the updated form action
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message
+                    });
+                    $('#bankApprovalDateModal').modal('hide');
+                    applicationTable.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON?.message || 'Something went wrong!'
+                });
             }
         });
     });
