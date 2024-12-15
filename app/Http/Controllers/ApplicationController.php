@@ -13,6 +13,7 @@ use App\Models\Inquiry;
 use App\Models\Inventory;
 use App\Models\InquryType;
 use App\Models\BankTransaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,7 @@ class ApplicationController extends Controller
             $validated = $request->validate([
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
+                'birthdate' => 'nullable|date',
                 'age' => 'required|integer',
                 'mobile_number' => 'required|string',
                 'car_unit' => 'required|string',
@@ -47,6 +49,7 @@ class ApplicationController extends Controller
                 'gender' => 'required|string',
                 'address' => 'required',
                 'bank_id' => 'required',
+                'birthdate' => 'nullable|date',
             ]);
 
             $customer = new Customer();
@@ -55,6 +58,7 @@ class ApplicationController extends Controller
             $customer->contact_number = $validated['mobile_number'];
             $customer->gender = $validated['gender'];
             $customer->address = $validated['address'];
+            $customer->birthdate = $validated['birthdate'];
             $customer->age = $validated['age'];
             $customer->source = $validated['source'];
             $customer->created_by = Auth::id();
@@ -132,10 +136,29 @@ class ApplicationController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'approved')->first();
-        $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('status_id', $status->id);
+        }
+        elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->where('status_id', $status->id)
-                        ;
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        });
+
+        }else{
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('status_id', $status->id)
+                        ->where('created_by', Auth::user()->id);
+        }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -182,14 +205,14 @@ class ApplicationController extends Controller
                 if($inquirytype === 'Individual'){
                     return $data->customer->customer_first_name . ' ' . $data->customer->customer_last_name;
                 }else if($inquirytype === 'Fleet'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Company'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Government'){
-                    return $data->customer->department_name; 
-                } 
+                    return $data->customer->department_name;
+                }
             }
-           
+
         })
 
         ->addColumn('contact_number', function($data) {
@@ -216,7 +239,7 @@ class ApplicationController extends Controller
         ->addColumn('transaction', function($data) {
             return $data->transaction;
         })
-        
+
         ->addColumn('reservation_status', function($data) {
             $transaction = $data->transactions->first();
             return $transaction ? $transaction->reservation_status : 'N/A';
@@ -233,9 +256,31 @@ class ApplicationController extends Controller
 
         // dd($request->start_date);
         $statusIds = Status::whereIn('status', ['Denied', 'Cancel'])->pluck('id')->toArray();
-        $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
-                        ->whereIn('status_id', $statusIds);
+                        ->where('status_id', $statusIds);
+        }
+        elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('status_id', $statusIds)
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        });
+
+        }else{
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('status_id', $statusIds)
+                        ->where('created_by', Auth::user()->id);
+        }
+
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -282,14 +327,14 @@ class ApplicationController extends Controller
                 if($inquirytype === 'Individual'){
                     return $data->customer->customer_first_name . ' ' . $data->customer->customer_last_name;
                 }else if($inquirytype === 'Fleet'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Company'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Government'){
-                    return $data->customer->department_name; 
-                } 
+                    return $data->customer->department_name;
+                }
             }
-           
+
         })
 
         ->addColumn('contact_number', function($data) {
@@ -315,7 +360,7 @@ class ApplicationController extends Controller
         ->addColumn('transaction', function($data) {
             return $data->transaction;
         })
-        
+
         ->addColumn('reservation_status', function($data) {
             $transaction = $data->transactions->first();
             return $transaction ? $transaction->reservation_status : 'N/A';
@@ -332,10 +377,33 @@ class ApplicationController extends Controller
 
         // dd($request->start_date);
         $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
-        $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
-                        ->whereNull('deleted_at')
-                        ->whereNotIn('status_id', $statusIds)
-                        ->whereIn('transaction', ['cash', 'po']);
+
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                ->whereNull('deleted_at')
+                ->whereNotIn('status_id', $statusIds)
+                ->whereIn('transaction', ['cash', 'po']);
+        }
+        elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                ->whereNull('deleted_at')
+                ->whereNotIn('status_id', $statusIds)
+                ->whereIn('transaction', ['cash', 'po'])
+                ->whereHas('user', function($subQuery) {
+                    $subQuery->where('team_id', Auth::user()->team_id);
+                });
+
+        }else{
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                ->whereNull('deleted_at')
+                ->whereNotIn('status_id', $statusIds)
+                ->whereIn('transaction', ['cash', 'po'])
+                ->where('created_by', Auth::user()->id);
+        }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -382,14 +450,14 @@ class ApplicationController extends Controller
                 if($inquirytype === 'Individual'){
                     return $data->customer->customer_first_name . ' ' . $data->customer->customer_last_name;
                 }else if($inquirytype === 'Fleet'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Company'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Government'){
-                    return $data->customer->department_name; 
-                } 
+                    return $data->customer->department_name;
+                }
             }
-           
+
         })
 
         ->addColumn('contact_number', function($data) {
@@ -432,10 +500,30 @@ class ApplicationController extends Controller
 
         // dd($request->start_date);
         $pending_status = Status::where('status', 'like', 'pending')->first();
-        $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->whereNotIn('transaction', ['cash', 'po'])
                         ->where('status_id', $pending_status->id);
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->whereNotIn('transaction', ['cash', 'po'])
+                        ->where('status_id', $pending_status->id)
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        });
+        }else{
+            $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->whereNotIn('transaction', ['cash', 'po'])
+                        ->where('status_id', $pending_status->id)
+                        ->where('created_by', Auth::user()->id);
+        }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -482,14 +570,14 @@ class ApplicationController extends Controller
                 if($inquirytype === 'Individual'){
                     return $data->customer->customer_first_name . ' ' . $data->customer->customer_last_name;
                 }else if($inquirytype === 'Fleet'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Company'){
-                    return $data->customer->company_name; 
+                    return $data->customer->company_name;
                 }else if($inquirytype === 'Government'){
-                    return $data->customer->department_name; 
-                } 
+                    return $data->customer->department_name;
+                }
             }
-           
+
         })
 
         ->addColumn('contact_number', function($data) {
@@ -515,7 +603,7 @@ class ApplicationController extends Controller
         ->addColumn('transaction', function($data) {
             return $data->transaction;
         })
-        
+
         ->addColumn('reservation_status', function($data) {
             $transaction = $data->transactions->first();
             return $transaction ? $transaction->reservation_status : 'N/A';
@@ -534,7 +622,7 @@ class ApplicationController extends Controller
         $data = Application::with(['user', 'customer', 'vehicle', 'status', 'bank', 'transactions'])
             ->where('id', $decryptedId)
             ->first();
-        
+
         $firstTransaction = $data->transactions->first();
         if ($firstTransaction) {
             $inquiry = Inquiry::where('id', $firstTransaction->inquiry_id)->first();
@@ -576,6 +664,7 @@ class ApplicationController extends Controller
                 'category' => 'required',
                 'quantity' => 'nullable',
                 'payment_status' => 'nullable',
+                'birthdate' => 'nullable|date',
             ]);
 
             // Find the inquiry and related customer and vehicle
@@ -608,7 +697,7 @@ class ApplicationController extends Controller
                     'reservation_status' => $validated['payment_status'],
             ]);
 
-         
+
 
             $inquiry->category = $validated['category'];
             $inquiry->quantity = $validated['quantity'];
@@ -625,6 +714,7 @@ class ApplicationController extends Controller
             $customer->gender = $validated['gender'];
             $customer->address = $validated['address'];
             $customer->age = $validated['age'];
+            $customer->birthdate = $validated['birthdate'];
             $customer->source = $validated['source'];
             $customer->updated_by = Auth::id();
             $customer->updated_at = now();
@@ -669,14 +759,85 @@ class ApplicationController extends Controller
             $processing_status = Status::where('status', 'like', 'Processed')->first()->id;
 
             $application = Application::findOrFail(decrypt($request->id));
+            $application_team = User::findOrFail($application->created_by);
 
-            if( $application->status_id == $pending_status || $application->status_id == $cancel_status ){
+            if( $application->status_id == $pending_status  ){
+
+                if($request->transaction === 'financing'){
+                    $existingBankTransactions = BankTransaction::where('application_id', decrypt($request->id))
+                        ->whereNull('deleted_at')
+                        ->get();
+
+                    if($existingBankTransactions->count() === 0){
+                        return response()->json([
+                            'success' => false,
+                                'message' => 'Bank is required for processing.'
+                            ], 500);
+                    }
+                }
+                if($request->transaction === 'po'){
+                    $bankId = $application->bank_id;
+                    if (!$bankId) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Bank is required for PO transactions.'
+                        ], 500);
+                    }
+                }
+
                 $application->status_id =  $approved_status;
                 $application->updated_by = Auth::user()->id;
                 $application->updated_at = now();
                 $application->save();
 
             }else if( $application->status_id == $approved_status){
+
+                if($request->transaction === 'financing'){
+
+                    $existingBankTransactions = BankTransaction::where('application_id', decrypt($request->id))
+                        ->whereNull('deleted_at')
+                        ->whereNotNull('approval_date')
+                        ->whereNotNull('approval_status')
+                        ->get();
+
+                    if($existingBankTransactions->count() === 0){
+                        return response()->json([
+                            'success' => false,
+                                'message' => 'Bank approval is required for processing.'
+                            ], 500);
+                    }
+
+
+                    $bankId = $application->bank_id;
+
+                    if (!$bankId) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Bank is required for financing transactions.'
+                        ], 500);
+                    }
+
+                    $terms = $application->terms;
+                    $percentage = $application->percentage;
+
+                    if(!$terms || !$percentage){
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Terms and percentage are required for financing transactions.'
+                        ], 500);
+                    }
+
+                }
+
+                if($request->transaction === 'po'){
+                    $bankId = $application->bank_id;
+                    if (!$bankId) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Bank is required for PO transactions.'
+                        ], 500);
+                    }
+                }
                 $transactions = Transactions::where('application_id', $application->id)
                 ->whereNull('inventory_id')
                 ->whereNull('deleted_at')
@@ -684,24 +845,11 @@ class ApplicationController extends Controller
 
                 foreach ($transactions as $transaction) {
 
-                    // $inventory = Inventory::where('vehicle_id', $application->vehicle_id)
-                    // ->where('CS_number_status', 'available')
-                    // ->where('status', 'available')
-                    // ->first();
-
-                    // // Check if inventory is found
-                    // if (!$inventory) {
-                    //     return response()->json([
-                    //         'success' => false,
-                    //         'message' => 'Low in inventory for this vehicle.',
-                    //     ], 400);
-                    // }
-
                     $transaction = Transactions::findOrFail($transaction->id);
                     $transaction->status = $approved_status;
                     $transaction->reservation_id = Transactions::max('reservation_id') + 1;
                     $transaction->reservation_transaction_status = $pending_status;
-                    $transaction->team_id = Auth::user()->team_id;
+                    $transaction->team_id = $application_team->team_id;
                     $transaction->save();
 
                 }
@@ -709,6 +857,13 @@ class ApplicationController extends Controller
                 $application->status_id = $processing_status;
                 $application->transaction = $application->transaction;
                 $application->updated_by = Auth::id();
+                $application->updated_at = now();
+                $application->save();
+
+            } else if($application->status_id == $cancel_status){
+
+                $application->status_id =  $pending_status;
+                $application->updated_by = Auth::user()->id;
                 $application->updated_at = now();
                 $application->save();
 
@@ -753,6 +908,10 @@ class ApplicationController extends Controller
 
     public function updateBanks(Request $request){
         try {
+        $validated = $request->validate([
+            'bank_id' => 'required|exists:banks,id'
+        ]);
+
         $application = Application::findOrFail(decrypt($request->application_id));
 
         $banksArray = $request->bank_id;
@@ -784,7 +943,7 @@ class ApplicationController extends Controller
             }
         }
 
-       
+
 
         return response()->json([
             'success' => true,
@@ -804,7 +963,7 @@ class ApplicationController extends Controller
     {
         try {
             $decryptedId = decrypt($id);
-            
+
             // Get all bank transactions for this application
             $bankTransactions = BankTransaction::with('bank')
                 ->where('application_id', $decryptedId)
@@ -814,10 +973,11 @@ class ApplicationController extends Controller
                         'bank_id' => $transaction->bank_id,
                         'bank_name' => $transaction->bank->bank_name,
                         'approval_date' => $transaction->approval_date,
+                        'approval_status' => $transaction->approval_status,
                         'is_preferred' => $transaction->is_preferred
                     ];
                 });
-            
+
             return response()->json([
                 'success' => true,
                 'banks' => $bankTransactions,
@@ -839,23 +999,32 @@ class ApplicationController extends Controller
                 'bank_ids.*' => 'required|exists:banks,id',
                 'approval_dates' => 'required|array',
                 'approval_dates.*' => 'nullable|date',
+                'approval_statuses' => 'required|array',
+                'approval_statuses.*' => 'required|in:approve,disapprove',
                 'preferred_bank' => 'required|exists:banks,id'
             ]);
 
             // Update approval dates and preferred status for each bank
             foreach ($validated['bank_ids'] as $index => $bankId) {
                 BankTransaction::where('application_id', decrypt($id))
-                ->where('bank_id', $bankId)
+                    ->where('bank_id', $bankId)
                     ->update([
                         'approval_date' => $validated['approval_dates'][$index],
+                        'approval_status' => $validated['approval_statuses'][$index],
                         'is_preferred' => $bankId == $validated['preferred_bank'],
                         'updated_by' => Auth::id()
                     ]);
             }
 
-            $application = Application::findOrFail(decrypt($id));
-            $application->bank_id = $validated['preferred_bank'];
-            $application->save();
+            // Only update preferred bank if it has an approved status
+            $preferredBankIndex = array_search($validated['preferred_bank'], $validated['bank_ids']);
+            if ($preferredBankIndex !== false && $validated['approval_statuses'][$preferredBankIndex] === 'approve') {
+                $application = Application::findOrFail(decrypt($id));
+                $application->bank_id = $validated['preferred_bank'];
+                $application->updated_by = Auth::id();
+                $application->updated_at = now();
+                $application->save();
+            }
 
             return response()->json([
                 'success' => true,
@@ -873,7 +1042,7 @@ class ApplicationController extends Controller
     {
         try {
             $decryptedId = decrypt($id);
-            
+
             // Get all bank transactions for this application
             $bankTransactions = BankTransaction::with('bank')
                 ->where('application_id', $decryptedId)
@@ -883,10 +1052,11 @@ class ApplicationController extends Controller
                         'bank_id' => $transaction->bank_id,
                         'bank_name' => $transaction->bank->bank_name,
                         'approval_date' => $transaction->approval_date,
-                        'is_preferred' => $transaction->is_preferred
+                        'is_preferred' => $transaction->is_preferred,
+                        'approval_status' => $transaction->approval_status
                     ];
                 });
-            
+
             return response()->json([
                 'success' => true,
                 'banks' => $bankTransactions
@@ -899,4 +1069,54 @@ class ApplicationController extends Controller
         }
     }
 
+    public function updateTerms(Request $request){
+        try {
+
+            $validated = $request->validate([
+                'terms' => 'required',
+                'percentage' => 'required'
+            ]);
+
+            $application = Application::findOrFail(decrypt($request->id));
+            $application->terms = $validated['terms'];
+            $application->percentage = $validated['percentage'];
+            $application->updated_by = Auth::id();
+            $application->updated_at = now();
+            $application->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Terms updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating terms: ' . $e->getMessage()
+            ], 500);
+        }
+
+    }
+
+    public function updateApplicationBank(Request $request){
+        try {
+            $application = Application::findOrFail(decrypt($request->application_id));
+            $application->bank_id = $request->bank_id;
+            $application->updated_by = Auth::id();
+            $application->updated_at = now();
+            $application->save();
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Application bank updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating application bank: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -17,13 +17,19 @@ return new class extends Migration
             $table->unsignedBigInteger('vehicle_id');
             $table->string('CS_number');
             $table->date('actual_invoice_date');
-            $table->date('delivery_date');
+            $table->date('delivery_date')->nullable();
             $table->string('invoice_number');
-            $table->integer('age');
-            $table->string('status');
-            $table->string('CS_number_status')->default('available');
-            $table->text('remarks');
+            $table->integer('age')->nullable();
+            $table->string('status')->default('Available');
+            $table->string('CS_number_status')->default('Available');
+            $table->string('incoming_status')->default('Invoice');
+            $table->string('tag')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->text('remarks')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -17,71 +17,96 @@
 
     <ul class="menu-inner py-1">
 
+      
+      @can('view_dashboard')
         <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
             <a href="/dashboard" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-dashboard'></i>
               <div class="text-truncate" data-i18n="Page 2">Dashboard</div>
             </a>
         </li>
+      @endcan
 
+      @if(auth()->user()->can('view_leads') || 
+        auth()->user()->can('view_application') || 
+        auth()->user()->can('view_vehicle_reservation') || 
+        auth()->user()->can('view_vehicle_releases'))
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Transactions</div>
         </li>
+      @endif
+
+      @can('view_leads')
         <li class="menu-item {{ request()->is('leads') ? 'active' : '' }}">
             <a href="/leads" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-layer-plus'></i>
-              <div class="text-truncate" data-i18n="Page 2">Leads</div>
+                <div class="text-truncate" data-i18n="Page 2">Leads</div>
             </a>
         </li>
+      @endcan
+      @can('view_application')
         <li class="menu-item {{ request()->is('application') ? 'active' : '' }}">
             <a href="/application" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-list-plus'></i>
               <div class="text-truncate" data-i18n="Page 2">Application</div>
             </a>
         </li>
+      @endcan
+      @can('view_vehicle_reservation')
         <li class="menu-item {{ request()->is('vehicle-reservation') ? 'active' : '' }}">
             <a href="/vehicle-reservation" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-car'></i>
                 <div class="text-truncate" data-i18n="Page 2">Vehicle Reservation</div>
             </a>
         </li>
+      @endcan
+      @can('view_vehicle_releases')
         <li class="menu-item {{ request()->is('vehicle-releases') ? 'active' : '' }}">
             <a href="/vehicle-releases" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-right-top-arrow-circle'></i>
               <div class="text-truncate" data-i18n="Page 2">Vehicle Releases</div>
             </a>
         </li>
+      @endcan
+
+      @can('view_disputes')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Cancelations</div>
         </li>
+
         <li class="menu-item {{ request()->is('') ? 'active' : '' }}">
             <a href="" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-x-square'></i>
               <div class="text-truncate" data-i18n="Page 2">Disputes</div>
             </a>
         </li>
+      @endcan
 
+      @can('view_vehicle_inventory')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Inventory</div>
         </li>
+       
         <li class="menu-item {{ request()->is('vehicle-inventory') ? 'active' : '' }}">
             <a href="/vehicle-inventory" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-car-garage'></i>
               <div class="text-truncate" data-i18n="Page 2">Vehicle Inventory</div>
             </a>
-        </li>
-
+          </li>
+      @endcan
+      @can('view_banks')
         <li class="menu-item">
           <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Bank</div>
         </li>
-        <li class="menu-item {{ request()->is('') ? 'active' : '' }}">
-            <a href="" class="menu-link">
+        <li class="menu-item {{ request()->is('banks') ? 'active' : '' }}">
+            <a href="/banks" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-bank'></i>
               <div class="text-truncate" data-i18n="Page 2">Banks</div>
             </a>
         </li>
+        @endcan
 
-
+      @can('view_sales')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Statistics</div>
         </li>
@@ -91,16 +116,18 @@
               <div class="text-truncate" data-i18n="Page 2">Sales</div>
             </a>
         </li>
-
+      @endcan
+        @can('view_users')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">User Management</div>
         </li>
-        <li class="menu-item {{ request()->is('') ? 'active' : '' }}">
-            <a href="" class="menu-link">
+        <li class="menu-item {{ request()->is('user-management') ? 'active' : '' }}">
+            <a href="/user-management" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-group'></i>
               <div class="text-truncate" data-i18n="Page 2">Users</div>
             </a>
         </li>
+        @endcan
 
       </ul>
   </aside>

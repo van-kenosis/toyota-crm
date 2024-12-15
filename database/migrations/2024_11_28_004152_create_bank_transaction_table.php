@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
             $table->date('approval_date')->nullable();
+            $table->enum('approval_status', ['approve', 'disapprove'])->nullable();
             $table->boolean('is_preferred')->default(false);
             $table->timestamps();
             $table->softDeletes();

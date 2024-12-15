@@ -33,7 +33,7 @@ class RevertCSNumberCommand extends Command
             $twoDaysAgo = Carbon::now()->subDays(2);
             $reservation = Status::where('status', 'like', 'Reserved')->first()->id;
             // Fetch transactions that are not released and older than 2 days
-            $transactions = Transactions::whereI('status', $reservation)
+            $transactions = Transactions::where('status', $reservation)
                 ->whereNotNull('inventory_id')
                 ->where('updated_at', '<=', $twoDaysAgo)
                 ->get();
@@ -48,8 +48,12 @@ class RevertCSNumberCommand extends Command
                 $inventory = Inventory::find($transaction->inventory_id);
                 if ($inventory) {
                     // Revert the CS number status to available
-                    $inventory->CS_number_status = 'available';
-                    $inventory->status = 'available';
+                    $inventory->tag =null;
+                    $inventory->team_id=null;
+                    $inventory->CS_number_status = 'Available';
+                    $inventory->status = 'Available';
+                    $inventory->updated_at = now();
+                    $inventory->updated_by = 0;
                     // $inventory->timestamps = false; // Disable timestamps for this operation
                     $inventory->save();
 

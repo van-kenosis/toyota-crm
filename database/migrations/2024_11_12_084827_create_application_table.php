@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('vehicle_id');
             $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('bank_id')->nullable();
+            $table->string('terms')->nullable();
+            $table->string('percentage')->nullable();
             $table->string('transaction');
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('created_by');

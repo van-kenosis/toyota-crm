@@ -18,6 +18,7 @@ class BankTransaction extends Model
         'created_by',
         'updated_by',
         'approval_date',
+        'approval_status',
         'is_preferred',
     ];
 

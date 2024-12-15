@@ -5,4 +5,8 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
 //Revert CS number to available if not released within 2 days
-Schedule::command('csnumber:revert')->dailyAt('00:00');
+Schedule::command('csnumber:revert')->dailyAt('00:30');
+
+Schedule::command('inventory:reset-tags')
+                ->dailyAt('00:00')
+                ->timezone('Asia/Manila');

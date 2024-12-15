@@ -18,6 +18,7 @@
             });
             },
             success: function(response) {
+                Swal.close(); // Hide loader
             if (response.success) {
                 window.location.href = response.redirect;
             } else {
@@ -39,6 +40,7 @@
             }
             },
             error: function() {
+                Swal.close(); // Hide loader
             Swal.fire({
                 icon: 'error',
                 title: 'Failed!',

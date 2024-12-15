@@ -54,5 +54,9 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class, 'team_id', 'id');
     }
 
+    public function usertype(){
+        return $this->belongsTo(Usertype::class, 'usertype_id', 'id');
+    }
+
 
 }

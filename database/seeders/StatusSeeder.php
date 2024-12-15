@@ -20,7 +20,18 @@ class StatusSeeder extends Seeder
         Status::create(['status' => 'Denied']);
         Status::create(['status' => 'Cash']);
         Status::create(['status' => 'Released']);
-        Status::create(['status' => 'Reserved']);
         Status::create(['status' => 'Pending For Release']);
+        Status::create(['status' => 'Posted']);
+        
+        Status::create(['status' => 'Available']);
+        Status::create(['status' => 'Invoice']);
+        Status::create(['status' => 'Pull Out']);
+        Status::create(['status' => 'In Transit']);
+        Status::create(['status' => 'On Stock']);
+        Status::create(['status' => 'Reserved']);
+        Status::create(['status' => 'For Swapping']);
+        Status::create(['status' => 'Freeze']);
+        Status::create(['status' => 'Ear Mark']);
+
     }
 }
