@@ -21,8 +21,8 @@ class InventorySeeder extends Seeder
                 'delivery_date' => now()->subDays(rand(1, 365)), // Random date within the last year
                 'invoice_number' => 'INV' . str_pad($i + 1, 5, '0', STR_PAD_LEFT), // Invoice number format
                 'age' => rand(1, 10), // Random age between 1 and 10
-                'status' => 'available', // Default status
-                'CS_number_status' => 'available', // Default CS_number status
+                'status' => 'Available', // Default status
+                'CS_number_status' => 'Available', // Default CS_number status
                 'remarks' => 'Sample remark ' . ($i + 1), // Sample remarks
                 'created_at' => now(),
                 'updated_at' => now(),

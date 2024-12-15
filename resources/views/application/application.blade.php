@@ -12,6 +12,88 @@
     </div>
 </div>
 
+<!-- Modal for Adding Bank for PO Transactions -->
+<div class="modal fade" id="addSingleBankModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class='bx bxs-plus-circle'></i>
+                    <h5 class="modal-title" id="largeModalLabel">Add Bank</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSingleBankForm">
+                    <!-- Bank Field Template -->
+                    <div class="row mb-2 bank-field">
+                        <div class="col-md">
+                            <input type="hidden" name="application_id" id="bank_application_id">
+                            <label for="add_single_bank" class="form-label required">Select a Bank</label>
+                            <select class="form-control" name="bank_id" id="bank_id">
+                            </select>
+                            <small class="text-danger" id="validateBank">Please Select Bank</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-dark" form="addSingleBankForm">Add Bank</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Adding Terms -->
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class='bx bxs-offer'></i>
+                    <h5 class="modal-title" id="largeModalLabel">Add Terms</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="termsForm">
+                    <div class="row mb-2">
+                        <div class="col-md">
+                            <label for="terms" class="form-label required">Terms</label>
+                            <select class="form-control" id="terms" name="terms" >
+                                <option value="">Select Terms</option>
+                                <option value="12 Months to Pay">12 Months to Pay</option>
+                                <option value="24 Months to Pay">24 Months to Pay</option>
+                                <option value="36 Months to Pay">36 Months to Pay</option>
+                                <option value="48 Months to Pay">48 Months to Pay</option>
+                                <option value="60 Months to Pay">60 Months to Pay</option>
+                            </select>
+                            <small class="text-danger" id="validateSource">Please Select Source</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <div class="mb-3">
+                                <label for="percentage" class="form-label required">Percentage-Based Down Payment</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" class="form-control" id="percentage" name="percentage" step="0.01" min="0">
+                                    <b class="fs-4">%</b>
+                                </div>
+                                <small class="text-danger" id="validatePercentage">Please enter percentage</small>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-dark" form="termsForm">Add Terms</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal for Adding Banks -->
 <div class="modal fade" id="selectBankModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -41,7 +123,6 @@
                                 <select class="form-control" name="bank_id[]" id=bank_ids>
                                 </select>
                             </div>
-
                         </div>
                     </div>
                 </form>
@@ -54,21 +135,23 @@
     </div>
 </div>
 
-{{-- Bank Approval Date Modal --}}
+{{-- Bank Approval Modal --}}
 <div class="modal fade" id="bankApprovalDateModal" tabindex="-1" role="dialog" aria-labelledby="bankApprovalDateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bankApprovalDateModalLabel">Bank Approval Date</h5>
+                <h5 class="modal-title" id="bankApprovalDateModalLabel">Bank Approval</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="bankApprovalDateForm">
                     <div class="row d-flex align-items-center mb-2">
                     </div>
+
+                    <label for="terms" class="form-label mt-2 required">Select Prefered Bank to Proceed in Application</label>
                     <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" name="preferred_bank">
                         <option selected>Select Prefered Bank</option>
-                    </select>                    
+                    </select>
                 </form>
             </div>
             <div class="modal-footer">
@@ -148,6 +231,11 @@
                         </select>
                         <small class="text-danger" id="validateGender">Please Select Gender</small>
                     </div>
+                    <div class="col-md" id="birthdateColumnField">
+                        <label for="age" class="form-label required">Birthdate</label>
+                        <input type="date" class="form-control" id="edit_birthdate" name="birthdate" placeholder="" />
+                        <small class="text-danger" id="validateBirthdate">Enter Customer Birthdate</small>
+                    </div>
                     <div class="col-md" id="editAgeColumnField">
                         <label for="edit_age" class="form-label required">Age</label>
                         <input type="number" class="form-control" id="edit_age" name="age" placeholder="" />
@@ -214,6 +302,7 @@
                     <label for="source" class="form-label required">Source</label>
                     <select class="form-control" id="edit_source" name="source" >
                         <option value="">Select Source</option>
+                        <option value="Repeat-Customer">Repeat Customer</option>
                         <option value="Social-Media">Social-Media</option>
                         <option value="Referal">Referal</option>
                         <option value="Mall Duty">Mall Duty</option>
@@ -253,9 +342,11 @@
             </div>
             <div class="row">
                 <div class="col-md d-flex justify-content-end gap-2">
+                    @if(auth()->user()->can('update_application'))
                     <button type="button" class="btn btn-success" id="editApplicationModalButton">Edit Details</button>
                     <button type="button" class="btn btn-label-danger d-none" id="cancelApplicationModalButton">Cancel</button>
                     <button type="submit" class="btn btn-primary d-none" id="saveEditApplicationModalButton">Save Changes</button>
+                    @endif
                 </div>
             </div>
           </form>
@@ -263,7 +354,6 @@
       </div>
     </div>
 </div>
-
 
 {{-- Datatables Tabs --}}
 <div class="row mb-2">
@@ -282,10 +372,18 @@
                 <div class="row">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
-                            <button id="pending-tab" type="button" class="btn btn-label-dark active" data-route="{{ route('application.pending') }}">Pending Applications</button>
+                            @if(auth()->user()->can('list_pending_applications'))
+                            <button id="pending-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.pending') }}">Pending Applications</button>
+                            @endif
+                            @if(auth()->user()->can('list_cash_applications'))
                             <button id="cash-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cash') }}">Cash/PO Applications</button>
+                            @endif
+                            @if(auth()->user()->can('list_approved_applications'))
                             <button id="approved-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.approved') }}">Approved Applications</button>
+                            @endif
+                            @if(auth()->user()->can('list_cancelled_applications'))
                             <button id="canceled-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cancel') }}">Denied/Canceled Applications</button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -327,7 +425,7 @@
                 }
             }
         },
-        // Add clear button 
+        // Add clear button
         onReady: function(selectedDates, dateStr, instance) {
             // Create a "Clear" button
             const clearButton = document.createElement("button");
@@ -361,7 +459,16 @@
         processing: true,
         serverSide: true,
         ajax: {
+            @if(auth()->user()->can('list_pending_applications'))
             url: '{{ route("application.pending") }}',
+            @elseif(auth()->user()->can('list_cash_applications'))
+            url: '{{ route('application.cash') }}',
+            @elseif(auth()->user()->can('list_approved_applications'))
+             url: '{{ route('application.approved') }}',
+            @else
+                url: '{{ route('application.cancel') }}',
+            @endif
+            
             data: function(d) {
                 d.date_range = $('#date-range-picker').val();
             },
@@ -388,63 +495,119 @@
             { data: 'reservation_status', name: 'reservation_status', title: 'Reservation Status' },
             { data: 'source', name: 'source', title: 'Source' },
             { data: 'date', name: 'date', title: 'Date' },
-            
+            @if(auth()->user()->can('get_banks') || auth()->user()->can('store_banks') || auth()->user()->can('update_bank_approval') )
             {
                 data: 'id',
+                name: 'id',
                 title: 'Bank',
                 orderable: false,
                 searchable: false,
                 render: function (data, type, row) {
                     // Check if the transaction type is not 'cash'
-                    if (row.transaction !== 'cash') {
+                    if (row.transaction === 'financing') {
                         // Determine the active tab
                         let activeTab = $('.btn-group .active').attr('id'); // Get the ID of the active tab
                         let isPendingTab = activeTab === 'pending-tab';
                         let isApprovedTab = activeTab === 'approved-tab';
                         let isCashTab = activeTab === 'cash-tab';
                         let isCanceledTab = activeTab === 'canceled-tab';
-                        
+
                         // Hide or show buttons based on the active tab
                         let bankBtnStyle =  isCashTab || isCanceledTab ? 'display: none;' : ''; // Hide for Approved and Cash tabs
                         let approvalDateBtnStyle = isPendingTab || isCashTab || isCanceledTab ? 'display: none;' : ''; // Hide for Pending tab
 
                         return `
                             <div class="d-flex">
-                                <button type="button" class="btn btn-icon me-2 btn-warning bank-btn" data-bs-toggle="modal" data-bs-target="#selectBankModal" data-id="${data}" style="${bankBtnStyle}">
+                                @if(auth()->user()->can('get_banks') && auth()->user()->can('store_banks') )
+                                <button type="button" class="btn btn-icon me-2 btn-label-dark bank-btn" data-bs-toggle="modal" data-bs-target="#selectBankModal" data-id="${data}" style="${bankBtnStyle}">
                                     <span class="tf-icons bx bxs-bank bx-22px"></span>
                                 </button>
-                                <button type="button" class="btn btn-icon me-2 btn-info bank-approval-date-btn" data-bs-toggle="modal" data-bs-target="#bankApprovalDateModal" data-id="${data}" style="${approvalDateBtnStyle}">
-                                    <span class="tf-icons bx bxs-calendar-plus bx-22px"></span>
-                                </button>
+                                @endif
+
+                                @if(auth()->user()->can('update_bank_approval') )
+                                    <button type="button" class="btn btn-icon me-2 btn-label-dark bank-approval-date-btn" data-bs-toggle="modal" data-bs-target="#bankApprovalDateModal" data-id="${data}" style="${approvalDateBtnStyle}">
+                                        <span class="tf-icons bx bxs-calendar-plus bx-22px"></span>
+                                    </button>
+                                @endif
                             </div>
                         `;
-                    } else {
+                    }else if (row.transaction === 'po'){
+                         // Determine the active tab
+                        let activeTab = $('.btn-group .active').attr('id'); // Get the ID of the active tab
+                        let isApprovedTab = activeTab === 'approved-tab';
+                        let isCashTab = activeTab === 'cash-tab';
+
+                        let bankBtnStyle =  isCashTab || isApprovedTab  ? '' : 'display: none;'; // Hide for Approved and Cash tabs
+
+                        return `
+                         @if(auth()->user()->can('get_banks') && auth()->user()->can('store_banks') )
+                            <button type="button" class="btn btn-icon me-2 btn-label-dark single-bank-btn" data-bs-toggle="modal" data-bs-target="#addSingleBankModal" data-id="${data}" style="${bankBtnStyle}">
+                                <span class="tf-icons bx bxs-bank bx-22px"></span>
+                            </button>
+                         @endif
+                        `;
+                    }else {
                         return ''; // Return empty string if transaction type is 'cash'
                     }
                 }
             },
+            @endif
+            @if(auth()->user()->can('update_terms')  )
 
             {
                 data: 'id',
+                name: 'id',
+                title: 'Terms',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    if(row.transaction === 'financing'){
+
+                        let activeTab = $('.btn-group .active').attr('id'); // Get the ID of the active tab
+                        let isApprovedTab = activeTab === 'approved-tab';
+                        let termBtnStyle =  isApprovedTab ? '' : 'display: none;'; // Show for Approved tab
+
+                        return `
+                            <button type="button" class="btn btn-icon me-2 btn-warning term-btn" data-bs-toggle="modal" data-bs-target="#termsModal"  data-id="${data}" style="${termBtnStyle}">
+                                    <span class="tf-icons bx bxs-offer bx-22px"></span>
+                            </button>
+                        `;
+                    }else{
+                        return '';
+                    }
+                }
+            },
+            @endif
+            @if(auth()->user()->can('edit_application') || auth()->user()->can('update_application') || auth()->user()->can('cancel_application') || auth()->user()->can('process_application'))
+            {
+                data: 'id',
+                name: 'id',
                 title: 'Action',
                 orderable: false,
                 searchable: false,
-                render: function(data) {
+                render: function(data, type, row) {
                     return `
                         <div class="d-flex">
+                            @if(auth()->user()->can('edit_application'))
                             <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editApplicationFormModal"  data-id="${data}">
                                 <span class="tf-icons bx bxs-show bx-22px"></span>
                             </button>
-                            <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
+                            @endif
+                             @if(auth()->user()->can('process_application'))
+                            <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}" data-transaction="${row.transaction}">
                                 <span class="tf-icons bx bxs-check-circle bx-22px"></span>
                             </button>
+                            @endif
+                             @if(auth()->user()->can('cancel_application'))
                             <button type="button" class="btn btn-icon me-2 btn-danger cancel-btn" data-id="${data}">
                                 <span class="tf-icons bx bxs-x-circle bx-22px"></span>
                             </button>
+                            @endif
                         </div>
                     `;
                 }
             }
+            @endif
         ],
         order: [[0, 'desc']],  // Sort by date created by default
         columnDefs: [
@@ -455,39 +618,55 @@
         ],
     });
 
-    // displaying of bank buttons based on active tab
-    $('.btn-group button').on('click', function () {
-        // Remove active class from all buttons and set it to the clicked one
-        $('.btn-group button').removeClass('active');
-        $(this).addClass('active');
+    // Automatically trigger the tab based on user access and remove active from the default active tab
+    $(document).ready(function() {
+        @if(auth()->user()->can('list_pending_applications'))
+        $('.btn-group #pending-tab').addClass('active');
+        @elseif(auth()->user()->can('list_cash_applications'))
+        $('.btn-group #cash-tab').addClass('active');
+        @elseif(auth()->user()->can('list_approved_applications'))
+        $('.btn-group #approved-tab').addClass('active');
+        @else
+        $('.btn-group #canceled-tab').addClass('active');
+        @endif
 
-        // Redraw DataTable to apply new button visibility
-        $('#applicationTable').DataTable().ajax.reload(null, false); // Reloads data without resetting pagination
+        $('.btn-group .btn').click(function() {
+            $('.btn-group .btn').removeClass('active');
+            $(this).addClass('active');
+        });
     });
 
     // Change DataTable route based on button click
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
-          // Clear the date range picker
+         // Clear the date range picker
         $('#date-range-picker').val(''); // Clear the date range input
         applicationTable.ajax.reload(null, false); // Reload the table without resetting the paging
         var route = $(this).data('route'); // Get the route from the clicked button
         applicationTable.ajax.url(route).load();
     });
 
-    // datatables button tabs
-    $(document).ready(function() {
-
-        $('.btn-group .btn').on('click', function() {
-            // Remove 'active' class from all buttons in the group
-            $('.btn-group .btn').removeClass('active');
-            // Add 'active' class to the clicked button
-            $(this).addClass('active');
-        });
-    });
-
     // Application Form Validation
     $(document).ready(function () {
+        @if(auth()->user()->can('get_banks'))
+        $.ajax({
+            url: '{{ route('application.getBanks') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let singleBankSelect = $('#bank_id');
+                singleBankSelect.empty();
+                singleBankSelect.append('<option value="">Select Bank...</option>');
+                data.forEach(function(item) {
+                    singleBankSelect.append(`<option value="${item.id}">${item.bank_name}</option>`);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading unit:', error);
+            }
+        });
+        @endif
+
         $.ajax({
             url: '{{ route('leads.getUnit') }}',
             type: 'GET',
@@ -504,7 +683,6 @@
                 console.error('Error loading unit:', error);
             }
         });
-
 
         // Load variants and colors based on selected unit
         $('#edit_car_unit').on('change', function() {
@@ -664,6 +842,7 @@
                 $('#edit_quantity').val(originalValues.quantity);
                 $('#edit_mobile_number').val(originalValues.mobileNumber);
                 $('#edit_category').val(originalValues.category);
+                $('#edit_birthdate').val(originalValues.birthdate).trigger('change');
 
                 if (edit_inquiryType === 'Individual') {
                     $('#edit_first_name').val(originalValues.firstName);
@@ -729,7 +908,7 @@
 
     let originalValues = {};0
 
-    // Add this inside your <script> tag in the Blade file
+
     $(document).on('click', '.edit-btn', function() {
         const applicationId = $(this).data('id');
         $.ajax({
@@ -756,28 +935,31 @@
                 $('#edit_category').val(inquiry.category).trigger('change');
                 $('#edit_quantity').val(inquiry.quantity);
                 $('#edit_payment_status').val(firstTransaction.reservation_status).trigger('change');
+                $('#edit_first_name').val(data.customer.customer_first_name);
+                $('#edit_last_name').val(data.customer.customer_last_name);
+                $('#edit_gender').val(data.customer.gender);
+                $('#edit_age').val(data.customer.age);
+                $('#edit_birthdate').val(data.customer.birthdate).trigger('change');
+
 
 
                 const edit_inquiry_type =  $('#edit_inquiry_type').val();
                 console.log(edit_inquiry_type);
 
                 if (edit_inquiry_type === 'Individual') {
-                        // No special validation changes for individual, just hide others
+                         // No special validation changes for individual, just hide others
                         $('#edit_first_name, #edit_first_name').closest('.row').show(); // Show first and last name by default
                         $('#editCompanyColumnField, #editGovernmentColumnField, #editQuantityColumnField').addClass('d-none');
                         $('#editQuantityColumnField').addClass('d-none');
                         $('#editCompanyColumnField').addClass('d-none');
-                        $('#edit_gender, #edit_age').closest('.row').show();
+                        $('#edit_gender, #edit_birthdate, #edit_age').closest('.row').show();
                         $('#editFleetColumnField').addClass('d-none');
 
-                        $('#edit_first_name').val(data.customer.customer_first_name);
-                        $('#edit_last_name').val(data.customer.customer_last_name);
-                        $('#edit_gender').val(data.customer.gender);
-                        $('#edit_age').val(data.customer.age);
+
 
                     } else if (edit_inquiry_type === 'Fleet' || edit_inquiry_type === 'Company') {
                         // Hide first and last name, show quantity
-                        $('#edit_first_name, #edit_first_name').closest('.row').hide();
+                        $('#edit_first_name, #edit_first_name').closest('.row').show();
                         $('#editQuantityColumnField').removeClass('d-none');
                         $('#editCompanyColumnField').toggleClass('d-none', edit_inquiry_type !== 'Company');
                         $('#editFleetColumnField').toggleClass('d-none', edit_inquiry_type !== 'Fleet');
@@ -790,7 +972,7 @@
                     } else if (edit_inquiry_type === 'Government') {
                         // Hide first name, last name, and company, show government field
                         $('#editFleetColumnField').addClass('d-none');
-                        $('#edit_first_name, #edit_first_name').closest('.row').hide();
+                        $('#edit_first_name, #edit_first_name').closest('.row').show();
                         $('#editQuantityColumnField').removeClass('d-none');
                         $('#editCompanyColumnField').addClass('d-none');
                         $('#editGovernmentColumnField').removeClass('d-none');
@@ -798,7 +980,6 @@
                         $('#edit_government').val(data.customer.department_name);
 
                     }
-
 
                 $.ajax({
                     url: '{{ route("leads.getVariants") }}',
@@ -863,6 +1044,7 @@
                     government: data.customer.department_name,
                     quantity: inquiry.quantity,
                     category: inquiry.category,
+                    birthdate: data.customer.birthdate,
                 };
 
                 $('#editApplicationFormModal').modal('show');
@@ -881,7 +1063,8 @@
      //Process Data
     $(document).on('click', '.processing-btn', function() {
         const appID = $(this).data('id');
-
+        const transaction = $(this).data('transaction');
+        console.log(transaction);
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to update its status?",
@@ -896,7 +1079,8 @@
                     url: '{{ route("application.processing") }}',
                     type: 'POST',
                     data: {
-                        id: appID
+                        id: appID,
+                        transaction: transaction,
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1012,7 +1196,7 @@
             resetModalToInitialState();
         });
     });
-
+    @if(auth()->user()->can('get_banks') && auth()->user()->can('store_banks') )
     function populateBankSelects(data, targetSelect = null) {
         if (targetSelect) {
             // Populate only the target select
@@ -1057,16 +1241,16 @@
             });
         });
     }
-    
+
     // Display selected banks on modal
     $(document).on('click', '.bank-btn', function () {
         const applicationId = $(this).data('id');
         $('#application_id').val(applicationId);
-        
+
         // Clear existing bank fields
         $("#bankFieldsContainer .bank-field:not(:first)").remove();
         $("select[name='bank_id[]']").val('');
-        
+
         // Fetch existing banks for this application
         $.ajax({
             url: `/application/banks/${applicationId}`,
@@ -1074,12 +1258,12 @@
             success: function(response) {
                 if (response.success) {
                     const existingBanks = response.banks;
-                    
+
                     // If there are existing banks, create fields for each one
                     if (existingBanks.length > 0) {
                         // Remove the default empty field if it exists
                         $("#bankFieldsContainer .bank-field:first").remove();
-                        
+
                         existingBanks.forEach((bank, index) => {
                             const newBankField = `
                                 <div class="row mb-2 bank-field">
@@ -1095,10 +1279,10 @@
                                     </div>
                                 </div>
                             `;
-                            
+
                             $("#bankFieldsContainer").append(newBankField);
                         });
-                        
+
                         // Fetch and populate all bank options, then set selected values
                         fetchBanks().then(() => {
                             existingBanks.forEach((bank, index) => {
@@ -1147,6 +1331,7 @@
         const newSelect = newField.find("select[name='bank_id[]']");
         fetchBanks(newSelect);
     });
+    @endif
 
     // Remove bank field
     $(document).on("click", ".removeBankFieldButton", function (e) {
@@ -1210,10 +1395,10 @@
     // When bank approval date button is clicked
     $(document).on('click', '.bank-approval-date-btn', function() {
         const applicationId = $(this).data('id');
-        
+
         // Update the form action with the application ID
         $('#bankApprovalDateForm').attr('action', `/application/banks/approval/${applicationId}`);
-        
+
         // Fetch banks associated with this application
         $.ajax({
             url: `/application/banks/${applicationId}`,
@@ -1221,30 +1406,37 @@
             success: function(response) {
                 // Clear existing bank fields
                 $('#bankApprovalDateForm .bank-approval-row').remove();
-                
+
                 // Add fields for each bank
                 let bankFields = '';
                 response.banks.forEach(bank => {
                     bankFields += `
                         <div class="row d-flex align-items-center mb-2 bank-approval-row">
                             <div class="col-md-4">
-                                <b class="">${bank.bank_name}</b>
+                                <b>${bank.bank_name}</b>
                                 <input type="hidden" name="bank_ids[]" value="${bank.bank_id}">
                             </div>
-                            <div class="col-md-8">
-                                <input type="date" 
-                                    class="form-control" 
-                                    name="approval_dates[]" 
+                            <div class="col-md-4">
+                                <input type="date"
+                                    class="form-control approval-date"
+                                    name="approval_dates[]"
                                     value="${bank.approval_date || ''}"
                                     ${bank.approval_date ? 'readonly' : ''}>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control approval-status" name="approval_statuses[]">
+                                    <option disabled selected>Select Approval Status</option>
+                                    <option value="approve" ${bank.approval_status === 'approve' ? 'selected' : ''}>APPROVE</option>
+                                    <option value="disapprove" ${bank.approval_status === 'disapprove' ? 'selected' : ''}>DISAPPROVE</option>
+                                </select>
                             </div>
                         </div>
                     `;
                 });
-                
+
                 // Insert bank fields before the preferred bank select
                 $(bankFields).insertBefore('#bankApprovalDateForm .mb-2');
-                
+
                 // Update preferred bank dropdown options
                 let bankSelectOptions = '<option value="">Select Preferred Bank</option>';
                 response.banks.forEach(bank => {
@@ -1254,7 +1446,7 @@
                         </option>`;
                 });
                 $('#exampleFormControlSelect1').html(bankSelectOptions);
-                
+
                 $('#bankApprovalDateModal').modal('show');
             },
             error: function(xhr) {
@@ -1265,12 +1457,78 @@
                 });
             }
         });
+
+        // Color Change indicator for Approve and Disapprove
+        $(document).on('change', '.approval-status', function () {
+            const $row = $(this).closest('.bank-approval-row'); // Find the closest row
+            const $dateInput = $row.find('.approval-status');    // Find the associated date input field
+
+            if ($(this).val() === 'approve') {
+                $dateInput.removeClass('border-danger').addClass('border-success');
+            } else if ($(this).val() === 'disapprove') {
+                $dateInput.removeClass('border-success').addClass('border-danger');
+            }
+        });
     });
 
     // Handle bank approval date form submission
     $('#bankApprovalDateForm').on('submit', function(e) {
         e.preventDefault();
-        
+
+        // Validate fields
+        let isValid = true;
+        const bankIds = $('input[name="bank_ids[]"]');
+        const approvalDates = $('input[name="approval_dates[]"]');
+        const approvalStatuses = $('select[name="approval_statuses[]"]');
+        const preferredBank = $('select[name="preferred_bank"]');
+
+        // Validate bank IDs
+        bankIds.each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Validate approval dates
+        approvalDates.each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Validate approval statuses
+        approvalStatuses.each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Validate preferred bank
+        if (preferredBank.val() === '') {
+            isValid = false;
+            preferredBank.addClass('is-invalid');
+        } else {
+            preferredBank.removeClass('is-invalid');
+        }
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please fill in all required fields.'
+            });
+            return;
+        }
+
         $.ajax({
             url: $(this).attr('action'), // Use the updated form action
             type: 'POST',
@@ -1297,6 +1555,195 @@
                 });
             }
         });
+    });
+
+    // Add validation feedback for terms form
+    $(document).on('click', '.term-btn', function() {
+        const applicationId = $(this).data('id');
+        $('#termsForm').data('application-id', applicationId); // Store ID on form
+
+        // Reset validation state
+        $('#validateSource, #validatePercentage').hide();
+        $('#terms, #percentage').removeClass('is-invalid border-danger');
+        $.ajax({
+            url: `{{ url('application/edit') }}/${applicationId}`,
+            type: 'GET',
+            success: function(response) {
+                const data = response.application;
+                $('#terms').val(data.terms).trigger('change');
+                $('#percentage').val(data.percentage);
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Could not fetch Application data.'
+                });
+            }
+        });
+    });
+
+    $('#termsForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // Reset validation state
+        $('#validateSource, #validatePercentage').hide();
+        $('#terms, #percentage').removeClass('is-invalid border-danger');
+
+        // Get values
+        const terms = $('#terms').val();
+        const percentage = $('#percentage').val();
+        const applicationId = $(this).data('application-id');
+
+        // Validate
+        let isValid = true;
+
+        if (!terms) {
+            $('#terms').addClass('is-invalid border-danger');
+            $('#validateSource').show();
+            isValid = false;
+        }
+
+        if (!percentage) {
+            $('#percentage').addClass('is-invalid border-danger');
+            $('#validatePercentage').show();
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        // Submit if valid
+        $.ajax({
+            url: '{{ route('application.terms') }}',
+            type: 'POST',
+            data: {
+                id: applicationId,
+                terms: terms,
+                percentage: percentage
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message
+                    });
+                    $('#termsModal').modal('hide');
+                    applicationTable.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON?.message || 'Something went wrong!'
+                });
+            }
+        });
+    });
+
+     // Compute Birthdate store to age
+     $(document).ready(function () {
+        // Attach an event listener to the birthdate field
+        $('#edit_birthdate').on('change', function () {
+            // Get the entered birthdate value
+            const birthdate = $(this).val();
+
+            // Check if a valid date is provided
+            if (birthdate) {
+                // Calculate the age
+                const birthDateObj = new Date(birthdate);
+                const today = new Date();
+
+                let age = today.getFullYear() - birthDateObj.getFullYear();
+                const monthDiff = today.getMonth() - birthDateObj.getMonth();
+
+                // Adjust age if the current date is before the birthdate this year
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+                    age--;
+                }
+
+                // Set the age field value
+                $('#edit_age').val(age);
+            } else {
+                // Clear the age field if the birthdate is invalid
+                $('#edit_age').val('');
+            }
+        });
+    });
+
+    $(document).on('click', '.single-bank-btn', function() {
+        const applicationId = $(this).data('id');
+
+        $('#validateBank').hide();
+        $('#bank_id').removeClass('is-invalid border-danger');
+        $('bank_id').val();
+
+        $.ajax({
+            url: `{{ url('application/edit') }}/${applicationId}`,
+            type: 'GET',
+            success: function(response) {
+                const data = response.application;
+                $('#bank_application_id').val(applicationId);
+                $('#bank_id').val(data.bank_id).trigger('change');
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Could not fetch Application data.'
+                });
+            }
+        });
+
+    });
+
+    $('#addSingleBankForm').on('submit', function(e) {
+        e.preventDefault();
+
+         // Reset validation state
+        $('#validateBank').hide();
+        $('#bank_id').removeClass('is-invalid border-danger');
+
+        // Get values
+        const bankId = $('#bank_id').val();
+        const applicationId = $('#application_id').val();
+
+        // Validate
+        let isValid = true;
+
+        if (!bankId) {
+            $('#bank_id').addClass('is-invalid border-danger');
+            $('#validateBank').show();
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        $.ajax({
+            url: '{{ route('application.banks.update') }}',
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if(response.success) {
+                    Swal.fire('Success', response.message, 'success');
+                }
+                $('#addSingleBankModal').modal('hide');
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'Something went wrong!', 'error');
+            }
+        })
     });
 
 </script>

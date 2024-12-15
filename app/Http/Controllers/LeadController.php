@@ -31,12 +31,36 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
+
+        if(Auth::user()->usertype->name === 'SuperAdmin'){
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
                         })
                         ->where('status_id', '<>', $status);
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Individual');
+                        })
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+        else{
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->where('created_by', Auth::user()->id)
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Individual');
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+
+                       
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -106,12 +130,34 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+        
+        if(Auth::user()->usertype->name === 'SuperAdmin'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
                         })
                         ->where('status_id', '<>', $status);
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Fleet');
+                        })
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+        else{
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->where('created_by', Auth::user()->id)
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Fleet');
+                        })
+                        ->where('status_id', '<>', $status);
+        }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -181,12 +227,34 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+        if(Auth::user()->usertype->name === 'SuperAdmin'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
                         })
                         ->where('status_id', '<>', $status);
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Company');
+                        })
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+        else{
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->where('created_by', Auth::user()->id)
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Company');
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+
 
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -257,13 +325,33 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+        if(Auth::user()->usertype->name === 'SuperAdmin'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
                         })
                         ->where('status_id', '<>', $status);
-
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Government');
+                        })
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        })
+                        ->where('status_id', '<>', $status);
+        }
+        else{
+            $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
+                        ->whereNull('deleted_at')
+                        ->where('created_by', Auth::user()->id)
+                        ->whereHas('inquiryType', function($subQuery) {
+                            $subQuery->where('inquiry_type', 'Government');
+                        })
+                        ->where('status_id', '<>', $status);
+        }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -394,6 +482,7 @@ class LeadController extends Controller
             'variants' => $variants,
         ]);
     }
+
     public function getColor(Request $request)
     {
         $unit = $request->input('unit');
@@ -426,6 +515,7 @@ class LeadController extends Controller
                 'company' => 'nullable',
                 'fleet' => 'nullable',
                 'gender' => 'nullable',
+                'birthdate' => 'nullable|date',
                 'age' => 'nullable',
                 'mobile_number' => 'required|string',
                 'car_unit' => 'required|string',
@@ -450,6 +540,7 @@ class LeadController extends Controller
             $customer->contact_number = $validated['mobile_number'];
             $customer->gender = $validated['gender'];
             $customer->address = $validated['address'];
+            $customer->birthdate = $validated['birthdate'];
             $customer->age = $validated['age'];
             $customer->source = $validated['source'];
             $customer->created_by = Auth::id();
@@ -513,6 +604,7 @@ class LeadController extends Controller
                 'company' => 'nullable',
                 'fleet' => 'nullable',
                 'gender' => 'nullable',
+                'birthdate' => 'nullable|date',
                 'age' => 'nullable',
                 'mobile_number' => 'required|string',
                 'car_unit' => 'required|string',
@@ -520,7 +612,6 @@ class LeadController extends Controller
                 'car_color' => 'required|string',
                 'transaction' => 'required|string',
                 'source' => 'required|string',
-                'additional_info' => 'nullable|string',
                 'address' => 'required',
                 'category' => 'required',
                 'quantity' => 'nullable',
@@ -554,6 +645,7 @@ class LeadController extends Controller
             $customer->contact_number = $validated['mobile_number'];
             $customer->gender = $validated['gender'];
             $customer->address = $validated['address'];
+            $customer->birthdate = $validated['birthdate'];
             $customer->age = $validated['age'];
             $customer->source = $validated['source'];
             $customer->updated_by = Auth::id();
@@ -566,7 +658,6 @@ class LeadController extends Controller
             // Update inquiry data
             $inquiry->vehicle_id = $vehicle->id;
             $inquiry->transaction = $validated['transaction'];
-            $inquiry->remarks = $validated['additional_info'];
             $inquiry->category = $validated['category'];
             $inquiry->quantity = $validated['quantity'];
             $inquiry->updated_by = Auth::id();
@@ -574,40 +665,6 @@ class LeadController extends Controller
             $inquiry->status_id = $pending_status;
             $inquiry->save();
 
-            // Check and update transaction/application if transactional status changes to approved
-            // if ($inquiry->status_id === $approved_status) {
-            //     $transaction = Transactions::where('inquiry_id', $inquiry->id)->first();
-
-            //     if (!$transaction) {
-            //         // Create a transaction if not exists
-            //         $transaction = new Transactions();
-            //         $transaction->inquiry_id = $inquiry->id;
-            //         $transaction->status =  $pending_status;
-            //         $transaction->save();
-            //     }
-
-            //     if (in_array($inquiry->transaction, ['cash', 'po'])) {
-            //         $application = $transaction->application;
-
-            //         if (!$application) {
-            //             // Create a new application if not exists
-            //             $application = new Application();
-            //             $application->customer_id = $customer->id;
-            //             $application->vehicle_id = $vehicle->id;
-            //             $application->transaction_id = $transaction->id;
-            //             $application->status_id = $approved_status;
-            //             $application->transaction = $inquiry->transaction;
-            //             $application->created_by = Auth::id();
-            //             $application->updated_by = Auth::id();
-            //             $application->save();
-            //         }
-
-            //         // Update transaction with the application ID and approved status
-            //         $transaction->application_id = $application->id;
-            //         $transaction->status = $approved_status;
-            //         $transaction->save();
-            //     }
-            // }
 
             return response()->json([
                 'success' => true,
@@ -658,7 +715,7 @@ class LeadController extends Controller
                         $transaction->save();
                     }
                 }else{
-                    
+
                     $transaction = new Transactions();
                     $transaction->inquiry_id = $inquiry->id;
                     $transaction->status = $pending_status->id;
@@ -668,7 +725,7 @@ class LeadController extends Controller
                     $transaction->transaction_updated_date = now();
                     $transaction->save();
                 }
-                    
+
             }
 
             return response()->json([

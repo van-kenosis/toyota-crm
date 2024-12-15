@@ -209,11 +209,10 @@
               </div>
               <div class="modal-body">
                   <div class="mb-2">
-                      <div class="">Customer: <b id="customerName">John Doe</b></div>
-                      <div class="">Unit: <b id="customerName">John Doe</b></div>
-                      <div class="">Year Model: <b id="customerName">John Doe</b></div>
-                      <div class="">Variant: <b id="customerName">John Doe</b></div>
-                      <div class="">Color: <b id="customerName">John Doe</b></div>
+                      <div class="">Customer: <b id="customerName"></b></div>
+                      <div class="">Unit: <b id="unit"></b></div>
+                      <div class="">Variant: <b id="variant"></b></div>
+                      <div class="">Color: <b id="color"></b></div>
                   </div>
                   <div>
                      <input type="hidden" id="transaction_id" name="transaction_id">
@@ -302,7 +301,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table id="vehicleReservationTable" class="table table-striped table-hover" style="width:100%">
+                    <table id="vehicleReservationTable" class="table table-bordered table-hover" style="width:100%">
                         <tbody>
                         </tbody>
                     </table>
@@ -482,11 +481,12 @@
                 title: 'CS Number',
                 orderable: false,
                 searchable: false,
+                visible: false,
                 render: function(data, type, row) {
                     if (type === 'display') {
                         return `
                             <div class="d-flex">
-                                <button type="button" class="badge btn me-2 btn-label-dark btn-csNumber" data-bs-toggle="modal" data-bs-target="#selectCSNumber"  data-vehicle-id="${row.vehicle_id}" data-transaction-id="${row.id}"">
+                                <button type="button" class="badge btn me-2 btn-label-dark btn-csNumber" data-bs-toggle="modal" data-bs-target="#selectCSNumber"  data-vehicle-id="${row.vehicle_id}" data-transaction-id="${row.id}" data-unit="${row.unit}" data-variant="${row.variant}" data-color="${row.color}" data-client-name="${row.client_name}">
                                         ${data}
                                 </button>
                             </div>
@@ -499,7 +499,7 @@
             { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
             { data: 'agent', name: 'agent', title: 'Agent' },
             { data: 'team', name: 'team', title: 'Team' },
-            { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
+            // { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
             {
                 data: 'application_id',
                 name: 'application_id',
@@ -522,6 +522,28 @@
                     }
             },
             {
+                data: 'application_id',
+                name: 'application_id',
+                title: 'Action',
+                orderable: false,
+                searchable: false,
+                visible: false,
+                render: function(data, type, row) {
+                        return `<div class="d-flex">
+                                    @if(auth()->user()->can('process_pending_reservation'))
+                                    <button type="button" class="btn btn-icon me-2 btn-primary processing-pending-btn" data-id="${data}">
+                                        <span class="tf-icons bx bxs-check-circle bx-22px"></span>
+                                    </button>
+                                    @endif
+                                    @if(auth()->user()->can('cancel_pending_reservation'))
+                                      <button type="button" class="btn btn-icon me-2 btn-danger cancel-pending-btn" data-id="${data}">
+                                        <span class="tf-icons bx bxs-x-circle bx-22px"></span>
+                                    </button>
+                                    @endif
+                                </div>`;
+                    }
+            },
+            {
                 data: 'id',
                 name: 'id',
                 title: 'Action',
@@ -536,6 +558,7 @@
                                 </div>`;
                     }
             },
+
         ],
         order: [[0, 'desc']],  // Sort by 'unit' column by default
         columnDefs: [
@@ -545,8 +568,8 @@
         ],
     });
 
-     // Example usage when a CS number is selected
-     $('#saveCSNumber').on('submit',  function(e) {
+    // Example usage when a CS number is selected
+    $('#saveCSNumber').on('submit',  function(e) {
         e.preventDefault();
         const formData = $(this).serialize();
         $.ajax({
@@ -587,24 +610,41 @@
     });
 
     $(document).on('click', '.btn-csNumber', function() {
-
         const vehicleId = $(this).data('vehicle-id');
         const transaction_id = $(this).data('transaction-id');
         const selectElement = $(this);
 
+        const unit = selectElement.data('unit');
+        const variant = selectElement.data('variant');
+        const color = selectElement.data('color');
+        const client_name = selectElement.data('client-name');
+
         $('#transaction_id').val(transaction_id);
+        $('#customerName').text(client_name);
+        $('#unit').text(unit);
+        $('#variant').text(variant);
+        $('#color').text(color);
 
         $.ajax({
             url: `/get-cs-number/${vehicleId}`,
             type: 'GET',
+            data: {
+                unit: unit,
+                variant: variant,
+                color: color
+            },
             dataType: 'json',
             success: function(data) {
                 let numberSelect = $('#csNumberSelect');
                 numberSelect.empty();
                 numberSelect.append('<option value="">Select CS Number...</option>');
-                data.forEach(function(item) {
-                    numberSelect.append(`<option value="${item.CS_number}">${item.CS_number}</option>`);
-                });
+                if (data.length > 0) {
+                    data.forEach(function(item) {
+                        numberSelect.append(`<option value="${item.CS_number}">${item.CS_number}</option>`);
+                    });
+                } else {
+                    numberSelect.append('<option value="">Insufficient inventory for this unit</option>');
+                }
             },
             error: function(error) {
                 console.error('Error loading CS Number:', error);
@@ -614,6 +654,7 @@
 
     });
 
+
     // button group active tabs
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
@@ -622,11 +663,18 @@
         // Toggle column visibility based on the active tab
         const isReservationTab = $(this).text().trim() === 'Reservation';
         vehicleReservationTable.column(2).visible(isReservationTab); // year_model
+        @if(auth()->user()->can('add_cs_number') && auth()->user()->can('get_cs_number'))
         vehicleReservationTable.column(5).visible(isReservationTab); // cs_number
+        @endif
+
+        @if(auth()->user()->can('process_reserved_reservation'))
         vehicleReservationTable.column(12).visible(isReservationTab); // application_id
+        @endif
 
         const isPendingTab = $(this).text().trim() === 'Pending';
+        @if(auth()->user()->can('process_pending_reservation') || auth()->user()->can('cancel_pending_reservation'))
         vehicleReservationTable.column(11).visible(isPendingTab); // id
+        @endif
 
         var route = $(this).data('route');
         vehicleReservationTable.ajax.url(route).load();
@@ -727,6 +775,49 @@
                             statusTable.ajax.reload();
                             availableUnitsTable.ajax.reload();
                             reservedCount();
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            xhr.responseJSON?.message || 'Something went wrong!',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.cancel-pending-btn', function() {
+        const appID = $(this).data('id');
+        console.log(appID);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to cancel this application?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("vehicle.reservation.cancel.pending") }}', // Ensure this route is defined in your routes
+                    type: 'POST',
+                    data: {
+                        id: appID,
+                        _token: '{{ csrf_token() }}' // Include CSRF token
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            );
+                            vehicleReservationTable.ajax.reload(); // Reload the DataTable
                         }
                     },
                     error: function(xhr) {

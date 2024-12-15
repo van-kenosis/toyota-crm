@@ -12,3 +12,10 @@ label.required::after {
     content: " *";
     color: red;
   }
+
+.border-success {
+    border: 2px solid #28a745 !important;
+}
+.border-danger {
+    border: 2px solid #dc3545 !important;
+}

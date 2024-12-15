@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Team;
+use App\Models\User;
+use App\Models\Usertype;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TemporaryPasswordMail;
+use Illuminate\Support\Facades\Validator;
+class UserManagementController extends Controller
+{
+
+    public function index(){
+        if (Auth::check()){
+            return view('user.user_management');
+        }else{
+            return view('index');
+        }
+    }
+
+    public function list(){
+
+       $query = User::with(['usertype', 'team'])->get();
+
+       return DataTables::of($query)
+            ->editColumn('id', function($user){
+                return encrypt($user->id);
+            })
+            ->addColumn('usertype', function($user){
+                return $user->usertype->name;
+            })
+            ->addColumn('team', function($user){
+                return $user->team->name;
+            })
+            ->make(true);
+
+    }
+
+    public function store(Request $request){
+
+        try{
+
+            $validator = Validator::make($request->all(), [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'usertype_id' => 'required|exists:usertypes,id',
+                'team_id' => 'required|exists:team,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            $user = new User();
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->usertype_id = $request->usertype_id;
+            $user->team_id = $request->team_id;
+            $user->status = 'Active';
+            $user->created_by = Auth::user()->id;
+            $user->created_at = now();
+            $user->updated_by = Auth::user()->id;
+            $user->updated_at = now();
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'User created successfully'], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function update(Request $request){
+        try{
+
+            $validator = Validator::make($request->all(), [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required',
+                'usertype_id' => 'required|exists:usertypes,id',
+                // 'team_id' => 'required|exists:team,id',
+                'status' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            $user = User::findOrFail(decrypt($request->id));
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->usertype_id = $request->usertype_id;
+            // $user->team_id = $request->team_id;
+            $user->status = $request->status;
+            $user->updated_by = Auth::user()->id;
+            $user->updated_at = now();
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'User updated successfully'], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+
+        }
+    }
+
+    public function destroy(){
+
+    }
+
+    public function edit($id){
+        try{
+            $id = decrypt($id);
+            $user = User::with(['usertype', 'team'])->findOrFail($id);
+
+            $user->id = encrypt($user->id);
+            return response()->json($user);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function getUserTypes(){
+
+        $userTypes = Usertype::all();
+        return response()->json($userTypes);
+
+    }
+
+    public function getTeams(){
+
+        $teams = Team::all();
+        return response()->json($teams);
+
+    }
+
+    public function sendTemporaryPassword($id){
+        try {
+            $user = User::findOrFail(decrypt($id));
+            $password = Str::random(8);
+            $user->password = Hash::make($password);
+            $user->save();
+
+            // Send email
+            // Mail::to($user->email)->send(new TemporaryPasswordMail($user, $password));
+
+            return response()->json(['success' => 'Temporary password sent successfully', 'password' => $password], 200);
+        } catch(\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+}

@@ -19,8 +19,10 @@ return new class extends Migration
             $table->string('status')->default('Active');
             $table->unsignedBigInteger('usertype_id')->nullable();
             $table->unsignedBigInteger('team_id')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

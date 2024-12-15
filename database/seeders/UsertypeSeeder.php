@@ -18,16 +18,25 @@ class UsertypeSeeder extends Seeder
             'name' => 'SuperAdmin',
         ]);
         Usertype::create([
-            'name' => 'Branch Manager',
+            'name' => 'General Manager',
         ]);
         Usertype::create([
-            'name' => 'Team Manager',
+            'name' => 'Group Manager',
+        ]);
+        // Usertype::create([
+        //     'name' => 'Admin Staff',
+        // ]);
+        Usertype::create([
+            'name' => 'Sales Admin Staff',
         ]);
         Usertype::create([
-            'name' => 'Financing Agent',
+            'name' => 'Financing Staff',
         ]);
         Usertype::create([
             'name' => 'Agent',
+        ]);
+        Usertype::create([
+            'name' => 'Vehicle Admin',
         ]);
 
     }

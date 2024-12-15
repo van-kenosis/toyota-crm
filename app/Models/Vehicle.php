@@ -20,7 +20,7 @@ class Vehicle extends Model
         'created_by',
         'updated_by',
     ];
-    
+
     public function inventory(){
         return $this->hasMany(Inventory::class, 'vehicle_id', 'id');
     }

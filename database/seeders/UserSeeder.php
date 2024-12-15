@@ -16,19 +16,27 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $superAdminType = Usertype::where('name', 'SuperAdmin')->first();
-        $team = Team::where('name', 'Team 1')->first();
-        if (!$superAdminType) {
-            return;
-        }
+        // $usertypes = Usertype::all();
+        // $team = Team::where('name', 'Team 1')->first();
+
+        // for ($i = 1; $i <= 10; $i++) {
+        //     User::create([
+        //         'first_name' => 'User' . $i,
+        //         'last_name' => 'Doe',
+        //         'email' => 'user' . $i . '@gmail.com',
+        //         'usertype_id' => $usertypes->random()->id,
+        //         'team_id' => rand(1, 5),
+        //         'password' => Hash::make('123456'),
+        //     ]);
+        // }
 
         User::create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'johndoe@gmail.com',
-            'usertype_id' => $superAdminType->id,
-            'team_id' => $team->id,
-            'password' => Hash::make('123456'),
+            'first_name' => 'SuperAdmin',
+            'last_name' => 'SuperAdmin',
+            'email' => 'crudph.dev@gmail.com',
+            'usertype_id' => 1,
+            'team_id' => 1,
+            'password' => Hash::make('qwerty...'),
         ]);
 
     }

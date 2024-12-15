@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="row mb-4">
-    <div class="col">
+    {{-- <div class="col">
         <div class="card" style="background-color: #000000;">
             <div class="card-body">
                 <div class="d-flex justify-content-center">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 {{-- <div class="row g-6">
