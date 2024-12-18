@@ -122,9 +122,15 @@
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">User Management</div>
         </li>
+        <li class="menu-item {{ request()->is('team') ? 'active' : '' }}">
+            <a href="/team" class="menu-link">
+                <i class='menu-icon tf-icons bx bxs-group'></i>
+              <div class="text-truncate" data-i18n="Page 2">Team</div>
+            </a>
+        </li>
         <li class="menu-item {{ request()->is('user-management') ? 'active' : '' }}">
             <a href="/user-management" class="menu-link">
-                <i class='menu-icon tf-icons bx bxs-group'></i>
+                <i class='menu-icon tf-icons bx bx-male-female'></i>
               <div class="text-truncate" data-i18n="Page 2">Users</div>
             </a>
         </li>

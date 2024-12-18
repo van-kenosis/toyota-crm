@@ -16,18 +16,18 @@ class TeamSeeder extends Seeder
         Team::create([
             'name' => 'Team 1',
         ]);
-        Team::create([
-            'name' => 'Team 2',
-        ]);
-        Team::create([
-            'name' => 'Team 3',
-        ]);
-        Team::create([
-            'name' => 'Team 4',
-        ]);
-        Team::create([
-            'name' => 'Team 5',
-        ]);
+        // Team::create([
+        //     'name' => 'Team 2',
+        // ]);
+        // Team::create([
+        //     'name' => 'Team 3',
+        // ]);
+        // Team::create([
+        //     'name' => 'Team 4',
+        // ]);
+        // Team::create([
+        //     'name' => 'Team 5',
+        // ]);
 
     }
 }

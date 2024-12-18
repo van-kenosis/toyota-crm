@@ -37,7 +37,7 @@ class PermissionUsertypeSeeder extends Seeder
             'view_application', 'list_pending_applications', 'list_approved_applications', 'edit_application',
             'update_application', 'get_banks', 'process_application', 'store_banks', 'update_bank_approval', 'update_terms',
             'view_vehicle_releases', 'released_units_list',
-            'view_vehicle_inventory', 'list_inventory'
+            'view_vehicle_inventory', 'list_inventory', 'list_available_units', 'get_total_inventory'
         ];
 
         // ADMIN STAFF Permissions
@@ -50,7 +50,9 @@ class PermissionUsertypeSeeder extends Seeder
             'process_reserved_reservation', 'get_cs_number', 'add_cs_number', 'cancel_pending_reservation',
             'view_vehicle_releases', 'released_units_list', 'process_vehicle_release', 'cancel_vehicle_release',
             'update_ltoremarks', 'get_status', 'update_status',
-            'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'store_vehicle', 'store_inventory'
+            'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'store_vehicle', 'store_inventory', 'update_profit',
+            'update_incoming_status', 'update_tags_inventory', 'update_inventory', 'edit_inventory'
+
         ];
 
         // VEHICLE ADMIN Permissions
@@ -66,7 +68,7 @@ class PermissionUsertypeSeeder extends Seeder
         $generalManagerPermissions = [
             'view_dashboard',
             'view_vehicle_releases', 'released_units_list', 'get_released_count', 'grand_total_profit',
-            'view_vehicle_inventory', 'list_inventory', 'get_total_inventory'
+            'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'list_available_units',
         ];
 
         $permissionsByUserType = [

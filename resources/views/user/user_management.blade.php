@@ -6,7 +6,7 @@
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <i class='bx bxs-user-account text-white' style="font-size: 24px;">&nbsp;</i>
+            <i class='bx bx-male-female text-white' style="font-size: 24px;">&nbsp;</i>
             <h4 class="text-white mb-0">User Management</h4>
         </div>
     </div>
@@ -55,7 +55,7 @@
                     <div class="row mb-4">
                         <div class="col-md">
                             <label for="edit_team" class="form-label">Team</label>
-                            <select class="form-control" id="edit_team" name="team_id" disabled>
+                            <select class="form-control" id="edit_team" name="team_id">
                                 <option value="">Select Team</option>
                             </select>
                             <small class="text-danger" id="edit_validate_team">Please select team</small>
@@ -150,7 +150,7 @@
 {{-- Users Table --}}
 <div class="row">
     <div class="col">
-        <div class="card">-
+        <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="usersTable" class="table table-bordered table-hover" style="width:100%">
@@ -277,7 +277,7 @@
                 last_name: $('#last_name').val(),
                 email: $('#email').val(),
                 password: $('#password').val(),
-                usertype_id: $('#usertype').val(),
+                usertype_id: $('#usertype_id').val(),
                 team_id: $('#team').val()
             };
 

@@ -468,7 +468,7 @@
             @else
                 url: '{{ route('application.cancel') }}',
             @endif
-            
+
             data: function(d) {
                 d.date_range = $('#date-range-picker').val();
             },
@@ -483,9 +483,13 @@
         },
         columns: [
             { data: 'id', name: 'id', title: 'ID' , visible: false},
+            @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Financing Staff' || auth()->user()->usertype->name === 'Sales Admin Staff')
             { data: 'team', name: 'team', title: 'Team' },
+            @endif
             { data: 'type', name: 'type', title: 'Type' },
+            @if (auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
             { data: 'agent', name: 'agent', title: 'Agent' },
+            @endif
             { data: 'client_name', name: 'client_name', title: 'Customer' },
             { data: 'contact_number', name: 'contact_number', title: 'Contact No.' },
             { data: 'unit', name: 'unit', title: 'Unit' },
