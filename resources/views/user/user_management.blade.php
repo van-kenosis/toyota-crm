@@ -6,7 +6,7 @@
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <i class='bx bxs-user-account text-white' style="font-size: 24px;">&nbsp;</i>
+            <i class='bx bx-male-female text-white' style="font-size: 24px;">&nbsp;</i>
             <h4 class="text-white mb-0">User Management</h4>
         </div>
     </div>
@@ -25,41 +25,45 @@
                     @csrf
                     <input type="hidden" id="edit_user_id" name="id">
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="edit_first_name" class="form-label required">First Name</label>
-                            <input type="text" class="form-control" id="edit_first_name" name="first_name">
-                            <small class="text-danger" id="edit_validate_first_name">Please enter first name</small>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="edit_last_name" class="form-label required">Last Name</label>
-                            <input type="text" class="form-control" id="edit_last_name" name="last_name">
-                            <small class="text-danger" id="edit_validate_last_name">Please enter last name</small>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="edit_email" class="form-label required">Email</label>
-                            <input type="email" class="form-control" id="edit_email" name="email">
-                            <small class="text-danger" id="edit_validate_email">Please enter valid email</small>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="edit_usertype" class="form-label required">User Type</label>
-                            <select class="form-control" id="edit_usertype" name="usertype_id">
+                        <div class="col-md">
+                            <label for="edit_usertype_id" class="form-label required">User Type</label>
+                            <select class="form-control" id="edit_usertype_id" name="usertype_id">
                                 <option value="">Select User Type</option>
                             </select>
                             <small class="text-danger" id="edit_validate_usertype">Please select user type</small>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="edit_team" class="form-label required">Team</label>
-                            <select class="form-control" id="edit_team" name="team_id" disabled>
+                        <div class="col-md">
+                            <label for="edit_first_name" class="form-label required">First Name</label>
+                            <input type="text" class="form-control" id="edit_first_name" name="first_name">
+                            <small class="text-danger" id="edit_validate_first_name">Please enter first name</small>
+                        </div>
+                        <div class="col-md">
+                            <label for="edit_last_name" class="form-label required">Last Name</label>
+                            <input type="text" class="form-control" id="edit_last_name" name="last_name">
+                            <small class="text-danger" id="edit_validate_last_name">Please enter last name</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <label for="edit_email" class="form-label required">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email">
+                            <small class="text-danger" id="edit_validate_email">Please enter valid email</small>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md">
+                            <label for="edit_team" class="form-label">Team</label>
+                            <select class="form-control" id="edit_team" name="team_id">
                                 <option value="">Select Team</option>
                             </select>
                             <small class="text-danger" id="edit_validate_team">Please select team</small>
                         </div>
-                        <div class="col-md-6">
-                            <label for="edit_status" class="form-label required">Status</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <label for="edit_status" class="form-label">Status</label>
                             <select class="form-control" id="edit_status" name="status">
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
@@ -89,39 +93,35 @@
                 <form id="addUserForm">
                     @csrf
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md">
+                            <label for="usertype_id" class="form-label required">User Type</label>
+                            <select class="form-control" id="usertype_id" name="usertype_id">
+                                <option value="">Select User Type</option>
+                            </select>
+                            <small class="text-danger" id="validate_usertype_id">Please select user type</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
                             <label for="first_name" class="form-label required">First Name</label>
                             <input type="text" class="form-control" id="first_name" name="first_name">
                             <small class="text-danger" id="validate_first_name">Please enter first name</small>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="last_name" class="form-label required">Last Name</label>
                             <input type="text" class="form-control" id="last_name" name="last_name">
                             <small class="text-danger" id="validate_last_name">Please enter last name</small>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="email" class="form-label required">Email</label>
                             <input type="email" class="form-control" id="email" name="email">
                             <small class="text-danger" id="validate_email">Please enter valid email</small>
                         </div>
-                        <div class="col-md-6">
-                            <label for="password" class="form-label required">Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                            <small class="text-danger" id="validate_password">Please enter password</small>
-                        </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="usertype" class="form-label required">User Type</label>
-                            <select class="form-control" id="usertype" name="usertype_id">
-                                <option value="">Select User Type</option>
-                            </select>
-                            <small class="text-danger" id="validate_usertype">Please select user type</small>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="team" class="form-label required">Team</label>
+
+                    <div class="row mb-3" id="teamRow" style="display: none;">
+                        <div class="col-md">
+                            <label for="team" class="form-label">Team</label>
                             <select class="form-control" id="team" name="team_id">
                                 <option value="">Select Team</option>
                             </select>
@@ -198,8 +198,8 @@
                             <button type="button" class="btn btn-icon btn-success edit-user" data-id="${data}" title="Edit User">
                                 <span class="tf-icons bx bx-pencil"></span>
                             </button>
-                            <button type="button" class="btn btn-icon btn-warning send-temporary-password" data-id="${data}" title="Send Temporary Password">
-                                <span class="tf-icons bx bx-envelope"></span>
+                            <button type="button" class="btn btn-icon btn-warning send-temporary-password" data-id="${data}" title="Generate Temporary Password">
+                                <span class="tf-icons bx bx-key"></span>
                             </button>
                         </div>`;
                     }
@@ -233,9 +233,22 @@
                     data.forEach(function(type) {
                         options += `<option value="${type.id}">${type.name}</option>`;
                     });
-                    $('#usertype, #edit_usertype').html(options);
+                    $('#usertype_id, #edit_usertype_id').html(options);
                 }
             });
+
+            // Handle change event to show/hide #teamRow
+            $('#usertype_id').on('change', function() {
+                const selectedType = $(this).find('option:selected').text().toLowerCase();
+                if (selectedType === 'agent' || selectedType === 'group manager') {
+                    $('#teamRow').show(); // Show the team row
+                } else {
+                    $('#teamRow').hide(); // Hide the team row
+                }
+            });
+
+            // Ensure #teamRow is hidden initially
+            $('#teamRow').hide();
         }
 
         function loadTeams() {
@@ -264,7 +277,7 @@
                 last_name: $('#last_name').val(),
                 email: $('#email').val(),
                 password: $('#password').val(),
-                usertype_id: $('#usertype').val(),
+                usertype_id: $('#usertype_id').val(),
                 team_id: $('#team').val()
             };
 
@@ -312,7 +325,7 @@
                     $('#edit_first_name').val(response.first_name);
                     $('#edit_last_name').val(response.last_name);
                     $('#edit_email').val(response.email);
-                    $('#edit_usertype').val(response.usertype_id);
+                    $('#edit_usertype_id').val(response.usertype_id);
                     $('#edit_team').val(response.team_id);
                     $('#edit_status').val(response.status);
                     $('#editUserModal').modal('show');
@@ -346,8 +359,8 @@
                 error: function(xhr) {
                     let errors = xhr.responseJSON?.errors || {};
                     Object.keys(errors).forEach(field => {
-                        $(`#validate_${field}`).text(errors[field][0]).show();
-                        $(`#${field}`).addClass('border-danger');
+                        $(`#edit_validate_${field}`).text(errors[field][0]).show();
+                        $(`#edit_${field}`).addClass('border-danger');
                     });
                 }
             });
@@ -362,9 +375,9 @@
                 success: function(response) {
                     if (response.success) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text:  'Your temporary password is: ' + response.password,
+                            icon: 'info',
+                            title: 'Temporary Password',
+                            text:  response.password,
                         })
                     }
                 },
@@ -377,9 +390,6 @@
                 }
             });
         });
-
-
-
 
     });
 </script>

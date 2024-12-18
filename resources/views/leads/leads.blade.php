@@ -539,8 +539,12 @@
                 searchPlaceholder: "Search..."
             },
         columns: [
+            @if(auth()->user()->usertype->name === 'SuperAdmin')
             { data: 'team', name: 'team', title: 'Team' },
+            @endif
+            @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
             { data: 'agent', name: 'agent', title: 'Agent' },
+            @endif
             { data: 'client_name', name: 'client_name', title: 'Client Name' },
             { data: 'contact_number', name: 'contact_number', title: 'Contact No.' },
             { data: 'unit', name: 'unit', title: 'Unit' },

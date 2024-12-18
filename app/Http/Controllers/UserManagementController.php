@@ -36,7 +36,7 @@ class UserManagementController extends Controller
                 return $user->usertype->name;
             })
             ->addColumn('team', function($user){
-                return $user->team->name;
+                return $user->team->name ?? '';
             })
             ->make(true);
 
@@ -51,7 +51,7 @@ class UserManagementController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'usertype_id' => 'required|exists:usertypes,id',
-                'team_id' => 'required|exists:team,id',
+                'team_id' => 'nullable|exists:team,id',
             ]);
 
             if ($validator->fails()) {
@@ -87,7 +87,6 @@ class UserManagementController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => 'required',
                 'usertype_id' => 'required|exists:usertypes,id',
-                // 'team_id' => 'required|exists:team,id',
                 'status' => 'required',
             ]);
 
@@ -148,7 +147,9 @@ class UserManagementController extends Controller
     public function sendTemporaryPassword($id){
         try {
             $user = User::findOrFail(decrypt($id));
-            $password = Str::random(8);
+            $letters = Str::upper(Str::random(4));
+            $numbers = rand(100, 999);
+            $password = 'TYT' . $letters . $numbers;
             $user->password = Hash::make($password);
             $user->save();
 

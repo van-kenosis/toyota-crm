@@ -42,6 +42,7 @@
                             $user = Auth::user();
                             $firstInitial = strtoupper(substr($user->first_name, 0, 1));
                             $lastInitial = strtoupper(substr($user->last_name, 0, 1));
+                            // $position = $user->usertype->name;
                         @endphp
                         <h6 class="w-px-40 rounded-circle text-primary" style="font-size: 4vh;"><b>{{ $firstInitial }}{{ $lastInitial }}</b></h6>
                     </div>
@@ -58,7 +59,7 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <span class="fw-medium d-block">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</span>
-                                    <small class="text-muted">{{ Auth::user()->usertype->name }}</small>
+                                    <small class="text-muted">{{ $user->usertype->name ?? 'N/A' }}</small>
                                 </div>
                             </div>
                         </a>

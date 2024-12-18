@@ -16,7 +16,7 @@ class ProfileController extends Controller
             $user = Auth::user();
             return view('profile.profile', compact('user'));
         }
-        
+
         return redirect()->route('login');
     }
 
@@ -35,7 +35,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -47,7 +47,7 @@ class ProfileController extends Controller
         $user->last_name = $validated['last_name'];
         $user->email = $validated['email'];
         $user->updated_by = Auth::id();
-        
+
         if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }

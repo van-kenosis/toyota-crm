@@ -17,7 +17,7 @@
 
     <ul class="menu-inner py-1">
 
-      
+
       @can('view_dashboard')
         <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
             <a href="/dashboard" class="menu-link">
@@ -27,9 +27,9 @@
         </li>
       @endcan
 
-      @if(auth()->user()->can('view_leads') || 
-        auth()->user()->can('view_application') || 
-        auth()->user()->can('view_vehicle_reservation') || 
+      @if(auth()->user()->can('view_leads') ||
+        auth()->user()->can('view_application') ||
+        auth()->user()->can('view_vehicle_reservation') ||
         auth()->user()->can('view_vehicle_releases'))
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Transactions</div>
@@ -69,7 +69,7 @@
         </li>
       @endcan
 
-      @can('view_disputes')
+      {{-- @can('view_disputes')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Cancelations</div>
         </li>
@@ -80,13 +80,13 @@
               <div class="text-truncate" data-i18n="Page 2">Disputes</div>
             </a>
         </li>
-      @endcan
+      @endcan --}}
 
       @can('view_vehicle_inventory')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Inventory</div>
         </li>
-       
+
         <li class="menu-item {{ request()->is('vehicle-inventory') ? 'active' : '' }}">
             <a href="/vehicle-inventory" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-car-garage'></i>
@@ -106,7 +106,7 @@
         </li>
         @endcan
 
-      @can('view_sales')
+      {{-- @can('view_sales')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Statistics</div>
         </li>
@@ -116,14 +116,21 @@
               <div class="text-truncate" data-i18n="Page 2">Sales</div>
             </a>
         </li>
-      @endcan
+      @endcan --}}
+
         @can('view_users')
         <li class="menu-item">
             <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">User Management</div>
         </li>
+        <li class="menu-item {{ request()->is('team') ? 'active' : '' }}">
+            <a href="/team" class="menu-link">
+                <i class='menu-icon tf-icons bx bxs-group'></i>
+              <div class="text-truncate" data-i18n="Page 2">Team</div>
+            </a>
+        </li>
         <li class="menu-item {{ request()->is('user-management') ? 'active' : '' }}">
             <a href="/user-management" class="menu-link">
-                <i class='menu-icon tf-icons bx bxs-group'></i>
+                <i class='menu-icon tf-icons bx bx-male-female'></i>
               <div class="text-truncate" data-i18n="Page 2">Users</div>
             </a>
         </li>

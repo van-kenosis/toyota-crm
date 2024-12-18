@@ -12,6 +12,7 @@ use App\Http\Controllers\VehicleInventoryController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamController;
 
 //LOGIN
 Route::get('/', [LoginController::class, 'index']);
@@ -145,4 +146,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
+//TEAM MANAGEMENT
+    Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+    Route::post('/team/create', [TeamController::class, 'createTeam'])->name('team.create');
+    Route::post('/team/update/{id}', [TeamController::class, 'updateTeam'])->name('team.update');
+    Route::get('/team/list', [TeamController::class, 'listTeam'])->name('team.list');
 

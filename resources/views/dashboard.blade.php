@@ -2,8 +2,49 @@
 
 @section('content')
 
-<div class="row mb-4">
-    {{-- <div class="col">
+{{-- Title Header --}}
+<div class="card bg-dark shadow-none mb-4">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md d-flex align-items-center">
+                <i class='bx bxs-dashboard text-white' style="font-size: 24px;">&nbsp;</i>
+                <h4 class="text-white mb-0">Dashboard</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center gap-1">
+                        {{-- <i class='bx bx-calendar fs-4 text-warning'></i> --}}
+                        <div id="liveDate" class="text-warning fs-6"></div>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        {{-- <i class='bx bx-time-five fs-4 text-warning'></i> --}}
+                        <div id="liveTime" class="text-warning fs-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-label-warning shadow-none">
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md d-flex justify-content-center">
+                <div class="row"><i class='bx bxs-dashboard fs-1'></i></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md d-flex justify-content-center">
+                <div class="row"><h1 class="text-warning">"Dashboard Under Development"</h1></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- <div class="row mb-4">
+    <div class="col">
         <div class="card" style="background-color: #000000;">
             <div class="card-body">
                 <div class="d-flex justify-content-center">
@@ -17,79 +58,8 @@
                 </div>
             </div>
         </div>
-    </div> --}}
-</div>
-
-{{-- <div class="row g-6">
-    <!-- Card Border Shadow -->
-    <div class="col-lg-3 col-sm-6">
-      <div class="card card-border-shadow-primary h-100">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-2">
-            <div class="avatar me-4">
-              <span class="avatar-initial rounded bg-label-primary"><i class="bx bxs-truck bx-lg"></i></span>
-            </div>
-            <h4 class="mb-0">42</h4>
-          </div>
-          <p class="mb-2">On route vehicles</p>
-          <p class="mb-0">
-            <span class="text-heading fw-medium me-2">+18.2%</span>
-            <span class="text-muted">than last week</span>
-          </p>
-        </div>
-      </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-      <div class="card card-border-shadow-warning h-100">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-2">
-            <div class="avatar me-4">
-              <span class="avatar-initial rounded bg-label-warning"><i class='bx bx-error bx-lg'></i></span>
-            </div>
-            <h4 class="mb-0">8</h4>
-          </div>
-          <p class="mb-2">Vehicles with errors</p>
-          <p class="mb-0">
-            <span class="text-heading fw-medium me-2">-8.7%</span>
-            <span class="text-muted">than last week</span>
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-sm-6">
-      <div class="card card-border-shadow-danger h-100">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-2">
-            <div class="avatar me-4">
-              <span class="avatar-initial rounded bg-label-danger"><i class='bx bx-git-repo-forked bx-lg'></i></span>
-            </div>
-            <h4 class="mb-0">27</h4>
-          </div>
-          <p class="mb-2">Deviated from route</p>
-          <p class="mb-0">
-            <span class="text-heading fw-medium me-2">+4.3%</span>
-            <span class="text-muted">than last week</span>
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-sm-6">
-      <div class="card card-border-shadow-info h-100">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-2">
-            <div class="avatar me-4">
-              <span class="avatar-initial rounded bg-label-info"><i class='bx bx-time-five bx-lg'></i></span>
-            </div>
-            <h4 class="mb-0">13</h4>
-          </div>
-          <p class="mb-2">Late vehicles</p>
-          <p class="mb-0">
-            <span class="text-heading fw-medium me-2">-2.5%</span>
-            <span class="text-muted">than last week</span>
-          </p>
-        </div>
-      </div>
-  </div> --}}
+</div> --}}
 
 
 
@@ -97,6 +67,29 @@
 
 
 @section('components.specific_page_scripts')
+<script>
+    function updateTimeAndDate() {
+    const now = new Date();
+
+    // Format time (HH:MM:SS)
+    const time = now.toLocaleTimeString();
+
+    // Format date (e.g., Monday, December 16, 2024)
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const date = now.toLocaleDateString(undefined, dateOptions);
+
+    // Update the DOM using jQuery
+    $('#liveTime').text(time);
+    $('#liveDate').text(date);
+}
+
+// Update time and date every second
+setInterval(updateTimeAndDate, 1000);
+
+// Initial call to display immediately
+updateTimeAndDate();
+
+</script>
 @endsection
 
 

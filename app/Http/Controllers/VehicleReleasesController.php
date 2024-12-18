@@ -33,6 +33,7 @@ class VehicleReleasesController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
         ){
             $query = Vehicle::with('inventory')
                             ->whereNull('deleted_at')
@@ -139,6 +140,7 @@ class VehicleReleasesController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
         ){
             $query = Team::whereNull('deleted_at');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
@@ -250,6 +252,7 @@ class VehicleReleasesController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
         ){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('deleted_at')
@@ -334,6 +337,7 @@ class VehicleReleasesController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
         ){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -448,6 +452,7 @@ class VehicleReleasesController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
         ){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -693,7 +698,7 @@ class VehicleReleasesController extends Controller
         $released_status = Status::where('status', 'like', 'Released')->first();
         $posted_status = Status::where('status', 'like', 'Posted')->first();
 
-        if(Auth::user()->usertype->name === 'SuperAdmin' || Auth::user()->usertype->name === 'General Manager'){
+        if(Auth::user()->usertype->name === 'SuperAdmin' || Auth::user()->usertype->name === 'General Manager' || Auth::user()->usertype->name === 'Financing Staff' || Auth::user()->usertype->name === 'Sales Admin Staff'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                 ->whereNull('deleted_at')
                 ->whereIn('reservation_transaction_status', [$released_status->id, $posted_status->id]);

@@ -60,7 +60,7 @@ class LeadController extends Controller
                         ->where('status_id', '<>', $status);
         }
 
-                       
+
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -79,7 +79,7 @@ class LeadController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -130,7 +130,7 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        
+
         if(Auth::user()->usertype->name === 'SuperAdmin'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -176,7 +176,7 @@ class LeadController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -274,7 +274,7 @@ class LeadController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -370,7 +370,7 @@ class LeadController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
