@@ -88,6 +88,7 @@ class UserManagementController extends Controller
                 'email' => 'required',
                 'usertype_id' => 'required|exists:usertypes,id',
                 'status' => 'required',
+                'password' => 'nullable|string|min:8',
             ]);
 
             if ($validator->fails()) {
@@ -100,6 +101,9 @@ class UserManagementController extends Controller
             $user->email = $request->email;
             $user->usertype_id = $request->usertype_id;
             // $user->team_id = $request->team_id;
+            if($request->password){
+                $user->password = Hash::make($request->password);
+            }
             $user->status = $request->status;
             $user->updated_by = Auth::user()->id;
             $user->updated_at = now();
@@ -123,6 +127,7 @@ class UserManagementController extends Controller
             $user = User::with(['usertype', 'team'])->findOrFail($id);
 
             $user->id = encrypt($user->id);
+            $user->password = '';
             return response()->json($user);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);

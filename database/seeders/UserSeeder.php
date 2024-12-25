@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
             'last_name' => 'SuperAdmin',
             'email' => 'crudph.dev@gmail.com',
             'usertype_id' => 1,
-            'team_id' => 1,
+            'team_id' => null,
             'password' => Hash::make('qwerty...'),
         ]);
 
