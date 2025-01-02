@@ -108,5 +108,45 @@ class DisputeController extends Controller
         ->make(true);
     }
 
+    public function cancel(){
+        try {
+            $inquiry = Inquiry::findOrFail(decrypt(request()->id));
+            $inquiry->updated_by = Auth::user()->id;
+            $inquiry->save();
+            $inquiry->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'The dispute has been disapproved.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function approved(){
+        try {
+            $inquiry = Inquiry::findOrFail(decrypt(request()->id));
+            $inquiry->is_dispute = 0;
+            $inquiry->updated_by = Auth::user()->id;
+            $inquiry->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'The dispute has been approved.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 }

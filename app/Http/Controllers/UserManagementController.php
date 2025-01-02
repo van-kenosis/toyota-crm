@@ -100,7 +100,7 @@ class UserManagementController extends Controller
             $user->last_name = $request->last_name;
             $user->email = $request->email;
             $user->usertype_id = $request->usertype_id;
-            // $user->team_id = $request->team_id;
+            $user->team_id = $request->team_id ?? '';
             if($request->password){
                 $user->password = Hash::make($request->password);
             }

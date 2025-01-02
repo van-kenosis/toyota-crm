@@ -97,31 +97,6 @@
                 d.date_range = $('#date-range-picker').val();
             },
         },
-
-        // data: [
-        //     {
-        //         id: 1,
-        //         customer: 'John Doe',
-        //         agent: 'Agent A',
-        //         disputed_agent: 'Agent B',
-        //         created_at: '2023-01-01',
-        //         created_by: 'Admin',
-        //         updated_at: '2023-01-02',
-        //         updated_by: 'Manager',
-        //         status: 'Pending'
-        //     },
-        //     {
-        //         id: 2,
-        //         customer: 'Jane Smith',
-        //         agent: 'Agent X',
-        //         disputed_agent: 'Agent Y',
-        //         created_at: '2023-01-03',
-        //         created_by: 'Admin',
-        //         updated_at: '2023-01-04',
-        //         updated_by: 'Manager',
-        //         status: 'Approved'
-        //     }
-        // ],
         columns: [
             { data: 'id', name: 'id', title: 'ID', visible: false },
             { data: 'client_name', name: 'client_name', title: 'Customer Name' },
@@ -138,10 +113,10 @@
                 title: 'Action',
                 render: function(data) {
                     return `
-                    <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editTeamModal" data-id="${data}">
+                    <button type="button" class="btn btn-icon me-2 btn-success like-btn" data-id="${data}">
                         <span class="tf-icons bx bxs-like bx-22px"></span>
                     </button>
-                    <button type="button" class="btn btn-icon me-2 btn-danger edit-btn" data-bs-toggle="modal" data-bs-target="#editTeamModal" data-id="${data}">
+                    <button type="button" class="btn btn-icon me-2 btn-danger dislike-btn" data-id="${data}">
                         <span class="tf-icons bx bxs-dislike bx-22px"></span>
                     </button>
                 `
@@ -150,6 +125,102 @@
         ],
         order: [[2, 'desc']],
     });
+
+    $(document).on('click', '.dislike-btn', function() {
+        const leadId = $(this).data('id');
+       
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to mark this dispute as disapprove?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, mark it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("dispute.cancel") }}',
+                    type: 'POST',
+                    data: {
+                        id: leadId
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Updated!',
+                                response.message,
+                                'success'
+                            );
+                            teamTable.ajax.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            xhr.responseJSON?.message || 'Something went wrong!',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+        
+
+    })
+
+    $(document).on('click', '.like-btn', function() {
+        const leadId = $(this).data('id');
+        
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to mark this dispute as approve?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, mark it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("dispute.approved") }}',
+                    type: 'POST',
+                    data: {
+                        id: leadId
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Updated!',
+                                response.message,
+                                'success'
+                            );
+                            teamTable.ajax.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            xhr.responseJSON?.message || 'Something went wrong!',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+        
+
+    })
+
+
+
 
 </script>
 @endsection
