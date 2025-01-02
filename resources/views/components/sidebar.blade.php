@@ -4,7 +4,7 @@
         <img src="{{asset('assets/myimg/logo.png')}}" class="app-brand-logo w-px-30 h-auto me-2 " alt="logo" />
             <span class="app-brand-text menu-text fw-bold">TOYOTA
               <br />
-              <span class="fs-tiny fw-medium">CRM System</span>
+              <span class="fs-tiny fw-medium">VSMS System</span>
             </span>
       </a>
 
@@ -69,18 +69,18 @@
         </li>
       @endcan
 
-      {{-- @can('view_disputes')
+      @can('view_disputes')
         <li class="menu-item">
-            <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Cancelations</div>
+            <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Dispute Transactions</div>
         </li>
 
-        <li class="menu-item {{ request()->is('') ? 'active' : '' }}">
-            <a href="" class="menu-link">
+        <li class="menu-item {{ request()->is('dispute') ? 'active' : '' }}">
+            <a href="/dispute" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-x-square'></i>
               <div class="text-truncate" data-i18n="Page 2">Disputes</div>
             </a>
         </li>
-      @endcan --}}
+      @endcan
 
       @can('view_vehicle_inventory')
         <li class="menu-item">

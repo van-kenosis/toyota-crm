@@ -50,4 +50,10 @@ class Inquiry extends Model
     public function inquiryType(){
         return $this->belongsTo(InquryType::class, 'inquiry_type_id', 'id');
     }
+
+    public function updateBy(){
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+
 }
