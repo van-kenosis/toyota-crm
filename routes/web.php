@@ -157,5 +157,7 @@ Route::middleware(['auth'])->group(function () {
 //DISPUTE
     Route::get('/dispute', [DisputeController::class, 'index'])->name('dispute.index');
     Route::get('/dispute/getDisputes', [DisputeController::class, 'getDisputes'])->name('dispute.getDisputes');
+    Route::post('/dispute/cancel', [DisputeController::class, 'cancel'])->name('dispute.cancel');
+    Route::post('/dispute/approved', [DisputeController::class, 'approved'])->name('dispute.approved');
 
 
