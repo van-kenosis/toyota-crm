@@ -70,6 +70,11 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md">
+                        <label for="edit_password" class="form-label text-info">Update Password?</label>
+                        <input type="password" class="form-control" id="edit_password" name="password">
+                        <small class="text-danger" id="edit_validate_password">Please enter password</small>
+                    </div>
                     <div class="row">
                         <div class="col-md d-flex justify-content-end gap-2">
                             <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Cancel</button>
@@ -328,6 +333,7 @@
                     $('#edit_usertype_id').val(response.usertype_id);
                     $('#edit_team').val(response.team_id);
                     $('#edit_status').val(response.status);
+                    $('#edit_password').val('');
                     $('#editUserModal').modal('show');
                 }
             });

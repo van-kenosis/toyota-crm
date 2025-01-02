@@ -11,6 +11,8 @@ use App\Models\Team;
 use App\Models\Transactions;
 use App\Models\Vehicle;
 use App\Models\InquryType;
+use App\Models\User;
+use App\Models\Usertype;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +37,7 @@ class LeadController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'){
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
                         })
@@ -42,6 +45,7 @@ class LeadController extends Controller
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
                         })
@@ -53,6 +57,7 @@ class LeadController extends Controller
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->where('created_by', Auth::user()->id)
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
@@ -134,6 +139,7 @@ class LeadController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
                         })
@@ -141,6 +147,7 @@ class LeadController extends Controller
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
                         })
@@ -152,6 +159,7 @@ class LeadController extends Controller
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->where('created_by', Auth::user()->id)
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
@@ -230,6 +238,7 @@ class LeadController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
                         })
@@ -237,6 +246,7 @@ class LeadController extends Controller
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
                         })
@@ -248,6 +258,7 @@ class LeadController extends Controller
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->where('created_by', Auth::user()->id)
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
@@ -328,6 +339,7 @@ class LeadController extends Controller
         if(Auth::user()->usertype->name === 'SuperAdmin'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
                         })
@@ -335,6 +347,7 @@ class LeadController extends Controller
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
                         })
@@ -346,6 +359,7 @@ class LeadController extends Controller
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
+                        ->where('is_dispute', '0')
                         ->where('created_by', Auth::user()->id)
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
@@ -531,62 +545,177 @@ class LeadController extends Controller
 
             ]);
 
-            $customer = new Customer();
-            $customer->inquiry_type_id =  $validated['inquiry_type_id'];
-            $customer->customer_first_name = $validated['first_name'];
-            $customer->customer_last_name = $validated['last_name'];
-            $customer->department_name = $validated['government'];
-            $customer->company_name = $validated['company'] ?  $validated['company'] : $validated['fleet'];
-            $customer->contact_number = $validated['mobile_number'];
-            $customer->gender = $validated['gender'];
-            $customer->address = $validated['address'];
-            $customer->birthdate = $validated['birthdate'];
-            $customer->age = $validated['age'];
-            $customer->source = $validated['source'];
-            $customer->created_by = Auth::id();
-            $customer->updated_by = Auth::id();
-            $customer->save();
+            $ExistingCustomer = Customer::where('customer_first_name', $validated['first_name'])
+                                          ->where('customer_last_name', $validated['last_name'])
+                                          ->first();
 
-            $vehicle = Vehicle::firstOrCreate(
-                [
-                    'unit' => $validated['car_unit'],
-                    'variant' => $validated['car_variant'],
-                    'color' => $validated['car_color'],
-                ],
-                [
-                    'unit' => $validated['car_unit'],
-                    'variant' => $validated['car_variant'],
-                    'color' => $validated['car_color'],
-                    'created_by' => Auth::id(),
-                    'updated_by' => Auth::id(),
-                ]
-            );
+            if($ExistingCustomer){
 
-            $approved_status = Status::where('status', 'like', 'approved')->first()->id;
-            $pending_status = Status::where('status', 'like', 'pending')->first()->id;
+                $existingInquiry = Inquiry::where('customer_id', $ExistingCustomer->id)
+                                          ->where('is_dispute', '0')
+                                          ->first();
 
-            $inquiry = new Inquiry();
-            $inquiry->inquiry_type_id =  $validated['inquiry_type_id'];
-            $inquiry->customer_id = $customer->id;
-            $inquiry->vehicle_id = $vehicle->id;
-            $inquiry->quantity = $validated['quantity'];
-            $inquiry->transaction = $validated['transaction'];
-            $inquiry->category = $validated['category'];
-            $inquiry->remarks = $validated['additional_info'];
-            $inquiry->date = now()->format('F d'); // Month name day
-            $inquiry->status_id = $pending_status;
-            $inquiry->status_updated_by = Auth::id();
-            $inquiry->status_updated_at = now();
-            $inquiry->created_at = now();
-            $inquiry->created_by = Auth::id();
-            $inquiry->updated_by = Auth::id();
-            $inquiry->save();
+                if( $existingInquiry){
+                    $usertype = Usertype::where('name', 'like', 'Agent')->first()->id;
+
+                    $ActiveAgent = User::where('id', $existingInquiry->created_by)
+                    ->where('usertype_id',  $usertype)
+                    ->where('status', 'Active')
+                    ->first();
+
+                    if($ActiveAgent){
+
+                        $vehicle = Vehicle::firstOrCreate(
+                            [
+                                'unit' => $validated['car_unit'],
+                                'variant' => $validated['car_variant'],
+                                'color' => $validated['car_color'],
+                            ],
+                            [
+                                'unit' => $validated['car_unit'],
+                                'variant' => $validated['car_variant'],
+                                'color' => $validated['car_color'],
+                                'created_by' => Auth::id(),
+                                'updated_by' => Auth::id(),
+                            ]
+                        );
+
+                        $pending_status = Status::where('status', 'like', 'pending')->first()->id;
+
+                        $inquiry = new Inquiry();
+                        $inquiry->inquiry_type_id =  $validated['inquiry_type_id'];
+                        $inquiry->customer_id = $ExistingCustomer->id;
+                        $inquiry->vehicle_id = $vehicle->id;
+                        $inquiry->quantity = $validated['quantity'];
+                        $inquiry->transaction = $validated['transaction'];
+                        $inquiry->category = $validated['category'];
+                        $inquiry->remarks = $validated['additional_info'];
+                        $inquiry->date = now()->format('F d'); // Month name day
+                        $inquiry->status_id = $pending_status;
+                        $inquiry->status_updated_by = Auth::id();
+                        $inquiry->status_updated_at = now();
+                        $inquiry->created_at = now();
+                        $inquiry->is_dispute = 1;
+                        $inquiry->created_by = Auth::id();
+                        $inquiry->updated_by = Auth::id();
+                        $inquiry->save();
+
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'The primary agent for this inquiry has been assigned, and it is now marked as disputed'
+                        ]);
+
+                    }else{
+
+                        $vehicle = Vehicle::firstOrCreate(
+                            [
+                                'unit' => $validated['car_unit'],
+                                'variant' => $validated['car_variant'],
+                                'color' => $validated['car_color'],
+                            ],
+                            [
+                                'unit' => $validated['car_unit'],
+                                'variant' => $validated['car_variant'],
+                                'color' => $validated['car_color'],
+                                'created_by' => Auth::id(),
+                                'updated_by' => Auth::id(),
+                            ]
+                        );
+
+                        $pending_status = Status::where('status', 'like', 'pending')->first()->id;
+
+                        $inquiry = new Inquiry();
+                        $inquiry->inquiry_type_id =  $validated['inquiry_type_id'];
+                        $inquiry->customer_id = $ExistingCustomer->id;
+                        $inquiry->vehicle_id = $vehicle->id;
+                        $inquiry->quantity = $validated['quantity'];
+                        $inquiry->transaction = $validated['transaction'];
+                        $inquiry->category = $validated['category'];
+                        $inquiry->remarks = $validated['additional_info'];
+                        $inquiry->date = now()->format('F d'); // Month name day
+                        $inquiry->status_id = $pending_status;
+                        $inquiry->status_updated_by = Auth::id();
+                        $inquiry->status_updated_at = now();
+                        $inquiry->created_at = now();
+                        $inquiry->is_dispute = 0;
+                        $inquiry->created_by = Auth::id();
+                        $inquiry->updated_by = Auth::id();
+                        $inquiry->save();
+
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Inquiry created successfully'
+                        ]);
+
+                    }
+
+                }
+
+            }else{
+
+                $customer = new Customer();
+                $customer->inquiry_type_id =  $validated['inquiry_type_id'];
+                $customer->customer_first_name = $validated['first_name'];
+                $customer->customer_last_name = $validated['last_name'];
+                $customer->department_name = $validated['government'];
+                $customer->company_name = $validated['company'] ?  $validated['company'] : $validated['fleet'];
+                $customer->contact_number = $validated['mobile_number'];
+                $customer->gender = $validated['gender'];
+                $customer->address = $validated['address'];
+                $customer->birthdate = $validated['birthdate'];
+                $customer->age = $validated['age'];
+                $customer->source = $validated['source'];
+                $customer->created_by = Auth::id();
+                $customer->updated_by = Auth::id();
+                $customer->save();
+
+                $vehicle = Vehicle::firstOrCreate(
+                    [
+                        'unit' => $validated['car_unit'],
+                        'variant' => $validated['car_variant'],
+                        'color' => $validated['car_color'],
+                    ],
+                    [
+                        'unit' => $validated['car_unit'],
+                        'variant' => $validated['car_variant'],
+                        'color' => $validated['car_color'],
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id(),
+                    ]
+                );
+
+                $approved_status = Status::where('status', 'like', 'approved')->first()->id;
+                $pending_status = Status::where('status', 'like', 'pending')->first()->id;
+
+                $inquiry = new Inquiry();
+                $inquiry->inquiry_type_id =  $validated['inquiry_type_id'];
+                $inquiry->customer_id = $customer->id;
+                $inquiry->vehicle_id = $vehicle->id;
+                $inquiry->quantity = $validated['quantity'];
+                $inquiry->transaction = $validated['transaction'];
+                $inquiry->category = $validated['category'];
+                $inquiry->remarks = $validated['additional_info'];
+                $inquiry->date = now()->format('F d'); // Month name day
+                $inquiry->status_id = $pending_status;
+                $inquiry->status_updated_by = Auth::id();
+                $inquiry->status_updated_at = now();
+                $inquiry->created_at = now();
+                $inquiry->is_dispute = 0;
+                $inquiry->created_by = Auth::id();
+                $inquiry->updated_by = Auth::id();
+                $inquiry->save();
 
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Inquiry created successfully'
-            ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Inquiry created successfully'
+                ]);
+
+            }
+
+
+
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

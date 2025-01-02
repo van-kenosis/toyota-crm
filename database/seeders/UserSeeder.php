@@ -31,11 +31,11 @@ class UserSeeder extends Seeder
         // }
 
         User::create([
-            'first_name' => 'SuperAdmin',
-            'last_name' => 'SuperAdmin',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
             'email' => 'crudph.dev@gmail.com',
             'usertype_id' => 1,
-            'team_id' => 1,
+            'team_id' => null,
             'password' => Hash::make('qwerty...'),
         ]);
 

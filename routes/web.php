@@ -13,6 +13,8 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\DisputeController;
+
 
 //LOGIN
 Route::get('/', [LoginController::class, 'index']);
@@ -151,4 +153,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/team/create', [TeamController::class, 'createTeam'])->name('team.create');
     Route::post('/team/update/{id}', [TeamController::class, 'updateTeam'])->name('team.update');
     Route::get('/team/list', [TeamController::class, 'listTeam'])->name('team.list');
+
+//DISPUTE
+    Route::get('/dispute', [DisputeController::class, 'index'])->name('dispute.index');
+    Route::get('/dispute/getDisputes', [DisputeController::class, 'getDisputes'])->name('dispute.getDisputes');
+
 

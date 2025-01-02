@@ -22,7 +22,7 @@ class StatusSeeder extends Seeder
         Status::create(['status' => 'Released']);
         Status::create(['status' => 'Pending For Release']);
         Status::create(['status' => 'Posted']);
-        
+
         Status::create(['status' => 'Available']);
         Status::create(['status' => 'Invoice']);
         Status::create(['status' => 'Pull Out']);

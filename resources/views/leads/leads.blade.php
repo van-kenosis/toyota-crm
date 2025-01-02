@@ -539,7 +539,7 @@
                 searchPlaceholder: "Search..."
             },
         columns: [
-            @if(auth()->user()->usertype->name === 'SuperAdmin')
+            @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'General Manager')
             { data: 'team', name: 'team', title: 'Team' },
             @endif
             @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')

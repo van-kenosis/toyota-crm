@@ -25,6 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('status_updated_by')->nullable();
             $table->date('status_updated_at')->nullable();
+            $table->boolean('is_dispute')->default('0');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();

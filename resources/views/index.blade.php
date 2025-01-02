@@ -92,7 +92,7 @@
               </a>
             </div>
             <!-- /Logo -->
-            <h4 class="mb-2">Toyota Customer Relation Management System</h4>
+            <h4 class="mb-2">Vehicle Sales Management System</h4>
             <p class="mb-4">Please sign in to your account</p>
 
             <form id="loginForm" class="mb-3">
