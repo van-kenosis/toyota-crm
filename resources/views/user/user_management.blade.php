@@ -54,11 +54,11 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-md">
-                            <label for="edit_team" class="form-label">Team</label>
+                            <label for="edit_team" class="form-label">Group</label>
                             <select class="form-control" id="edit_team" name="team_id">
-                                <option value="">Select Team</option>
+                                <option value="">Select Group</option>
                             </select>
-                            <small class="text-danger" id="edit_validate_team">Please select team</small>
+                            <small class="text-danger" id="edit_validate_team">Please select group</small>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -126,11 +126,11 @@
 
                     <div class="row mb-3" id="teamRow" style="display: none;">
                         <div class="col-md">
-                            <label for="team" class="form-label">Team</label>
+                            <label for="team" class="form-label">Group</label>
                             <select class="form-control" id="team" name="team_id">
-                                <option value="">Select Team</option>
+                                <option value="">Select Group</option>
                             </select>
-                            <small class="text-danger" id="validate_team">Please select team</small>
+                            <small class="text-danger" id="validate_team">Please select group</small>
                         </div>
                     </div>
                     <div class="row">
@@ -190,7 +190,7 @@
                 },
                 { data: 'email', name: 'email', title: 'Email' },
                 { data: 'usertype', name: 'usertype', title: 'User Type' },
-                { data: 'team', name: 'team', title: 'Team' },
+                { data: 'team', name: 'team', title: 'Group' },
                 { data: 'status', name: 'status', title: 'Status' },
                 {
                     data: 'id',
@@ -261,7 +261,7 @@
                 url: '{{ route("teams.list") }}',
                 type: 'GET',
                 success: function(data) {
-                    let options = '<option value="">Select Team</option>';
+                    let options = '<option value="">Select Group</option>';
                     data.forEach(function(team) {
                         options += `<option value="${team.id}">${team.name}</option>`;
                     });
@@ -395,6 +395,11 @@
                     });
                 }
             });
+        });
+
+        // Real-time Uppercase Transformation
+        $("input[type='text'], textarea").on("input", function () {
+            $(this).val($(this).val().toUpperCase());
         });
 
     });

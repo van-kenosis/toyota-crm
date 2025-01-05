@@ -58,6 +58,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'get_status', 'permission_description' => 'Allows the user to get the status of a vehicle release.'],
         ['permission_name' => 'update_status', 'permission_description' => 'Allows the user to update the status of a vehicle release.'],
         ['permission_name' => 'grand_total_profit', 'permission_description' => 'Allows the user to get the grand total profit.'],
+        ['permission_name' => 'update_released_remarks', 'permission_description' => 'Allows the user to update remarks on released unit.'],
 
         ['permission_name' => 'view_vehicle_inventory', 'permission_description' => 'Allows the user to view vehicle inventory.'],
         // ['permission_name' => 'list_inventory', 'permission_description' => 'Allows the user to list vehicle inventory.'],

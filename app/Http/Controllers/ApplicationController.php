@@ -177,7 +177,7 @@ class ApplicationController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -246,7 +246,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->updated_at->format('d/m/Y');
         })
 
         ->make(true);
@@ -299,7 +299,7 @@ class ApplicationController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -367,7 +367,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->updated_at->format('d/m/Y');
         })
 
         ->make(true);
@@ -422,7 +422,7 @@ class ApplicationController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -490,7 +490,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->updated_at->format('d/m/Y');
         })
 
         ->make(true);
@@ -542,7 +542,7 @@ class ApplicationController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->user->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -610,7 +610,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->updated_at->format('d/m/Y');
         })
 
         ->make(true);

@@ -176,13 +176,16 @@ class VehicleReservationController extends Controller
         ->addColumn('trans_type', function($data) {
             return $data->inquiry->inquiryType->inquiry_type;
         })
+        ->addColumn('transaction', function($data) {
+            return $data->inquiry->transaction;
+        })
         ->addColumn('trans_bank', function($data) {
             return $data->application->bank->bank_name ?? '';
         })
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->application->updatedBy->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {
@@ -275,13 +278,16 @@ class VehicleReservationController extends Controller
         ->addColumn('trans_type', function($data) {
             return $data->inquiry->inquiryType->inquiry_type;
         })
+        ->addColumn('transaction', function($data) {
+            return $data->inquiry->transaction;
+        })
         ->addColumn('trans_bank', function($data) {
             return $data->application->bank->bank_name ?? '';
         })
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->application->updatedBy->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {

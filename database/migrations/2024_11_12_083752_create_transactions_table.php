@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('transaction_updated_date')->nullable();
             $table->date('reservation_date')->nullable();
             $table->date('released_date')->nullable();
+            $table->longText('released_remarks')->nullable();
             $table->string('status')->nullable();
             $table->longText('lto_remarks')->nullable();
             $table->timestamps();

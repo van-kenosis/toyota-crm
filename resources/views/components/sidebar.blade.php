@@ -125,7 +125,7 @@
         <li class="menu-item {{ request()->is('team') ? 'active' : '' }}">
             <a href="/team" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-group'></i>
-              <div class="text-truncate" data-i18n="Page 2">Team</div>
+              <div class="text-truncate" data-i18n="Page 2">Group</div>
             </a>
         </li>
         <li class="menu-item {{ request()->is('user-management') ? 'active' : '' }}">

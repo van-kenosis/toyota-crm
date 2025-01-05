@@ -66,7 +66,7 @@ class TeamController extends Controller
             return $data->updated_by ? $data->updatedBy->first_name . ' ' . $data->updatedBy->last_name : '';
         })
         ->addColumn('updated_at', function($data) {
-            return Carbon::parse($data->updated_at)->format('m/d/Y');
+            return Carbon::parse($data->updated_at)->format('d/m/Y');
         })
 
         ->make(true);

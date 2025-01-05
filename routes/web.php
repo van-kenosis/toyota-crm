@@ -93,6 +93,7 @@ Route::post('vehicle-releases/updateLTORemarks', [VehicleReleasesController::cla
 Route::get('vehicle-releases/getStatus', [VehicleReleasesController::class, 'getStatus'])->name('vehicle.releases.getStatus')->middleware('permission:get_status');
 Route::post('vehicle-releases/updateStatus', [VehicleReleasesController::class, 'updateStatus'])->name('vehicle.releases.updateStatus')->middleware('permission:update_status');
 Route::get('vehicle-releases/GrandTotalProfit', [VehicleReleasesController::class, 'GrandTotalProfit'])->name('vehicle.releases.GrandTotalProfit')->middleware('permission:view_vehicle_releases');
+Route::post('vehicle-releases/updateReleasedRemarks', [VehicleReleasesController::class, 'updateReleasedRemarks'])->name('vehicle.releases.updateReleasedRemarks')->middleware('permission:update_released_remarks');
 
 // VEHICLE INVENTORY
 Route::get('vehicle-inventory', [VehicleInventoryController::class, 'index'])->name('vehicle.inventory')->middleware('permission:view_vehicle_inventory');

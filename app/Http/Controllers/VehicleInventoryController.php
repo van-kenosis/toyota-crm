@@ -33,6 +33,7 @@ class VehicleInventoryController extends Controller
          $query = Inventory::with(['vehicle', 'transaction'])
                         ->whereIn('incoming_status', ['Invoice', 'Pull Out', 'In Transit'])
                          ->whereNull('deleted_at')
+                         ->where('status', '<>', 'Released')
                         ;
 
          if ($request->has('date_range') && !empty($request->date_range)) {
@@ -71,6 +72,13 @@ class VehicleInventoryController extends Controller
          ->editColumn('ear_mark', function($data) {
              return '';
          })
+         ->editColumn('actual_invoice_date', function($data) {
+            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('d/m/Y') : '';
+         })
+         ->editColumn('delivery_date', function($data) {
+            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('d/m/Y') : '';
+
+         })
 
          ->addColumn('tags', function($data) {
 
@@ -100,6 +108,7 @@ class VehicleInventoryController extends Controller
          $query = Inventory::with(['vehicle', 'transaction'])
                         ->whereIn('incoming_status', ['On Stock', 'For Swapping', 'Reserved', 'Freeze', 'Ear Mark'])
                          ->whereNull('deleted_at')
+                         ->where('status', '<>', 'Released')
                         ;
 
          if ($request->has('date_range') && !empty($request->date_range)) {
@@ -154,6 +163,14 @@ class VehicleInventoryController extends Controller
             return $data->invoice_number;
         })
 
+        ->editColumn('actual_invoice_date', function($data) {
+            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('d/m/Y') : '';
+         })
+         ->editColumn('delivery_date', function($data) {
+            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('d/m/Y') : '';
+
+         })
+
 
 
          ->make(true);
@@ -176,6 +193,7 @@ class VehicleInventoryController extends Controller
 
             $inventoryCount = Inventory::where('incoming_status', $data->status)
                                  ->whereNull('deleted_at')
+                                 ->where('status', '<>', 'Released')
                                  ->count();
             return $inventoryCount;
         })
@@ -214,7 +232,7 @@ class VehicleInventoryController extends Controller
     public function getTotalInventory(){
 
         $query = Inventory::with(['vehicle']);
-        $totalInventory = $query->count();
+        $totalInventory = $query->where('status', '<>', 'Released')->count();
 
         return response()->json(['totalInventory' => $totalInventory]);
     }
@@ -300,6 +318,7 @@ class VehicleInventoryController extends Controller
             'updated_by' => Auth::id(),
             'created_at' => now(),
             'updated_at' => now(),
+            'remarks' => $request->remarks,
         ]);
 
         return response()->json(['success' => true, 'message' => 'New unit added to inventory!']);

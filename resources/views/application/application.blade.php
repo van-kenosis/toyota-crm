@@ -304,7 +304,7 @@
                         <option value="">Select Source</option>
                         <option value="Repeat-Customer">Repeat Customer</option>
                         <option value="Social-Media">Social-Media</option>
-                        <option value="Referal">Referal</option>
+                        <option value="Referral">Referral</option>
                         <option value="Mall Duty">Mall Duty</option>
                         <option value="Show Room">Show Room</option>
                         <option value="Saturation">Saturation</option>
@@ -484,7 +484,7 @@
         columns: [
             { data: 'id', name: 'id', title: 'ID' , visible: false},
             @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Financing Staff' || auth()->user()->usertype->name === 'Sales Admin Staff')
-            { data: 'team', name: 'team', title: 'Team' },
+            { data: 'team', name: 'team', title: 'Group' },
             @endif
             { data: 'type', name: 'type', title: 'Type' },
             @if (auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
