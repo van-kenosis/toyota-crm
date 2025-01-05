@@ -107,6 +107,7 @@
             { data: 'updated_at', name: 'updated_at', title: 'Updated At' },
             { data: 'updated_by', name: 'updated_by', title: 'Approve By' },
             { data: 'status', name: 'status', title: 'Status' },
+             @if(auth()->user()->usertype->name === 'SuperAdmin')
             {
                 data: 'id',
                 name: 'id',
@@ -122,13 +123,14 @@
                 `
                 }
             }
+            @endif
         ],
         order: [[2, 'desc']],
     });
 
     $(document).on('click', '.dislike-btn', function() {
         const leadId = $(this).data('id');
-       
+
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to mark this dispute as disapprove?",
@@ -168,13 +170,13 @@
                 });
             }
         });
-        
+
 
     })
 
     $(document).on('click', '.like-btn', function() {
         const leadId = $(this).data('id');
-        
+
 
         Swal.fire({
             title: 'Are you sure?',
@@ -215,7 +217,7 @@
                 });
             }
         });
-        
+
 
     })
 

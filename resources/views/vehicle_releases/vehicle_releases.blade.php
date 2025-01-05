@@ -104,6 +104,33 @@
     </div>
 </div>
 
+{{-- Remarks Modal --}}
+<div class="modal fade" id="releasedRemarksModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header d-flex align-items-center gap-2">
+          <i class='bx bxs-message-rounded-detail'></i>
+          <h5 class="modal-title" id="largeModalLabel">Released Remarks</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="releasedRemarksContent">
+              <input type="hidden" name="id" id="id">
+              <textarea class="form-control mb-2 d-none" id="releasedRemarksTextArea" name="released_remarks" rows="5" placeholder=""></textarea>
+              <p class="fs-5 text-dark" id="releasedremarksParagraph">
+              </p>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+            @if(auth()->user()->can('update_released_remarks'))
+              <button class="btn btn-label-success" id="editReleasedRemarksButton">Edit</button>
+              <button class="btn btn-dark d-none save-remark-released" id="saveEditReleasedRemarksButton">Save</button>
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
 
   {{-- Header Datatables --}}
   <div class="row mb-4">
@@ -144,11 +171,15 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                @if (auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
+
                                 <div class="card bg-label-secondary shadow-none">
                                     <div class="card-body d-flex justify-content-center">
                                         <div class="d-flex gap-2"><div class="h2">Grand Total Profit:</div><div class="h2 fw-bold" id="grandTotalProfit">0</div></div>
                                     </div>
                                 </div>
+
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -263,16 +294,6 @@
         }
     });
 
-    // function getGrandTotalProfit(){
-    //     $.ajax({
-    //     url: '{{ route("vehicle.releases.GrandTotalProfit") }}',
-    //     type: 'GET',
-    //     success: function(response) {
-    //         $('#grandTotalProfit').text(response);
-    //         }
-    //     });
-    // }
-
     function getGrandTotalProfit(){
         $.ajax({
             url: '{{ route("vehicle.releases.GrandTotalProfit") }}',
@@ -374,9 +395,13 @@
         },
 
         columns: [
-            { data: 'team', name: 'team', title: 'Team' },
+            { data: 'team', name: 'team', title: 'Group' },
             { data: 'quantity', name: 'quantity', title: 'Quantity' },
+            @if (auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
+
             { data: 'total_profit', name: 'total_profit', title: 'Total Profit' },
+
+            @endif
         ],
         order: [[0, 'desc']],  // Sort by 'unit' column by default
         columnDefs: [
@@ -411,11 +436,12 @@
             { data: 'variant', name: 'variant', title: 'Variant' },
             { data: 'color', name: 'color', title: 'Color' },
             { data: 'cs_number', name: 'cs_number', title: 'CS Number' },
-            { data: 'trans_type', name: 'trans_type', title: 'Trans Type' },
+            { data: 'transaction', name: 'transaction', title: 'Transaction' },
             { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
             { data: 'agent', name: 'agent', title: 'Agent' },
-            { data: 'team', name: 'team', title: 'Team' },
-            { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
+            { data: 'team', name: 'team', title: 'Group' },
+            // { data: 'date_reserved', name: 'date_reserved', title: 'Date Reserved' },
+            { data: 'date_released', name: 'date_released', title: 'Date Released' },
             {
                 data: 'id',
                 name: 'id',
@@ -477,6 +503,21 @@
                                 <span class="tf-icons bx bx-comment-detail bx-22px"></span>
                             </button>
                             @endif`;
+                }
+            },
+            {
+                data: 'released_remarks',
+                name: 'released_remarks',
+                title: 'Remarks',
+                orderable: false,
+                searchable: false,
+                visible: false,
+                render: function(data, type, row) {
+                    return `
+                            <button type="button" class="btn btn-icon me-2 btn-label-dark released-remarks-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#releasedRemarksModal" data-remarks="${data}">
+                                <span class="tf-icons bx bx-comment-detail bx-22px"></span>
+                            </button>
+                           `;
                 }
             },
         ],
@@ -585,6 +626,9 @@
         @if(auth()->user()->can('update_ltoremarks'))
         vehicleReleasesTable.column(14).visible(isReleasedTab);
         @endif
+
+        vehicleReleasesTable.column(15).visible(isReleasedTab);
+
 
 
         var route = $(this).data('route');
@@ -790,6 +834,19 @@
             $("#ltoRemarksTextArea").removeClass("d-none");
             $("#saveEditLtoRemarksButton").removeClass("d-none");
         });
+
+        $("#editReleasedRemarksButton").on("click", function () {
+            // Hide the remarks paragraph and edit button
+            $("#releasedremarksParagraph").addClass("d-none");
+            $("#editReleasedRemarksButton").addClass("d-none");
+
+
+            // Show the textarea and save button
+            $("#releasedRemarksTextArea").removeClass("d-none");
+            $("#saveEditReleasedRemarksButton").removeClass("d-none");
+        });
+
+
     });
 
     $(document).on('click', '.lto-remarks-btn', function() {
@@ -798,6 +855,14 @@
         $('#id').val(id);
         $('#ltoRemarksTextArea').val(remarks);
         $('#remarksParagraph').text(remarks);
+    });
+
+    $(document).on('click', '.released-remarks-btn', function() {
+        const id = $(this).data('id');
+        const remarks = $(this).data('remarks');
+        $('#id').val(id);
+        $('#releasedRemarksTextArea').val(remarks);
+        $('#releasedremarksParagraph').text(remarks);
     });
 
     $(document).on('click', '.save-remark', function() {
@@ -823,6 +888,41 @@
                     $("#ltoRemarksTextArea").addClass("d-none");
                     $("#saveEditLtoRemarksButton").addClass("d-none");
                     $('#LtoRemarksModal').modal('hide');
+                    vehicleReleasesTable.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire(
+                    'Error!',
+                    xhr.responseJSON?.message || 'Something went wrong!',
+                    'error'
+                );
+            }
+        });
+    })
+
+    $(document).on('click', '.save-remark-released', function() {
+        const id = $('#id').val();
+        const remarks = $('#releasedRemarksTextArea').val();
+        $.ajax({
+            url: '{{ route("vehicle.releases.updateReleasedRemarks") }}',
+            type: 'POST',
+            data: { id: id, remarks: remarks },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire(
+                        'Updated!',
+                        response.message,
+                        'success'
+                    );
+                    $("#releasedremarksParagraph").removeClass("d-none");
+                    $("#editReleasedRemarksButton").removeClass("d-none");
+                    $("#releasedRemarksTextArea").addClass("d-none");
+                    $("#saveEditReleasedRemarksButton").addClass("d-none");
+                    $('#releasedRemarksModal').modal('hide');
                     vehicleReleasesTable.ajax.reload();
                 }
             },

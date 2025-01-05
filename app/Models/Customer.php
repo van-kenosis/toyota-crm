@@ -11,4 +11,8 @@ class Customer extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'customer';
+
+    public function inquiry(){
+        return $this->belongsTo(Inquiry::class, 'inquiry_id', 'id');
+    }
 }

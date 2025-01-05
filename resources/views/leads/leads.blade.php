@@ -12,13 +12,8 @@
     </div>
 </div>
 
-<!-- Button trigger modal -->
-{{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dataPrivacy">
-    Launch demo modal
-  </button> --}}
-
-  <!-- Data Privacy -->
-  <div class="modal fade" id="dataPrivacy" tabindex="-1" aria-labelledby="dataPrivacyLabel" aria-hidden="true">
+<!-- Data Privacy -->
+<div class="modal fade" id="dataPrivacy" tabindex="-1" aria-labelledby="dataPrivacyLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -37,7 +32,7 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 
 {{-- View Remarks Modal --}}
 <div class="modal fade" id="viewRemarksModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
@@ -208,7 +203,7 @@
                         <option value="">Select Source</option>
                         <option value="Repeat-Customer">Repeat Customer</option>
                         <option value="Social-Media">Social-Media</option>
-                        <option value="Referal">Referal</option>
+                        <option value="Referral">"Referral"</option>
                         <option value="Mall Duty">Mall Duty</option>
                         <option value="Show Room">Show Room</option>
                         <option value="Saturation">Saturation</option>
@@ -314,7 +309,7 @@
                                 <small class="text-danger" id="validateGender">Please Select Gender</small>
                             </div>
                             <div class="col-md" id="birthdateColumnField">
-                                <label for="age" class="form-label required">Birthdate</label>
+                                <label for="age" class="form-label">Birthdate</label>
                                 <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="" />
                                 <small class="text-danger" id="validateBirthdate">Enter Customer Birthdate</small>
                             </div>
@@ -383,7 +378,7 @@
                                 <option value="">Select Source</option>
                                 <option value="Repeat-Customer">Repeat Customer</option>
                                 <option value="Social-Media">Social-Media</option>
-                                <option value="Referal">Referal</option>
+                                <option value="Referral">Referral</option>
                                 <option value="Mall Duty">Mall Duty</option>
                                 <option value="Show Room">Show Room</option>
                                 <option value="Saturation">Saturation</option>
@@ -540,7 +535,7 @@
             },
         columns: [
             @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'General Manager')
-            { data: 'team', name: 'team', title: 'Team' },
+            { data: 'team', name: 'team', title: 'Group' },
             @endif
             @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
             { data: 'agent', name: 'agent', title: 'Agent' },
@@ -608,6 +603,12 @@
             {
                 type: 'created_at',
                 targets: [0, 1] // Apply date sorting to date_received and date_on_hold columns
+            },
+            {
+                targets: '_all', // Apply to all columns
+                render: function (data, type, row) {
+                    return type === 'display' ? data.toUpperCase() : data;
+                }
             }
         ],
 
@@ -858,7 +859,7 @@
             if (inquiryType === 'Individual' || inquiryType === '') {
                 isValid = validateField('#first_name', 'Enter Customer First Name') && isValid;
                 isValid = validateField('#last_name', 'Enter Customer Last Name') && isValid;
-                isValid = validateField('#birthdate', 'Enter Customer birthdate') && isValid;
+                // isValid = validateField('#birthdate', 'Enter Customer birthdate') && isValid;
                 isValid = validateField('#age', 'Enter Customer Age') && isValid;
                 isValid = validateField('#gender', 'Please Select Gender') && isValid;
 
@@ -1053,9 +1054,9 @@
             validateField(this);
         });
 
-        // Real-time Capitalization
-        $("input[type='text']").on("input", function () {
-            $(this).val(capitalizeWords($(this).val()));
+        // Real-time Uppercase Transformation
+        $("input[type='text'], textarea").on("input", function () {
+            $(this).val($(this).val().toUpperCase());
         });
 
     });
@@ -1269,7 +1270,6 @@
             }
         });
     });
-
 
     // Displaying of Inquiry Form
     $(document).ready(function () {

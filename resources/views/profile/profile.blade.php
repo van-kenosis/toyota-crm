@@ -10,7 +10,7 @@
         </div>
     </div>
 </div>
-  
+
   <!-- Modal -->
   <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -78,7 +78,7 @@
                 </div>
                 <div class="d-flex gap-2">
                     <i class='bx bxs-badge' ></i>
-                    <div class="fw-bold">Team:</div>
+                    <div class="fw-bold">Group:</div>
                     <div>{{ $user->team->name ?? 'N/A' }}</div>
                 </div>
                 <div class="d-flex gap-2">
@@ -103,7 +103,7 @@
                     <div>{{ App\Models\User::find($user->updated_by)->first_name ?? 'N/A' }} {{ App\Models\User::find($user->updated_by)->last_name ?? '' }}</div>
                 </div>
                 @endif
-                
+
                 <div class="row mt-3">
                     <div class="col-md d-flex justify-content-end">
                         <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#updateProfileModal">Update Profile</button>
@@ -123,7 +123,7 @@
 $(document).ready(function() {
     $('#updateProfileForm').on('submit', function(e) {
         e.preventDefault();
-        
+
         $.ajax({
             url: '{{ route("profile.update") }}',
             method: 'POST',
@@ -132,11 +132,11 @@ $(document).ready(function() {
                 // Update the profile display
                 $('.fw-bold.text-dark').text(response.user.first_name + ' ' + response.user.last_name);
                 $('.bxs-envelope').next().next().text(response.user.email);
-                
+
                 // Update the last updated info
                 $('.bx-revision').next().next().text(response.user.updated_at);
                 $('.bx-user-check').next().next().text(response.user.updated_by);
-                
+
                 // Close modal and show success message
                 $('#updateProfileModal').modal('hide');
                 toastr.success(response.message);

@@ -124,7 +124,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->created_at->format('d/m/Y');
         })
 
 
@@ -224,7 +224,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->created_at->format('d/m/Y');
         })
 
 
@@ -325,7 +325,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->created_at->format('d/m/Y');
         })
 
 
@@ -424,7 +424,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->created_at->format('d/m/Y');
         })
 
 
@@ -704,6 +704,11 @@ class LeadController extends Controller
                 $inquiry->created_by = Auth::id();
                 $inquiry->updated_by = Auth::id();
                 $inquiry->save();
+
+                $customer = Customer::findOrFail($customer->id);
+                $customer->inquiry_id = $inquiry->id;
+                $customer->save();
+
 
 
                 return response()->json([

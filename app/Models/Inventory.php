@@ -25,6 +25,7 @@ class Inventory extends Model
         'remarks',
         'created_at',
         'updated_at',
+        'remarks',
     ];
 
     public function vehicle(){

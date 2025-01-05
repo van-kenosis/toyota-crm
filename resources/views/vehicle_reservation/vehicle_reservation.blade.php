@@ -148,7 +148,7 @@
                     <select class="form-control" id="edit_source" name="source" >
                         <option value="">Select Source</option>
                         <option value="Social-Media">Social-Media</option>
-                        <option value="Referal">Referal</option>
+                        <option value="Referral">Referral</option>
                         <option value="Mall Duty">Mall Duty</option>
                         <option value="Show Room">Show Room</option>
                         <option value="Saturation">Saturation</option>
@@ -440,7 +440,7 @@
             infoFiltered: "", // Removes the "filtered from X entries" part
         },
         columns: [
-            { data: 'team', name: 'team', title: 'Team' },
+            { data: 'team', name: 'team', title: 'Group' },
             { data: 'quantity', name: 'quantity', title: 'Quantity' },
         ],
         order: [[0, 'desc']],  // Sort by 'unit' column by default
@@ -495,10 +495,11 @@
                     return data; // Default display for other types like export, search, etc.
                 }
             },
+            { data: 'transaction', name: 'transaction', title: 'Transaction' },
             { data: 'trans_type', name: 'trans_type', title: 'Type' },
             { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
             { data: 'agent', name: 'agent', title: 'Agent' },
-            { data: 'team', name: 'team', title: 'Team' },
+            { data: 'team', name: 'team', title: 'Group' },
             // { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
             {
                 data: 'application_id',
@@ -668,12 +669,12 @@
         @endif
 
         @if(auth()->user()->can('process_reserved_reservation'))
-        vehicleReservationTable.column(12).visible(isReservationTab); // application_id
+        vehicleReservationTable.column(13).visible(isReservationTab); // application_id
         @endif
 
         const isPendingTab = $(this).text().trim() === 'Pending';
         @if(auth()->user()->can('process_pending_reservation') || auth()->user()->can('cancel_pending_reservation'))
-        vehicleReservationTable.column(11).visible(isPendingTab); // id
+        vehicleReservationTable.column(12).visible(isPendingTab); // id
         @endif
 
         var route = $(this).data('route');

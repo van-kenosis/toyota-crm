@@ -39,20 +39,20 @@ class BankController extends Controller
         } catch (\Exception $e) {
 
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Error adding bank: ' . $e->getMessage()
             ], 500);
         }
     }
 
     public function edit($id){
-        try{    
+        try{
             $bank = Banks::findorFail(decrypt($id));
             $bank_id = encrypt($bank->id);
             return response()->json(['bank' => $bank, 'bank_id' => $bank_id]);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Error editing bank: ' . $e->getMessage()
             ], 500);
         }
@@ -70,21 +70,21 @@ class BankController extends Controller
             return response()->json(['success' => true, 'message' => 'Bank updated successfully']);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Error updating bank: ' . $e->getMessage()
             ], 500);
         }
     }
 
     public function destroy($id){
-        try{    
+        try{
             $bank = Banks::findorFail(decrypt($id));
             $bank->delete();
 
             return response()->json(['success' => true, 'message' => 'Bank deleted successfully']);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Error deleting bank: ' . $e->getMessage()
             ], 500);
         }
@@ -93,7 +93,7 @@ class BankController extends Controller
     public function list(Request $request ){
 
         $query = Banks::with(['createdBy', 'updatedBy'])->whereNull('deleted_at');
-        
+
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
@@ -114,12 +114,12 @@ class BankController extends Controller
                 return $row->updatedBy->first_name . ' ' . $row->updatedBy->last_name;
             })
             ->editColumn('created_at', function($row){
-                return $row->created_at->format('d-m-Y');
+                return $row->created_at->format('d/m/Y');
             })
             ->editColumn('updated_at', function($row){
-                return $row->updated_at->format('d-m-Y');
+                return $row->updated_at->format('d/m/Y');
             })
             ->make(true);
-       
+
     }
 }

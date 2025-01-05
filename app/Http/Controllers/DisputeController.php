@@ -13,7 +13,11 @@ use Yajra\DataTables\Facades\DataTables;
 class DisputeController extends Controller
 {
     public function index(){
-        return view('dispute.dispute');
+        if(Auth::check()){
+            return view('dispute.dispute');
+        }else{
+            return view('index');
+        }
     }
 
     public function getDisputes(Request $request){
@@ -23,17 +27,12 @@ class DisputeController extends Controller
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '1')
-                        ->whereHas('inquiryType', function($subQuery) {
-                            $subQuery->where('inquiry_type', 'Individual');
-                        })
+
                         ->where('status_id', '<>', $status);
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '1')
-                        ->whereHas('inquiryType', function($subQuery) {
-                            $subQuery->where('inquiry_type', 'Individual');
-                        })
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
@@ -43,13 +42,20 @@ class DisputeController extends Controller
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '1')
-                        ->where('created_by', Auth::user()->id)
-                        ->whereHas('inquiryType', function($subQuery) {
-                            $subQuery->where('inquiry_type', 'Individual');
+                        ->where(function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id)
+                                     ->orWhereHas('customer', function($customerQuery) {
+                                         $customerQuery->whereHas('inquiry', function($inquiryQuery) {
+                                             $inquiryQuery->where('is_dispute', '0')
+                                                          ->where('created_by', Auth::user()->id);
+                                         });
+                                     });
                         })
+                        // ->whereHas('inquiryType', function($subQuery) {
+                        //     $subQuery->where('inquiry_type', 'Individual');
+                        // })
                         ->where('status_id', '<>', $status);
         }
-
 
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -89,7 +95,7 @@ class DisputeController extends Controller
         })
 
         ->editColumn('updated_at', function($data) {
-            return $data->updated_at->format('m/d/Y') ?? '';
+            return $data->updated_at->format('d/m/Y') ?? '';
         })
 
         ->editColumn('created_by', function($data){
@@ -132,8 +138,20 @@ class DisputeController extends Controller
         try {
             $inquiry = Inquiry::findOrFail(decrypt(request()->id));
             $inquiry->is_dispute = 0;
-            $inquiry->updated_by = Auth::user()->id;
+            $inquiry->updated_by = $inquiry->created_by;
             $inquiry->save();
+
+
+            $firstInquiry = Inquiry::where('customer_id', $inquiry->customer_id)
+                            ->whereNull('deleted_at')
+                            ->where('is_dispute', '0')
+                            ->where('created_at', '<>', Auth::user()->id)
+                            ->first();
+
+            if ($firstInquiry) {
+                $firstInquiry->save();
+                $firstInquiry->delete();
+            }
 
             return response()->json([
                 'success' => true,

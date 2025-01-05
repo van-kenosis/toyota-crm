@@ -413,8 +413,11 @@ class VehicleReleasesController extends Controller
             return $data->inventory->CS_number ?? '';
         })
 
-        ->addColumn('trans_type', function($data) {
-            return $data->inquiry->inquiryType->inquiry_type;
+        // ->addColumn('trans_type', function($data) {
+        //     return $data->inquiry->inquiryType->inquiry_type;
+        // })
+        ->addColumn('transaction', function($data) {
+            return $data->inquiry->transaction;
         })
         ->addColumn('trans_bank', function($data) {
             return $data->application->bank->bank_name ?? '';
@@ -429,8 +432,8 @@ class VehicleReleasesController extends Controller
             return $data->inventory->user->first_name. ' ' . $data->inventory->user->last_name;
         })
 
-        ->addColumn('date_assigned', function($data) {
-            return $data->reservation_date;
+        ->addColumn('date_released', function($data) {
+            return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('d/m/Y') : '';
         })
 
         ->addColumn('status', function($data) {
@@ -528,8 +531,11 @@ class VehicleReleasesController extends Controller
             return $data->inventory->CS_number ?? '';
         })
 
-        ->addColumn('trans_type', function($data) {
-            return $data->inquiry->inquiryType->inquiry_type;
+        // ->addColumn('trans_type', function($data) {
+        //     return $data->inquiry->inquiryType->inquiry_type;
+        // })
+        ->addColumn('transaction', function($data) {
+            return $data->inquiry->transaction;
         })
         ->addColumn('trans_bank', function($data) {
             return $data->application->bank->bank_name ?? '';
@@ -544,8 +550,12 @@ class VehicleReleasesController extends Controller
             return $data->inventory->user->first_name. ' ' . $data->inventory->user->last_name;
         })
 
-        ->addColumn('date_assigned', function($data) {
-            return $data->reservation_date;
+        ->addColumn('date_reserved', function($data) {
+            return $data->reservation_date ? \Carbon\Carbon::parse($data->reservation_date)->format('d/m/Y') : '';
+        })
+
+        ->addColumn('date_released', function($data) {
+            return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('d/m/Y') : '';
         })
 
         ->addColumn('status', function($data) {
@@ -661,6 +671,24 @@ class VehicleReleasesController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error updating LTO remarks: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function updateReleasedRemarks(Request $request){
+        try {
+            // dd($request->all());
+            $transaction = Transactions::findOrFail(decrypt($request->id));
+            $transaction->released_remarks = $request->remarks;
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Released remarks updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating released remarks: ' . $e->getMessage()
             ], 500);
         }
     }

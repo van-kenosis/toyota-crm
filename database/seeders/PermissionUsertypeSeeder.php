@@ -18,7 +18,8 @@ class PermissionUsertypeSeeder extends Seeder
             'view_application', 'list_pending_applications', 'list_approved_applications', 'list_cancelled_applications', 'list_cash_applications',
             'view_vehicle_reservation', 'list_available_units',
             'view_vehicle_releases',
-            'view_vehicle_inventory', 'list_inventory'
+            'view_vehicle_inventory', 'list_inventory',
+            'view_disputes', 'list_disputes',
         ];
 
         // GROUP MANAGER Permissions
@@ -28,7 +29,7 @@ class PermissionUsertypeSeeder extends Seeder
             'view_application', 'list_pending_applications', 'list_approved_applications', 'list_cancelled_applications', 'list_cash_applications',
             'view_vehicle_reservation', 'list_available_units', 'get_reserved_count', 'reservation_per_team',
             'view_vehicle_releases', 'released_units_list', 'released_per_team', 'get_released_count', 'update_profit',
-            'view_vehicle_inventory', 'list_inventory'
+            'view_vehicle_inventory', 'list_inventory', 'update_released_remarks'
         ];
 
         // FINANCING STAFF Permissions
@@ -51,7 +52,7 @@ class PermissionUsertypeSeeder extends Seeder
             'view_vehicle_releases', 'released_units_list', 'process_vehicle_release', 'cancel_vehicle_release',
             'update_ltoremarks', 'get_status', 'update_status',
             'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'store_vehicle', 'store_inventory', 'update_profit',
-            'update_incoming_status', 'update_tags_inventory', 'update_inventory', 'edit_inventory'
+            'update_incoming_status', 'update_tags_inventory', 'update_inventory', 'edit_inventory', 'update_released_remarks'
 
         ];
 
@@ -60,7 +61,8 @@ class PermissionUsertypeSeeder extends Seeder
             'view_dashboard',
             'list_available_units',
             'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'store_vehicle', 'store_inventory',
-            'update_tags_inventory', 'update_incoming_status', 'update_status_inventory', 'update_inventory', 'edit_inventory'
+            'update_tags_inventory', 'update_incoming_status', 'update_status_inventory', 'update_inventory', 'edit_inventory',
+            'update_released_remarks'
 
         ];
 
