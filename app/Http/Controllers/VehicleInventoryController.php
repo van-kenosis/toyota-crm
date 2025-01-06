@@ -299,9 +299,8 @@ class VehicleInventoryController extends Controller
         if($request->input('delivery_date')){
             $deliveryDate = Carbon::parse($request->input('delivery_date'));
             $currentDate = Carbon::now();
-            $age = $deliveryDate->diffInDays($currentDate);
+            $age = (int) $currentDate->diffInDays($deliveryDate);
         }
-        $age = null;
 
 
         // Create a new inventory record
@@ -312,7 +311,7 @@ class VehicleInventoryController extends Controller
             'actual_invoice_date' => $request->actual_invoice_date,
             'delivery_date' => $request->delivery_date ? $request->delivery_date : null,
             'invoice_number' => $request->invoice_number,
-            'age' => $age,
+            'age' => $request->input('delivery_date') ? $age : null,
             // Add other fields as necessary
             'created_by' => Auth::id(), // Assuming you want to track who created the inventory
             'updated_by' => Auth::id(),
@@ -345,7 +344,7 @@ class VehicleInventoryController extends Controller
 
             $deliveryDate = Carbon::parse($request->input('delivery_date'));
             $currentDate = Carbon::now();
-            $age = $deliveryDate->diffInDays($currentDate);
+            $age = (int) $currentDate->diffInDays($deliveryDate);
 
             $inventory->update([
             'vehicle_id' => $vehicle,
@@ -355,7 +354,7 @@ class VehicleInventoryController extends Controller
             'delivery_date' => $request->delivery_date ? $request->delivery_date : null ,
             'invoice_number' => $request->invoice_number,
             'remarks' => $request->remarks,
-            'age' => $age,
+            'age' => $request->delivery_date? $age : null,
             'updated_by' => Auth::id(),
             'updated_at' => now(),
             ]);
