@@ -590,7 +590,7 @@ class LeadController extends Controller
                         $inquiry->transaction = $validated['transaction'];
                         $inquiry->category = $validated['category'];
                         $inquiry->remarks = $validated['additional_info'];
-                        $inquiry->date = now()->format('F d'); // Month name day
+                        $inquiry->date = now()->format('d/m/y'); // Numeric date format: dd/mm/yy
                         $inquiry->status_id = $pending_status;
                         $inquiry->status_updated_by = Auth::id();
                         $inquiry->status_updated_at = now();
@@ -632,7 +632,7 @@ class LeadController extends Controller
                         $inquiry->transaction = $validated['transaction'];
                         $inquiry->category = $validated['category'];
                         $inquiry->remarks = $validated['additional_info'];
-                        $inquiry->date = now()->format('F d'); // Month name day
+                        $inquiry->date = now()->format('d/m/y'); // Numeric date format: dd/mm/yy
                         $inquiry->status_id = $pending_status;
                         $inquiry->status_updated_by = Auth::id();
                         $inquiry->status_updated_at = now();
@@ -695,7 +695,7 @@ class LeadController extends Controller
                 $inquiry->transaction = $validated['transaction'];
                 $inquiry->category = $validated['category'];
                 $inquiry->remarks = $validated['additional_info'];
-                $inquiry->date = now()->format('F d'); // Month name day
+                $inquiry->date = now()->format('d/m/y'); // Numeric date format: dd/mm/yy
                 $inquiry->status_id = $pending_status;
                 $inquiry->status_updated_by = Auth::id();
                 $inquiry->status_updated_at = now();
