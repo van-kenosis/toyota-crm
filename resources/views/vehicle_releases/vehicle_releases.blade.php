@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style>
+    #vehicleReleasesTable td{
+        white-space: nowrap;
+    }
+</style>
+
 {{-- Title Header --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">

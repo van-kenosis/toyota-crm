@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style>
+    #inquiryTable td{
+        white-space: nowrap;
+    }
+</style>
+
 {{-- Page Title --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
