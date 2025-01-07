@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style>
+    #vehicleReservationTable td{
+        white-space: nowrap;
+    }
+</style>
+
 {{-- Title Header --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
@@ -430,7 +436,7 @@
         },
         pageLength: 10,
         paging: true,
-        responsive: true,
+        responsive: false,
         dom: '<"top"lf>rt<"bottom"ip>',
         language: {
             search: "",
