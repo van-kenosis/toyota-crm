@@ -10,3 +10,7 @@ Schedule::command('csnumber:revert')->dailyAt('00:30');
 Schedule::command('inventory:reset-tags')
                 ->dailyAt('00:00')
                 ->timezone('Asia/Manila');
+
+Schedule::command('app:backup-database')
+                ->hourly()
+                ->timezone('Asia/Manila');

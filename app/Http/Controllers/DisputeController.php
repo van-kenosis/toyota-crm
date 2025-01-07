@@ -142,11 +142,14 @@ class DisputeController extends Controller
             $inquiry->updated_by = $inquiry->created_by;
             $inquiry->save();
 
+            $status = Status::where('status', 'like', 'Processed')->first()->id;
 
-            $firstInquiry = Inquiry::where('customer_id', $inquiry->customer_id)
-                            ->whereNull('deleted_at')
+
+            $firstInquiry = Inquiry::whereNull('deleted_at')
+                            ->where('customer_id', $inquiry->customer_id)
                             ->where('is_dispute', '0')
                             ->where('created_at', '<>', Auth::user()->id)
+                            ->where('status', '<>',  $status)
                             ->first();
 
             if ($firstInquiry) {
