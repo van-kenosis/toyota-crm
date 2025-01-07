@@ -3,6 +3,7 @@
 @section('content')
 
 <style>
+    /* datatables data 1 line */
     #vehicleInventoryTable td{
         white-space: nowrap;
     }
