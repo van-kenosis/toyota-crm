@@ -904,8 +904,21 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                //LOADER
+                beforeSend: function() {
+                    Swal.fire({
+                        title: 'Loading...',
+                        html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
                 success: function(response) {
+                    //HIDE LOADER AFTER SUCCESS
+                    Swal.close();
+
                     if (response.success) {
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
@@ -923,6 +936,8 @@
                     }
                 },
                 error: function(xhr) {
+                    //HIDE LOADER AFTER ERROR
+                    Swal.close();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -1027,7 +1042,16 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                beforeSend: function() {
+                    Swal.fire({
+                        title: 'Loading...',
+                        html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
                 success: function (response) {
+                    Swal.close();
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
@@ -1040,6 +1064,7 @@
                     }
                 },
                 error: function (xhr) {
+                    Swal.close();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -1354,7 +1379,16 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
+            beforeSend: function() {
+                Swal.fire({
+                    title: 'Loading...',
+                    html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+            },
             success: function(response) {
+                Swal.close();
                 if (response.success) {
                     Swal.fire(
                         'Updated!',
@@ -1372,6 +1406,7 @@
                 }
             },
             error: function(xhr) {
+                Swal.close();
                 Swal.fire(
                     'Error!',
                     xhr.responseJSON?.message || 'Something went wrong!',
@@ -1411,7 +1446,16 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Loading...',
+                            html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                            showConfirmButton: false,
+                            allowOutsideClick: false
+                        });
+                    },
                     success: function(response) {
+                        Swal.close();
                         if (response.success) {
                             Swal.fire(
                                 'Updated!',
@@ -1422,6 +1466,7 @@
                         }
                     },
                     error: function(xhr) {
+                        Swal.close();
                         Swal.fire(
                             'Error!',
                             xhr.responseJSON?.message || 'Something went wrong!',
@@ -1454,7 +1499,16 @@
                         id: leadId,
                         _token: '{{ csrf_token() }}' // Include CSRF token
                     },
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Loading...',
+                            html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                            showConfirmButton: false,
+                            allowOutsideClick: false
+                        });
+                    },
                     success: function(response) {
+                        Swal.close();
                         if (response.success) {
                             Swal.fire(
                                 'Deleted!',
@@ -1465,6 +1519,7 @@
                         }
                     },
                     error: function(xhr) {
+                        Swal.close();
                         Swal.fire(
                             'Error!',
                             xhr.responseJSON?.message || 'Something went wrong!',

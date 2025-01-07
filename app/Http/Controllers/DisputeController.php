@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Inquiry;
 use App\Models\Status;
 use App\Models\Team;
@@ -149,8 +150,14 @@ class DisputeController extends Controller
                             ->first();
 
             if ($firstInquiry) {
+
+                $customer = Customer::whereNull('deleted_at')->where('inquiry_id', $firstInquiry->id)->first();
+                $customer->inquiry_id = $inquiry->id;
+                $customer->save();
+
                 $firstInquiry->save();
                 $firstInquiry->delete();
+                
             }
 
             return response()->json([

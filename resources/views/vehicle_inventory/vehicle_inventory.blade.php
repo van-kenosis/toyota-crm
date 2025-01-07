@@ -1062,6 +1062,10 @@
                             if (typeof vehicleInventoryTable !== 'undefined') {
                                 vehicleInventoryTable.ajax.reload();
                             }
+                            availableUnitsTable.ajax.reload();
+                            statusTable.ajax.reload();
+                            incomingUnitsTable.ajax.reload();
+                            totalInventory();
                         });
                     }
                 },
@@ -1197,6 +1201,10 @@
                     });
 
                     vehicleInventoryTable.ajax.reload();
+                    statusTable.ajax.reload();
+                    incomingUnitsTable.ajax.reload();
+                    availableUnitsTable.ajax.reload();
+                    totalInventory();
                 },
                 error: function(xhr) {
                     Swal.fire({
@@ -1268,6 +1276,7 @@
 
                     vehicleInventoryTable.ajax.reload();
                     incomingUnitsTable.ajax.reload();
+                    totalInventory();
 
                 },
                 error: function(xhr) {

@@ -434,6 +434,12 @@ class LeadController extends Controller
 
     public function destroy(){
         try {
+
+            $customer = Customer::where('inquiry_id', decrypt(request()->id))->first();
+            $customer->updated_by = Auth::user()->id;
+            $customer->save();
+            $customer->delete();
+
             $inquiry = Inquiry::findOrFail(decrypt(request()->id));
             $inquiry->updated_by = Auth::user()->id;
             $inquiry->save();
@@ -545,14 +551,20 @@ class LeadController extends Controller
 
             ]);
 
-            $ExistingCustomer = Customer::where('customer_first_name', $validated['first_name'])
-                                          ->where('customer_last_name', $validated['last_name'])
-                                          ->first();
+            $ExistingCustomer = Customer::whereNull('deleted_at')
+                                        ->where('customer_first_name', $validated['first_name'])
+                                        ->where('customer_last_name', $validated['last_name'])
+                                        ->first();
 
             if($ExistingCustomer){
+                $processed_status = Status::where('status', 'like', 'Processed')->first()->id;
 
-                $existingInquiry = Inquiry::where('customer_id', $ExistingCustomer->id)
+
+                $existingInquiry = Inquiry::whereNull('deleted_at')
                                           ->where('is_dispute', '0')
+                                          ->where('customer_id', $ExistingCustomer->id)
+                                          ->where('created_by', '<>', Auth::user()->id)
+                                          ->where('status_id', '<>', $processed_status)
                                           ->first();
 
                 if( $existingInquiry){
@@ -649,6 +661,70 @@ class LeadController extends Controller
 
                     }
 
+                }else{
+
+                    $customer = new Customer();
+                    $customer->inquiry_type_id =  $validated['inquiry_type_id'];
+                    $customer->customer_first_name = $validated['first_name'];
+                    $customer->customer_last_name = $validated['last_name'];
+                    $customer->department_name = $validated['government'];
+                    $customer->company_name = $validated['company'] ?  $validated['company'] : $validated['fleet'];
+                    $customer->contact_number = $validated['mobile_number'];
+                    $customer->gender = $validated['gender'];
+                    $customer->address = $validated['address'];
+                    $customer->birthdate = $validated['birthdate'];
+                    $customer->age = $validated['age'];
+                    $customer->source = $validated['source'];
+                    $customer->created_by = Auth::id();
+                    $customer->updated_by = Auth::id();
+                    $customer->save();
+
+                    $vehicle = Vehicle::firstOrCreate(
+                        [
+                            'unit' => $validated['car_unit'],
+                            'variant' => $validated['car_variant'],
+                            'color' => $validated['car_color'],
+                        ],
+                        [
+                            'unit' => $validated['car_unit'],
+                            'variant' => $validated['car_variant'],
+                            'color' => $validated['car_color'],
+                            'created_by' => Auth::id(),
+                            'updated_by' => Auth::id(),
+                        ]
+                    );
+
+                    $approved_status = Status::where('status', 'like', 'approved')->first()->id;
+                    $pending_status = Status::where('status', 'like', 'pending')->first()->id;
+
+                    $inquiry = new Inquiry();
+                    $inquiry->inquiry_type_id =  $validated['inquiry_type_id'];
+                    $inquiry->customer_id = $customer->id;
+                    $inquiry->vehicle_id = $vehicle->id;
+                    $inquiry->quantity = $validated['quantity'];
+                    $inquiry->transaction = $validated['transaction'];
+                    $inquiry->category = $validated['category'];
+                    $inquiry->remarks = $validated['additional_info'];
+                    $inquiry->date = now()->format('F d'); // Month name day
+                    $inquiry->status_id = $pending_status;
+                    $inquiry->status_updated_by = Auth::id();
+                    $inquiry->status_updated_at = now();
+                    $inquiry->created_at = now();
+                    $inquiry->is_dispute = 0;
+                    $inquiry->created_by = Auth::id();
+                    $inquiry->updated_by = Auth::id();
+                    $inquiry->save();
+
+                    $customer = Customer::findOrFail($customer->id);
+                    $customer->inquiry_id = $inquiry->id;
+                    $customer->save();
+
+
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Inquiry created successfully'
+                    ]);
                 }
 
             }else{
@@ -717,9 +793,6 @@ class LeadController extends Controller
                 ]);
 
             }
-
-
-
 
         } catch (\Exception $e) {
             return response()->json([
