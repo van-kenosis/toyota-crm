@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style>
+    #vehicleInventoryTable td{
+        white-space: nowrap;
+    }
+</style>
+
 {{-- Title Header --}}
 <div class="card bg-dark shadow-none mb-4">
     <div class="card-body">
@@ -1032,7 +1038,7 @@
                 year_model: $('#yearModel').val(),
                 cs_number: $('#csNumber').val(),
                 actual_invoice_date: $('#actualInvoiceDate').val(),
-                delivery_date: $('#deliveryDate').val(),
+                // delivery_date: $('#deliveryDate').val(),
                 invoice_number: $('#invoiceNumber').val(),
                 remarks: $('#remarks').val(),
                 // Add other fields as necessary

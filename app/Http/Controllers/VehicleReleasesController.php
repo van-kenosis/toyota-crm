@@ -247,6 +247,7 @@ class VehicleReleasesController extends Controller
 
     public function getReleasedCount(Request $request){
         $released_status = Status::where('status', 'like', 'Released')->first();
+        $posted_status = Status::where('status', 'like', 'Posted')->first();
         $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
 
         if(Auth::user()->usertype->name === 'SuperAdmin'
@@ -257,18 +258,18 @@ class VehicleReleasesController extends Controller
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('deleted_at')
             ->whereNotNull('reservation_id')
-            ->where('reservation_transaction_status', $released_status->id);
+            ->whereIn('reservation_transaction_status', [$released_status->id, $posted_status->id]);
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('deleted_at')
             ->whereNotNull('reservation_id')
-            ->where('reservation_transaction_status', $released_status->id)
+            ->whereIn('reservation_transaction_status', [$released_status->id, $posted_status->id])
             ->where('team_id', Auth::user()->team_id);
         }else{
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('deleted_at')
             ->whereNotNull('reservation_id')
-            ->where('reservation_transaction_status', $released_status->id)
+            ->whereIn('reservation_transaction_status', [$released_status->id, $posted_status->id])
             ->whereHas('application', function($subQuery) {
                 $subQuery->where('created_by', Auth::user()->id);
             });
@@ -543,7 +544,7 @@ class VehicleReleasesController extends Controller
 
         ->addColumn('team', function($data) {
             $team = Team::where('id',  $data->application->updatedBy->team_id)->first();
-            return $team->name;
+            return $team->name ?? '';
         })
 
         ->addColumn('agent', function($data) {

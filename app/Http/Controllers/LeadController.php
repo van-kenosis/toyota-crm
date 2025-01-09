@@ -124,7 +124,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y');
+            return $data->created_at->format('d/m/Y H:i:s');
         })
 
 
@@ -224,7 +224,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y');
+            return $data->created_at->format('d/m/Y H:i:s');
         })
 
 
@@ -325,7 +325,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y');
+            return $data->created_at->format('d/m/Y H:i:s');
         })
 
 
@@ -424,7 +424,7 @@ class LeadController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y');
+            return $data->created_at->format('d/m/Y H:i:s');
         })
 
 

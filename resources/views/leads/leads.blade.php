@@ -570,7 +570,7 @@
                 }
             },
             @endif
-            { data: 'date', name: 'date', title: 'Date' },
+            { data: 'created_at', name: 'created_at', title: 'Date' },
             @if(auth()->user()->can('edit_lead')||
                 auth()->user()->can('process_leads')  ||
                 auth()->user()->can('delete_leads')
@@ -604,11 +604,11 @@
             }
             @endif
         ],
-        order: [[0, 'desc']],  // Sort by date created by default
+        order: [[11, 'desc']],  // Sort by created_at by default
         columnDefs: [
             {
                 type: 'created_at',
-                targets: [0, 1] // Apply date sorting to date_received and date_on_hold columns
+                targets: [0, 1]
             },
             {
                 targets: '_all', // Apply to all columns
