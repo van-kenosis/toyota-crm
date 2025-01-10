@@ -41,7 +41,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -52,7 +53,8 @@ class LeadController extends Controller
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
@@ -62,7 +64,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Individual');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
 
 
@@ -143,7 +146,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -154,7 +158,8 @@ class LeadController extends Controller
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
@@ -164,7 +169,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Fleet');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -242,7 +248,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -253,7 +260,8 @@ class LeadController extends Controller
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
@@ -263,7 +271,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Company');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
 
 
@@ -343,7 +352,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -354,7 +364,8 @@ class LeadController extends Controller
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
@@ -364,7 +375,8 @@ class LeadController extends Controller
                         ->whereHas('inquiryType', function($subQuery) {
                             $subQuery->where('inquiry_type', 'Government');
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('id', 'desc');
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {

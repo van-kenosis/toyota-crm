@@ -601,10 +601,9 @@
                         </div>
                     `;
                 }
-            }
+            },
             @endif
         ],
-        order: [[11, 'desc']],  // Sort by created_at by default
         columnDefs: [
             {
                 type: 'created_at',
@@ -617,7 +616,6 @@
                 }
             }
         ],
-
     });
 
     // Change DataTable route based on button click
