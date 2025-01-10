@@ -92,7 +92,8 @@ class BankController extends Controller
 
     public function list(Request $request ){
 
-        $query = Banks::with(['createdBy', 'updatedBy'])->whereNull('deleted_at');
+        $query = Banks::with(['createdBy', 'updatedBy'])->whereNull('deleted_at')->orderBy('updated_at', 'desc')
+        ;
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -114,10 +115,10 @@ class BankController extends Controller
                 return $row->updatedBy->first_name . ' ' . $row->updatedBy->last_name;
             })
             ->editColumn('created_at', function($row){
-                return $row->created_at->format('d/m/Y');
+                return $row->updated_at->format('d/m/Y H:i:s');
             })
             ->editColumn('updated_at', function($row){
-                return $row->updated_at->format('d/m/Y');
+                return $row->updated_at->format('d/m/Y H:i:s');
             })
             ->make(true);
 

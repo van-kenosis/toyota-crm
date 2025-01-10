@@ -114,6 +114,52 @@
 
         });
 
+         // Datatable Initilization
+         const teamTable = $('#teamTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('team.list') }}",
+                type: 'GET',
+            }, 
+            pageLength: 10,
+            paging: true,
+            responsive: true,
+            dom: '<"top"lf>rt<"bottom"ip>',
+            language: {
+                search: "",
+                searchPlaceholder: "Search..."
+            },
+
+            columns: [
+                { data: 'id', name: 'id', title: 'ID', visible: false },
+                { data: 'name', name: 'name', title: 'Group Name' },
+                { data: 'updated_at', name: 'updated_at', title: 'Created At' },
+                { data: 'updated_by', name: 'updated_by', title: 'Created By' },
+                { data: 'status', name: 'status', title: 'Status' },
+                {
+                    data: 'action',
+                    name: 'action',
+                    title: 'Action',
+                    render: function (data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editTeamModal" data-id="${row.id}" data-name="${row.name}" data-status="${row.status}" data-created-by="${row.created_by}" data-updated-by="${row.updated_by}">
+                                <span class="tf-icons bx bx-pencil bx-22px"></span>
+                            </button>
+                        `;
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: '_all', // Apply to all columns
+                    render: function (data, type, row) {
+                        return type === 'display' ? data.toUpperCase() : data;
+                    }
+                }
+            ],
+        });
+
         // Edit Team
         $('#editTeamForm').submit(function(e){
             e.preventDefault();
@@ -192,35 +238,7 @@
             $(this).val($(this).val().toUpperCase());
         });
 
-        // Datatable Initilization
-        const teamTable = $('#teamTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('team.list') }}",
-                type: 'GET',
-            },
-            columns: [
-                { data: 'id', name: 'id', title: 'ID', visible: false },
-                { data: 'name', name: 'name', title: 'Group Name' },
-                { data: 'updated_at', name: 'updated_at', title: 'Created At' },
-                { data: 'updated_by', name: 'updated_by', title: 'Created By' },
-                { data: 'status', name: 'status', title: 'Status' },
-                {
-                    data: 'action',
-                    name: 'action',
-                    title: 'Action',
-                    render: function (data, type, row) {
-                        return `
-                            <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editTeamModal" data-id="${row.id}" data-name="${row.name}" data-status="${row.status}" data-created-by="${row.created_by}" data-updated-by="${row.updated_by}">
-                                <span class="tf-icons bx bx-pencil bx-22px"></span>
-                            </button>
-                        `;
-                    }
-                }
-            ],
-            order: [[2, 'desc']],
-        });
+       
 
     });
 

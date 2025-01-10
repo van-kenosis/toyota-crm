@@ -29,7 +29,9 @@ class DisputeController extends Controller
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '1')
 
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('updated_at', 'desc');
+
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                         ->whereNull('deleted_at')
@@ -37,7 +39,9 @@ class DisputeController extends Controller
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
                         })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('updated_at', 'desc');
+
         }
         else{
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
@@ -55,7 +59,9 @@ class DisputeController extends Controller
                         // ->whereHas('inquiryType', function($subQuery) {
                         //     $subQuery->where('inquiry_type', 'Individual');
                         // })
-                        ->where('status_id', '<>', $status);
+                        ->where('status_id', '<>', $status)
+                        ->orderBy('updated_at', 'desc');
+
         }
 
 
@@ -64,7 +70,7 @@ class DisputeController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -92,11 +98,11 @@ class DisputeController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('m/d/Y');
+            return $data->created_at->format('d/m/Y H:i:s');
         })
 
         ->editColumn('updated_at', function($data) {
-            return $data->updated_at->format('d/m/Y') ?? '';
+            return $data->updated_at->format('d/m/Y H:i:s');
         })
 
         ->editColumn('created_by', function($data){

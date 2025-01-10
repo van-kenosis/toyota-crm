@@ -684,6 +684,7 @@
             { data: 'cs_number', name: 'cs_number', title: 'CS Number' },
             { data: 'actual_invoice_date', name: 'actual_invoice_date', title: 'Actual Invoice Date' },
             { data: 'invoice_number', name: 'invoice_number', title: 'Invoice No.' },
+            { data: 'updated_at', name: 'updated_at', title: 'Created At' },
             { data: 'delivery_date', name: 'delivery_date', title: 'Delivery Date' },
             { data: 'tags', name: 'tags', title: 'TAGs' },
             // { data: 'team', name: 'team', title: 'Team' },
@@ -738,12 +739,7 @@
             },
             @endif
         ],
-        order: [[6, 'asc']],  // Sort by 'cs_number' column in ascending order
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
-        ],
+        
     });
 
     // datatables button tabs
@@ -770,7 +766,7 @@
             const isIncomingTab = $(this).text().trim() === 'Incoming';
 
             const isInventoryTab = $(this).text().trim() === 'Inventory';
-            vehicleInventoryTable.column(14).visible(isInventoryTab); // year_model
+            vehicleInventoryTable.column(15).visible(isInventoryTab); // year_model
         });
 
     });
@@ -1109,7 +1105,6 @@
                 success: function(response) {
                     const inventory = response.inventory;
                     const vehicle = response.vehicle;
-                    console.log(inventory);
                     $('#edit_id').val(id);
                     $('#edit_car_unit').val(vehicle.unit).trigger('change');
                     // Disable buttons initially
@@ -1191,7 +1186,6 @@
         $('#editInventoryFormData').on('submit', function(e) {
             e.preventDefault();
             let formData = $(this).serialize();
-            console.log(formData);
 
             $.ajax({
                 url: '{{ route("inventory.update") }}',
@@ -1302,7 +1296,6 @@
             let id = $(this).data('id'); // Get the inventory ID from the button
             $('#id').val(id);
             let mark = $(this).data('mark');
-            console.log(mark);
 
             $.ajax({
                 url: '{{ route("inventory.getAgent") }}',

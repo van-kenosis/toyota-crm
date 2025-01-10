@@ -26,7 +26,8 @@ class UserManagementController extends Controller
 
     public function list(){
 
-       $query = User::with(['usertype', 'team'])->get();
+       $query = User::with(['usertype', 'team'])->orderBy('updated_at', 'desc')
+       ->get();
 
        return DataTables::of($query)
             ->editColumn('id', function($user){
@@ -37,6 +38,9 @@ class UserManagementController extends Controller
             })
             ->addColumn('team', function($user){
                 return $user->team->name ?? '';
+            })
+            ->addColumn('updated_at', function($user){
+                return $user->updated_at->format('d/m/Y H:i:s');
             })
             ->make(true);
 

@@ -35,6 +35,7 @@ class VehicleReservationController extends Controller
                 $subQuery->where('status', 'available');
                 $subQuery->where('CS_number_status', 'available');
             })
+        ->orderBy('created_at', 'desc')
         ->groupBy('unit');
 
         $list = $query->get();
@@ -102,7 +103,7 @@ class VehicleReservationController extends Controller
                             ->where('reservation_transaction_status', $pending_status->id)
                             ->whereNull('deleted_at')
                         ->whereNotNull('reservation_id')
-                        ;
+                        ->orderBy('updated_at', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                             ->where('reservation_transaction_status', $pending_status->id)
@@ -112,7 +113,9 @@ class VehicleReservationController extends Controller
                             $subQuery->whereHas('user', function($subQuery) {
                                 $subQuery->where('team_id', Auth::user()->team_id);
                             });
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }
         else{
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
@@ -121,7 +124,9 @@ class VehicleReservationController extends Controller
                         ->whereNotNull('reservation_id')
                         ->whereHas('application', function($subQuery) {
                             $subQuery->where('created_by', Auth::user()->id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -129,7 +134,7 @@ class VehicleReservationController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->groupBy('application_id')->get();
@@ -193,7 +198,8 @@ class VehicleReservationController extends Controller
         })
 
         ->addColumn('date_assigned', function($data) {
-            return $data->reservation_date;
+            return $data->updated_at->format('d/m/Y H:i:s');
+
         })
 
         ->make(true);
@@ -208,14 +214,16 @@ class VehicleReservationController extends Controller
                         ->whereNull('deleted_at')
                         ->where('reservation_transaction_status', $reserved_status->id)
                         ->whereNotNull('reservation_id')
-                       ;
+                        ->orderBy('updated_at', 'desc');
+
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
                         ->where('reservation_transaction_status', $reserved_status->id)
                         ->whereNotNull('reservation_id')
                         ->where('team_id', Auth::user()->team_id)
-                       ;
+                        ->orderBy('updated_at', 'desc');
+
         }else{
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -223,7 +231,8 @@ class VehicleReservationController extends Controller
                         ->whereNotNull('reservation_id')
                         ->whereHas('application', function($subQuery) {
                             $subQuery->where('created_by', Auth::user()->id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -295,8 +304,9 @@ class VehicleReservationController extends Controller
         })
 
         ->addColumn('date_assigned', function($data) {
-            return $data->reservation_date;
+            return $data->updated_at->format('d/m/Y H:i:s');
         })
+
         ->addColumn('vehicle_id', function($data) {
             return $data->application->vehicle_id ?? '';
         })

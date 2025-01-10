@@ -371,12 +371,7 @@
             { data: 'unit', name: 'unit', title: 'Unit' },
             { data: 'quantity', name: 'quantity', title: 'Quantity' },
         ],
-        order: [[0, 'desc']],  // Sort by 'unit' column by default
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
-        ],
+        
     });
 
     const statusTable = $('#statusTable').DataTable({
@@ -413,7 +408,8 @@
         columnDefs: [
             {
                 targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
+            },
+            
         ],
     });
 
@@ -527,12 +523,7 @@
                 }
             },
         ],
-        order: [[0, 'desc']],  // Sort by 'unit' column by default
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
-        ],
+       
     });
 
     $(document).ready(function () {
@@ -588,7 +579,6 @@
         $(document).on('click', '.status-btn', function() {
             const id = $(this).data('id');
             const currentStatus = $(this).data('status'); // Get the current status from the button
-            console.log(currentStatus);
             $('#statusTransactionID').val(id);
 
             $.ajax({

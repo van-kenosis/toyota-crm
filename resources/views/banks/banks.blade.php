@@ -220,7 +220,6 @@
         // Form Submission
         $('#editBankForm').on('submit', function(e) {
             e.preventDefault();
-            console.log('editBankForm');
             const formData = $(this).serialize();
             const bankId = $('#bank_id').val();
             const method = 'PUT';

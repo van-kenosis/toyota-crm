@@ -619,11 +619,12 @@
             }
             @endif
         ],
-        order: [[0, 'desc']],  // Sort by date created by default
         columnDefs: [
             {
-                type: 'created_at',
-                targets: [0, 1] // Apply date sorting to date_received and date_on_hold columns
+                targets: '_all', // Apply to all columns
+                render: function (data, type, row) {
+                    return type === 'display' ? data.toUpperCase() : data;
+                }
             }
         ],
     });
@@ -836,8 +837,7 @@
                 $('#validateMobileNumber').hide();
             }
 
-            console.log(isValid);
-            console.log(edit_inquiry_type);
+            
 
             // Restore original values on invalid fields
             if (!isValid) {
@@ -954,7 +954,6 @@
 
 
                 const edit_inquiry_type =  $('#edit_inquiry_type').val();
-                console.log(edit_inquiry_type);
 
                 if (edit_inquiry_type === 'Individual') {
                          // No special validation changes for individual, just hide others
@@ -1074,7 +1073,6 @@
     $(document).on('click', '.processing-btn', function() {
         const appID = $(this).data('id');
         const transaction = $(this).data('transaction');
-        console.log(transaction);
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to update its status?",

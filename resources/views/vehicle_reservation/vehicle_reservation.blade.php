@@ -506,7 +506,7 @@
             { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
             { data: 'agent', name: 'agent', title: 'Agent' },
             { data: 'team', name: 'team', title: 'Group' },
-            // { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
+            { data: 'date_assigned', name: 'date_assigned', title: 'Date ' },
             {
                 data: 'application_id',
                 name: 'application_id',
@@ -567,12 +567,39 @@
             },
 
         ],
-        order: [[0, 'desc']],  // Sort by 'unit' column by default
         columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
+             {
+                targets: '_all', // Apply to all columns
+                render: function (data, type, row) {
+                    return type === 'display' ? data.toUpperCase() : data;
+                }
             }
         ],
+    });
+
+     // button group active tabs
+     $('.btn-group .btn').on('click', function(e) {
+        e.preventDefault();
+        $('#date-range-picker').val('');
+
+        // Toggle column visibility based on the active tab
+        const isReservationTab = $(this).text().trim() === 'Reservation';
+        vehicleReservationTable.column(2).visible(isReservationTab); // year_model
+        @if(auth()->user()->can('add_cs_number') && auth()->user()->can('get_cs_number'))
+        vehicleReservationTable.column(5).visible(isReservationTab); // cs_number
+        @endif
+
+        @if(auth()->user()->can('process_reserved_reservation'))
+        vehicleReservationTable.column(14).visible(isReservationTab); // application_id
+        @endif
+
+        const isPendingTab = $(this).text().trim() === 'Pending';
+        @if(auth()->user()->can('process_pending_reservation') || auth()->user()->can('cancel_pending_reservation'))
+        vehicleReservationTable.column(13).visible(isPendingTab); // id
+        @endif
+
+        var route = $(this).data('route');
+        vehicleReservationTable.ajax.url(route).load();
     });
 
     // Example usage when a CS number is selected
@@ -662,30 +689,7 @@
     });
 
 
-    // button group active tabs
-    $('.btn-group .btn').on('click', function(e) {
-        e.preventDefault();
-        $('#date-range-picker').val('');
-
-        // Toggle column visibility based on the active tab
-        const isReservationTab = $(this).text().trim() === 'Reservation';
-        vehicleReservationTable.column(2).visible(isReservationTab); // year_model
-        @if(auth()->user()->can('add_cs_number') && auth()->user()->can('get_cs_number'))
-        vehicleReservationTable.column(5).visible(isReservationTab); // cs_number
-        @endif
-
-        @if(auth()->user()->can('process_reserved_reservation'))
-        vehicleReservationTable.column(13).visible(isReservationTab); // application_id
-        @endif
-
-        const isPendingTab = $(this).text().trim() === 'Pending';
-        @if(auth()->user()->can('process_pending_reservation') || auth()->user()->can('cancel_pending_reservation'))
-        vehicleReservationTable.column(12).visible(isPendingTab); // id
-        @endif
-
-        var route = $(this).data('route');
-        vehicleReservationTable.ajax.url(route).load();
-    });
+   
 
     // datatables button tabs
     $(document).ready(function() {
@@ -798,7 +802,6 @@
 
     $(document).on('click', '.cancel-pending-btn', function() {
         const appID = $(this).data('id');
-        console.log(appID);
 
         Swal.fire({
             title: 'Are you sure?',

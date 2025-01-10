@@ -605,10 +605,7 @@
             @endif
         ],
         columnDefs: [
-            {
-                type: 'created_at',
-                targets: [0, 1]
-            },
+           
             {
                 targets: '_all', // Apply to all columns
                 render: function (data, type, row) {
@@ -894,8 +891,6 @@
             isValid = validateField('#category', 'Please Select a Category') && isValid;
 
 
-            console.log(isValid);
-
             if (!isValid) {
                 return; // Stop execution if validation fails
             }
@@ -1135,7 +1130,6 @@
             url: `{{ url('leads/edit') }}/${inquiryId}`,
             type: 'GET',
             success: function(data) {
-                // console.log(data);
                 // Populate the form fields with the inquiry data
                 $('#edit_id').val(data.id);
                 $('#edit_mobile_number').val(data.customer.contact_number);
@@ -1152,8 +1146,6 @@
                 $('#edit_age').val(data.customer.age);
 
                 const edit_inquiry_type =  $('#edit_inquiry_type').val();
-
-                console.log(edit_inquiry_type);
 
                 if (edit_inquiry_type === 'Individual') {
                     // No special validation changes for individual, just hide others

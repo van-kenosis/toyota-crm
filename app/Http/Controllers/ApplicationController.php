@@ -143,7 +143,8 @@ class ApplicationController extends Controller
         ){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
-                        ->where('status_id', $status->id);
+                        ->where('status_id', $status->id)
+                        ->orderBy('updated_at', 'desc');
         }
         elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
@@ -151,13 +152,15 @@ class ApplicationController extends Controller
                         ->where('status_id', $status->id)
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
 
         }else{
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->where('status_id', $status->id)
-                        ->where('created_by', Auth::user()->id);
+                        ->where('created_by', Auth::user()->id)
+                        ->orderBy('updated_at', 'desc');
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -165,7 +168,7 @@ class ApplicationController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -246,7 +249,8 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y');
+            return $data->updated_at->format('d/m/Y H:i:s');
+
         })
 
         ->make(true);
@@ -264,7 +268,9 @@ class ApplicationController extends Controller
         ){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
-                        ->where('status_id', $statusIds);
+                        ->where('status_id', $statusIds)
+                        ->orderBy('updated_at', 'desc');
+
         }
         elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
@@ -272,13 +278,15 @@ class ApplicationController extends Controller
                         ->where('status_id', $statusIds)
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
 
         }else{
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->where('status_id', $statusIds)
-                        ->where('created_by', Auth::user()->id);
+                        ->where('created_by', Auth::user()->id)
+                        ->orderBy('updated_at', 'desc');
         }
 
 
@@ -287,7 +295,7 @@ class ApplicationController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -367,7 +375,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y');
+            return $data->updated_at->format('d/m/Y H:i:s');
         })
 
         ->make(true);
@@ -386,7 +394,9 @@ class ApplicationController extends Controller
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                 ->whereNull('deleted_at')
                 ->whereNotIn('status_id', $statusIds)
-                ->whereIn('transaction', ['cash', 'po']);
+                ->whereIn('transaction', ['cash', 'po'])
+                ->orderBy('updated_at', 'desc');
+
         }
         elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
@@ -395,14 +405,17 @@ class ApplicationController extends Controller
                 ->whereIn('transaction', ['cash', 'po'])
                 ->whereHas('user', function($subQuery) {
                     $subQuery->where('team_id', Auth::user()->team_id);
-                });
+                })
+                ->orderBy('updated_at', 'desc');
+
 
         }else{
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                 ->whereNull('deleted_at')
                 ->whereNotIn('status_id', $statusIds)
                 ->whereIn('transaction', ['cash', 'po'])
-                ->where('created_by', Auth::user()->id);
+                ->where('created_by', Auth::user()->id)
+                ->orderBy('updated_at', 'desc');
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -410,7 +423,7 @@ class ApplicationController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -490,7 +503,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y');
+            return $data->updated_at->format('d/m/Y H:i:s');
         })
 
         ->make(true);
@@ -508,7 +521,9 @@ class ApplicationController extends Controller
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->whereNotIn('transaction', ['cash', 'po'])
-                        ->where('status_id', $pending_status->id);
+                        ->where('status_id', $pending_status->id)
+                        ->orderBy('updated_at', 'desc');
+
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
@@ -516,13 +531,17 @@ class ApplicationController extends Controller
                         ->where('status_id', $pending_status->id)
                         ->whereHas('user', function($subQuery) {
                             $subQuery->where('team_id', Auth::user()->team_id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }else{
             $query = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
                         ->whereNotIn('transaction', ['cash', 'po'])
                         ->where('status_id', $pending_status->id)
-                        ->where('created_by', Auth::user()->id);
+                        ->where('created_by', Auth::user()->id)
+                        ->orderBy('updated_at', 'desc');
+
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -530,7 +549,7 @@ class ApplicationController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -610,7 +629,7 @@ class ApplicationController extends Controller
         })
 
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y');
+            return $data->updated_at->format('d/m/Y H:i:s');
         })
 
         ->make(true);

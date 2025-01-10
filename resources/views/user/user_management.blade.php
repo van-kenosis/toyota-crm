@@ -179,6 +179,15 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("user.management.list") }}',
+            pageLength: 10,
+            paging: true,
+            responsive: true,
+            dom: '<"top"lf>rt<"bottom"ip>',
+            language: {
+                search: "",
+                searchPlaceholder: "Search..."
+            },
+
             columns: [
                 {
                     data: 'id',
@@ -192,9 +201,11 @@
                 { data: 'usertype', name: 'usertype', title: 'User Type' },
                 { data: 'team', name: 'team', title: 'Group' },
                 { data: 'status', name: 'status', title: 'Status' },
+                { data: 'updated_at', name: 'updated_at', title: 'Updated_at' },
+
                 {
                     data: 'id',
-                    name: 'actions',
+                    name: 'id',
                     title: 'Actions',
                     orderable: false,
                     searchable: false,
@@ -209,8 +220,16 @@
                         </div>`;
                     }
                 }
+
             ],
-            order: [[0, 'asc']]
+            columnDefs: [
+                {
+                    targets: '_all', // Apply to all columns
+                    render: function (data, type, row) {
+                        return type === 'display' ? data.toUpperCase() : data;
+                    }
+                }
+            ],
         });
 
         // Show/Hide Add User Form
@@ -321,7 +340,6 @@
         $(document).on('click', '.edit-user', function(e) {
             e.preventDefault();
             let userId = $(this).data('id');
-            console.log(userId);
             $.ajax({
                 url: `user-management/${userId}/edit`,
                 type: 'GET',

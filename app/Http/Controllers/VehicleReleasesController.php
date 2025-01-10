@@ -344,7 +344,7 @@ class VehicleReleasesController extends Controller
                         ->whereNull('deleted_at')
                         ->where('reservation_transaction_status', $pending_for_release_status->id)
                         ->whereNotNull('reservation_id')
-                       ;
+                        ->orderBy('updated_at', 'desc');
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -354,7 +354,8 @@ class VehicleReleasesController extends Controller
                             $subQuery->whereHas('user', function($subQuery) {
                                 $subQuery->where('team_id', Auth::user()->team_id);
                             });
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
         }else{
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -362,7 +363,9 @@ class VehicleReleasesController extends Controller
                         ->whereNotNull('reservation_id')
                         ->whereHas('application', function($subQuery) {
                             $subQuery->where('created_by', Auth::user()->id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -370,7 +373,7 @@ class VehicleReleasesController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -462,7 +465,8 @@ class VehicleReleasesController extends Controller
                         ->whereNull('deleted_at')
                         ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
                         ->whereNotNull('reservation_id')
-                       ;
+                        ->orderBy('updated_at', 'desc');
+
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -472,7 +476,9 @@ class VehicleReleasesController extends Controller
                             $subQuery->whereHas('user', function($subQuery) {
                                 $subQuery->where('team_id', Auth::user()->team_id);
                             });
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }else{
             $query = Transactions::with(['inquiry', 'inventory', 'application'])
                         ->whereNull('deleted_at')
@@ -480,7 +486,9 @@ class VehicleReleasesController extends Controller
                         ->whereNotNull('reservation_id')
                         ->whereHas('application', function($subQuery) {
                             $subQuery->where('created_by', Auth::user()->id);
-                        });
+                        })
+                        ->orderBy('updated_at', 'desc');
+
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -488,7 +496,7 @@ class VehicleReleasesController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -556,7 +564,8 @@ class VehicleReleasesController extends Controller
         })
 
         ->addColumn('date_released', function($data) {
-            return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('d/m/Y') : '';
+            return $data->updated_at->format('d/m/Y H:i:s');
+
         })
 
         ->addColumn('status', function($data) {
