@@ -40,7 +40,7 @@ class UserManagementController extends Controller
                 return $user->team->name ?? '';
             })
             ->addColumn('updated_at', function($user){
-                return $user->updated_at->format('d/m/Y H:i:s');
+                return $user->updated_at;
             })
             ->make(true);
 

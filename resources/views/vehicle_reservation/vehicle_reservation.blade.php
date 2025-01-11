@@ -468,7 +468,7 @@
             },
         pageLength: 10,
         paging: true,
-        responsive: true,
+        responsive: false,
         dom: '<"top"lf>rt<"bottom"ip>',
         language: {
             search: "",
@@ -567,14 +567,7 @@
             },
 
         ],
-        columnDefs: [
-             {
-                targets: '_all', // Apply to all columns
-                render: function (data, type, row) {
-                    return type === 'display' ? data.toUpperCase() : data;
-                }
-            }
-        ],
+        
     });
 
      // button group active tabs
@@ -689,7 +682,7 @@
     });
 
 
-   
+
 
     // datatables button tabs
     $(document).ready(function() {

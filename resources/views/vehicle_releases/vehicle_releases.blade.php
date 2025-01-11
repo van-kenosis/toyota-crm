@@ -137,6 +137,49 @@
     </div>
 </div>
 
+<!-- Add Folder Number Modal -->
+<div class="modal fade" id="folderNumberModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="backDropModalTitle">Folder Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md">
+                <div class="d-flex justify-content-start">
+                    <div class="">Customer:</div><div class="text-dark">&nbsp; John Doe</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Unit:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Variant:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Color:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">CS Number:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md">
+                <label for="defaultFormControlInput" class="form-label">Add Folder Number</label>
+                <input type="text" class="form-control" id="defaultFormControlInput" placeholder="" aria-describedby="defaultFormControlHelp" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-dark">Proceed</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 
   {{-- Header Datatables --}}
   <div class="row mb-4">
@@ -371,7 +414,7 @@
             { data: 'unit', name: 'unit', title: 'Unit' },
             { data: 'quantity', name: 'quantity', title: 'Quantity' },
         ],
-        
+
     });
 
     const statusTable = $('#statusTable').DataTable({
@@ -409,7 +452,7 @@
             {
                 targets: [0, 1], // Columns to apply additional formatting (if needed)
             },
-            
+
         ],
     });
 
@@ -468,6 +511,9 @@
                 visible:false,
                 render: function(data, type, row) {
                         return `<div class="d-flex">
+                                <button type="button" class="btn btn-icon me-2 btn-dark folder-number-btn" data-bs-toggle="modal" data-bs-target="#folderNumberModal">
+                                        <span class="tf-icons bx bxs-check-circle bx-22px"></span>
+                                </button>
                                 @if(auth()->user()->can('process_vehicle_release'))
                                     <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
                                         <span class="tf-icons bx bxs-check-circle bx-22px"></span>
@@ -523,7 +569,7 @@
                 }
             },
         ],
-       
+
     });
 
     $(document).ready(function () {
