@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<div class="card bg-label-warning shadow-none">
+{{-- <div class="card bg-label-warning shadow-none">
     <div class="card-body">
         <div class="row mb-2">
             <div class="col-md d-flex justify-content-center">
@@ -41,25 +41,30 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
-{{-- <div class="row mb-4">
-    <div class="col">
-        <div class="card" style="background-color: #000000;">
-            <div class="card-body">
-                <div class="d-flex justify-content-center">
-                    <div class="">
-                        <div class="d-flex justify-content-center">
-                            <img src="{{ asset('assets/myimg/logo.png') }}" class="logo-container" alt="Login" style="width: 20%;">
-                        </div>
-                        <h1 class="text-white d-flex justify-content-center" style="font-size: 64px;"><b>Toyota Albay</b></h1>
-                        <h6 class="text-white d-flex justify-content-center  ">Customer Relation Management System</h6>
-                    </div>
-                </div>
+<!-- Centered align Cards -->
+<div class="row g-6 mb-6">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-border-shadow-dark h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+              <div class="avatar me-4">
+                <span class="avatar-initial rounded bg-label-dark"><i class="icon-base bx bxs-truck icon-lg"></i></span>
+              </div>
+              <h4 class="mb-0">42</h4>
             </div>
+            <h5 class="mb-2">Units Released Today</h5>
+            <p class="mb-0">
+              {{-- <span class="text-heading fw-medium me-2">+18.2%</span> --}}
+              <span class="text-secondary">January 13, 2024 (Monday)</span>
+            </p>
+          </div>
         </div>
     </div>
-</div> --}}
+</div>
+<!--/ Centered align Cards -->
+
 
 
 

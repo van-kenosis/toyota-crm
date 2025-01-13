@@ -1019,7 +1019,7 @@ class ApplicationController extends Controller
                 'approval_dates' => 'required|array',
                 'approval_dates.*' => 'nullable|date',
                 'approval_statuses' => 'required|array',
-                'approval_statuses.*' => 'required|in:approve,disapprove',
+                'approval_statuses.*' => 'required|in:approve,disapprove,pending',
                 'preferred_bank' => 'required|exists:banks,id'
             ]);
 
@@ -1035,9 +1035,9 @@ class ApplicationController extends Controller
                     ]);
             }
 
-            // Only update preferred bank if it has an approved status
+            // Update preferred bank if it has an approved or pending approval status
             $preferredBankIndex = array_search($validated['preferred_bank'], $validated['bank_ids']);
-            if ($preferredBankIndex !== false && $validated['approval_statuses'][$preferredBankIndex] === 'approve') {
+            if ($preferredBankIndex !== false && in_array($validated['approval_statuses'][$preferredBankIndex], ['approve', 'pending'])) {
                 $application = Application::findOrFail(decrypt($id));
                 $application->bank_id = $validated['preferred_bank'];
                 $application->updated_by = Auth::id();

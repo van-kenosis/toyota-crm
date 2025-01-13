@@ -223,13 +223,28 @@
 
             ],
             columnDefs: [
+                // {
+                //     targets: 0, // The 'Name' column (zero-based index)
+                //     render: function(data, type, row) {
+                //         if (type === 'display') {
+                //             return (row.first_name + ' ' + row.last_name).toUpperCase();
+                //         }
+                //         return data;
+                //     }
+                // },
                 {
-                    targets: '_all', // Apply to all columns
-                    render: function (data, type, row) {
-                        return type === 'display' ? data.toUpperCase() : data;
+                    targets: 2, // The 'User Type' column (zero-based index)
+                    render: function(data, type, row) {
+                        return type === 'display' && typeof data === 'string' ? data.toUpperCase() : data;
+                    }
+                },
+                {
+                    targets: 4, // The 'User Type' column (zero-based index)
+                    render: function(data, type, row) {
+                        return type === 'display' && typeof data === 'string' ? data.toUpperCase() : data;
                     }
                 }
-            ],
+            ]
         });
 
         // Show/Hide Add User Form
