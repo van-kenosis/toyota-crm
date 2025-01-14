@@ -749,10 +749,21 @@ class VehicleReleasesController extends Controller
             //     'status' => 'required|exists:status,id' // Assuming you have a statuses table
             // ]);
 
+            $status = Status::where('status', 'like', 'Released')->first()->id;
+
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->status = $request->status;
             $transaction->reservation_transaction_status = $request->status; // Update the status
+            $transaction->released_date = now();
+            $transaction->updated_at = now();
             $transaction->save();
+
+            if($request->status == $status ){
+                $inventory = Inventory::findOrFail($transaction->inventory_id);
+                $inventory->CS_number_status = 'Released';
+                $inventory->status = 'Released';
+                $inventory->save();
+            }
 
             return response()->json([
                 'success' => true,
