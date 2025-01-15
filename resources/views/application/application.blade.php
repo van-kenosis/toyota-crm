@@ -837,7 +837,7 @@
                 $('#validateMobileNumber').hide();
             }
 
-            
+
 
             // Restore original values on invalid fields
             if (!isValid) {
@@ -1204,6 +1204,7 @@
             resetModalToInitialState();
         });
     });
+
     @if(auth()->user()->can('get_banks') && auth()->user()->can('store_banks') )
     function populateBankSelects(data, targetSelect = null) {
         if (targetSelect) {
@@ -1429,11 +1430,11 @@
                                     class="form-control approval-date"
                                     name="approval_dates[]"
                                     value="${bank.approval_date || ''}"
-                                    ${bank.approval_date ? 'readonly' : ''}>
+                                    ${bank.approval_date}>
                             </div>
                             <div class="col-md-4">
                                 <select class="form-control approval-status" name="approval_statuses[]">
-                                    <option disabled selected>Select Approval Status</option>
+                                    <option selected value= "">Select Approval Status</option>
                                     <option value="approve" ${bank.approval_status === 'approve' ? 'selected' : ''}>APPROVE</option>
                                     <option value="disapprove" ${bank.approval_status === 'disapprove' ? 'selected' : ''}>DISAPPROVE</option>
                                     <option value="pending" ${bank.approval_status === 'pending' ? 'selected' : ''}>PENDING</option>

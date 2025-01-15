@@ -1052,7 +1052,7 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating bank approval dates: ' . $e->getMessage()
+                'message' => 'Error updating bank approval: ' . $e->getMessage()
             ], 500);
         }
     }
