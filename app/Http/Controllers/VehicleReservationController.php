@@ -8,6 +8,8 @@ use App\Models\Status;
 use App\Models\Team;
 use App\Models\Transactions;
 use App\Models\Vehicle;
+use App\Models\Banks;
+use App\Models\InquryType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -461,13 +463,13 @@ class VehicleReservationController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Vehicle reservation request successfully processed'
+                'message' => 'Vehicle reservation request successfully canceled'
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating reservation process: ' . $e->getMessage()
+                'message' => 'Error canceling reservation: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -502,7 +504,6 @@ class VehicleReservationController extends Controller
 
     public function addCSNumber(Request $request){
 
-        // dd($request->all());
         try {
             $transaction = Transactions::FindOrFail(decrypt($request->transaction_id));
             $application = Application::findOrFail($transaction->application_id);
@@ -557,6 +558,103 @@ class VehicleReservationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error updating CS number: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editUnit(Request $request, $id){
+        try {
+            $decryptedId = $id;
+            $data = Application::with(['user', 'customer', 'vehicle', 'status', 'bank', 'transactions'])
+                ->where('id', $decryptedId)
+                ->first();
+
+            $firstTransaction = $data->transactions->first();
+            if ($firstTransaction) {
+                $inquiry = Inquiry::where('id', $firstTransaction->inquiry_id)->first();
+                $inquirytype = InquryType::where('id', $inquiry->inquiry_type_id)->first()->inquiry_type;
+            }
+
+            $statuses = Status::all();
+            $banks = Banks::all();
+
+            return response()->json([
+                'firstTransaction' => $firstTransaction,
+                'inquiry' => $inquiry,
+                'inquirytype' => $inquirytype,
+                'application' => $data,
+                'statuses' => $statuses,
+                'banks' => $banks
+            ]);
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating CS number: ' . $e->getMessage()
+            ], 500);
+        }
+
+
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                
+                'car_unit' => 'required|string',
+                'car_variant' => 'required|string',
+                'car_color' => 'required|string',
+                
+            ]);
+
+            // Find the inquiry and related customer and vehicle
+            $application = Application::findOrFail($id);
+            $transaction_id = Transactions::where('application_id', $application->id )->first();
+            $inquiry_id = Inquiry::where('id', $transaction_id->inquiry_id)->first();
+            $inquiry = Inquiry::findOrFail($inquiry_id->id);
+
+            $vehicle = Vehicle::firstOrCreate(
+                [
+                    'unit' => $validated['car_unit'],
+                    'variant' => $validated['car_variant'],
+                    'color' => $validated['car_color'],
+                ],
+                [
+                    'unit' => $validated['car_unit'],
+                    'variant' => $validated['car_variant'],
+                    'color' => $validated['car_color'],
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
+                ]
+            );
+
+            Transactions::where('application_id', $application->id )
+                ->whereNull('deleted_at')
+                ->update([
+                    'inventory_id' => null,
+            ]);
+
+            //
+            $inquiry->vehicle_id = $vehicle->id;
+            $inquiry->updated_by = Auth::id();
+            $inquiry->updated_at = now();
+            $inquiry->save();
+
+            // Update inquiry data
+            $application->vehicle_id = $vehicle->id;
+            $application->updated_by = Auth::id();
+            $application->updated_at = now();
+            $application->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reservation Unit updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating reservation unit: ' . $e->getMessage()
             ], 500);
         }
     }

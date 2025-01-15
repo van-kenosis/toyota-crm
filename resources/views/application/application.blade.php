@@ -1436,6 +1436,7 @@
                                     <option disabled selected>Select Approval Status</option>
                                     <option value="approve" ${bank.approval_status === 'approve' ? 'selected' : ''}>APPROVE</option>
                                     <option value="disapprove" ${bank.approval_status === 'disapprove' ? 'selected' : ''}>DISAPPROVE</option>
+                                    <option value="pending" ${bank.approval_status === 'pending' ? 'selected' : ''}>PENDING</option>
                                 </select>
                             </div>
                         </div>

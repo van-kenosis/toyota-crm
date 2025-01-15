@@ -38,7 +38,7 @@ class PermissionUsertypeSeeder extends Seeder
             'view_application', 'list_pending_applications', 'list_approved_applications', 'edit_application',
             'update_application', 'get_banks', 'process_application', 'store_banks', 'update_bank_approval', 'update_terms',
             'view_vehicle_releases', 'released_units_list',
-            'view_vehicle_inventory', 'list_inventory', 'list_available_units', 'get_total_inventory'
+            'view_vehicle_inventory', 'list_inventory', 'list_available_units', 'get_total_inventory', 'edit_unit'
         ];
 
         // ADMIN STAFF Permissions
@@ -52,7 +52,7 @@ class PermissionUsertypeSeeder extends Seeder
             'view_vehicle_releases', 'released_units_list', 'process_vehicle_release', 'cancel_vehicle_release',
             'update_ltoremarks', 'get_status', 'update_status',
             'view_vehicle_inventory', 'list_inventory', 'get_total_inventory', 'store_vehicle', 'store_inventory', 'update_profit',
-            'update_incoming_status', 'update_tags_inventory', 'update_inventory', 'edit_inventory', 'update_released_remarks'
+            'update_incoming_status', 'update_tags_inventory', 'update_inventory', 'edit_inventory', 'update_released_remarks', 'add_folder_number'
 
         ];
 

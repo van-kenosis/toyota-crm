@@ -448,6 +448,22 @@ class VehicleReleasesController extends Controller
         ->addColumn('profit', function($data) {
             return number_format($data->profit ?? 0, 2);
         })
+        ->addColumn('folder_number', function($data) {
+            return $data->folder_number ?? '';
+        })
+
+        ->addColumn('source', function($data) {
+            return $data->inquiry->customer->source ?? '';
+        })
+
+        ->addColumn('address', function($data) {
+            return $data->inquiry->customer->address ?? '';
+        })
+
+        ->addColumn('gender', function($data) {
+            return $data->inquiry->customer->gender ?? '';
+        })
+
 
         ->make(true);
     }
@@ -576,6 +592,22 @@ class VehicleReleasesController extends Controller
             return number_format($data->profit ?? 0, 2);
         })
 
+        ->addColumn('folder_number', function($data) {
+            return $data->folder_number ?? '';
+        })
+
+        ->addColumn('source', function($data) {
+            return $data->inquiry->customer->source ?? '';
+        })
+
+        ->addColumn('address', function($data) {
+            return $data->inquiry->customer->address ?? '';
+        })
+
+        ->addColumn('gender', function($data) {
+            return $data->inquiry->customer->gender ?? '';
+        })
+
         ->make(true);
     }
 
@@ -596,6 +628,7 @@ class VehicleReleasesController extends Controller
 
                 $transaction->status = $posted_status;
                 $transaction->reservation_transaction_status = $posted_status;
+                $transaction->folder_number = $request->folder_number;
                 $transaction->released_date = now();
                 $transaction->updated_at = now();
                 $transaction->save();
@@ -684,6 +717,7 @@ class VehicleReleasesController extends Controller
             ], 500);
         }
     }
+
     public function updateReleasedRemarks(Request $request){
         try {
             // dd($request->all());
@@ -715,10 +749,21 @@ class VehicleReleasesController extends Controller
             //     'status' => 'required|exists:status,id' // Assuming you have a statuses table
             // ]);
 
+            $status = Status::where('status', 'like', 'Released')->first()->id;
+
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->status = $request->status;
             $transaction->reservation_transaction_status = $request->status; // Update the status
+            $transaction->released_date = now();
+            $transaction->updated_at = now();
             $transaction->save();
+
+            if($request->status == $status ){
+                $inventory = Inventory::findOrFail($transaction->inventory_id);
+                $inventory->CS_number_status = 'Released';
+                $inventory->status = 'Released';
+                $inventory->save();
+            }
 
             return response()->json([
                 'success' => true,
@@ -770,4 +815,6 @@ class VehicleReleasesController extends Controller
 
         return number_format($profit, 2);
     }
+
+   
 }

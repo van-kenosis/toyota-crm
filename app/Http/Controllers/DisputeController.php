@@ -155,7 +155,7 @@ class DisputeController extends Controller
                             ->where('customer_id', $inquiry->customer_id)
                             ->where('is_dispute', '0')
                             ->where('created_at', '<>', Auth::user()->id)
-                            ->where('status', '<>',  $status)
+                            ->where('status_id', '<>',  $status)
                             ->first();
 
             if ($firstInquiry) {
