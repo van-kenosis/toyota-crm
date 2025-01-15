@@ -137,6 +137,52 @@
     </div>
 </div>
 
+<!-- Add Folder Number Modal -->
+<div class="modal fade" id="folderNumberModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="backDropModalTitle">Folder Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            {{-- <div class="col-md">
+                <div class="d-flex justify-content-start">
+                    <div class="">Customer:</div><div class="text-dark">&nbsp; John Doe</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Unit:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Variant:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">Color:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <div class="">CS Number:</div><div class="text-dark">&nbsp; sample</div>
+                </div>
+            </div> --}}
+          </div>
+          <div class="row">
+            <div class="col-md">
+                <input type="hidden" class="form-control" id="id" name="id"  />
+                <label for="defaultFormControlInput" class="form-label">Add Folder Number</label>
+                <input type="text" class="form-control" id="folderNumber" name="folder_number"  />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+          @if(auth()->user()->can('process_vehicle_release'))
+          <button type="button" class="btn btn-dark save-folder">Proceed</button>
+          @endif
+        </div>
+      </form>
+    </div>
+  </div>
+
 
   {{-- Header Datatables --}}
   <div class="row mb-4">
@@ -371,12 +417,7 @@
             { data: 'unit', name: 'unit', title: 'Unit' },
             { data: 'quantity', name: 'quantity', title: 'Quantity' },
         ],
-        order: [[0, 'desc']],  // Sort by 'unit' column by default
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
-        ],
+
     });
 
     const statusTable = $('#statusTable').DataTable({
@@ -413,7 +454,8 @@
         columnDefs: [
             {
                 targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
+            },
+
         ],
     });
 
@@ -436,18 +478,25 @@
         },
 
         columns: [
-            { data: 'unit', name: 'unit', title: 'Unit' },
-            { data: 'customer_name', name: 'customer_name', title: 'Customer Name' },
-            { data: 'year_model', name: 'year_model', title: 'Year Model' },
-            { data: 'variant', name: 'variant', title: 'Variant' },
-            { data: 'color', name: 'color', title: 'Color' },
-            { data: 'cs_number', name: 'cs_number', title: 'CS Number' },
-            { data: 'transaction', name: 'transaction', title: 'Transaction' },
-            { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
-            { data: 'agent', name: 'agent', title: 'Agent' },
-            { data: 'team', name: 'team', title: 'Group' },
+            { data: 'folder_number', name: 'folder_number', title: 'Folder ' }, //0
+            { data: 'customer_name', name: 'customer_name', title: 'Customer Name' }, //1
+            { data: 'year_model', name: 'year_model', title: 'Year Model' }, //2
+            { data: 'unit', name: 'unit', title: 'Unit' }, //3
+            { data: 'variant', name: 'variant', title: 'Variant' }, //4
+            { data: 'color', name: 'color', title: 'Color' }, //5
+            { data: 'cs_number', name: 'cs_number', title: 'CS Number' }, //6
+            { data: 'transaction', name: 'transaction', title: 'Transaction' }, //7
+            { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' }, //8
+            { data: 'agent', name: 'agent', title: 'Agent' }, //9
+            { data: 'team', name: 'team', title: 'Group' }, //10
+            { data: 'source', name: 'source', title: 'Source' }, //11
+            { data: 'address', name: 'address', title: 'Address' }, //12
+            { data: 'gender', name: 'gender', title: 'Gender' }, //13
             // { data: 'date_reserved', name: 'date_reserved', title: 'Date Reserved' },
-            { data: 'date_released', name: 'date_released', title: 'Date Released' },
+            { data: 'date_released', name: 'date_released', title: 'Date Released' }, //14
+            { data: 'profit', name: 'profit', title: 'Profit' }, //15
+
+
             {
                 data: 'id',
                 name: 'id',
@@ -462,7 +511,7 @@
                         </div>
                         `;
                 }
-            },
+            }, //16
             {
                 data: 'id',
                 name: 'id',
@@ -472,19 +521,20 @@
                 visible:false,
                 render: function(data, type, row) {
                         return `<div class="d-flex">
-                                @if(auth()->user()->can('process_vehicle_release'))
-                                    <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
-                                        <span class="tf-icons bx bxs-check-circle bx-22px"></span>
-                                    </button>
-                                    @endif
-                                    @if(auth()->user()->can('cancel_vehicle_release'))
-                                     <button type="button" class="btn btn-icon me-2 btn-danger cancel-btn" data-id="${data}">
-                                        <span class="tf-icons bx bxs-x-circle bx-22px"></span>
-                                    </button>
-                            @endif
+                                @if(auth()->user()->can('add_folder_number'))
+                                <button type="button" class="btn btn-icon me-2 btn-dark folder-number-btn" data-id="${data}" data-folder="${row.folder_number}" data-bs-toggle="modal" data-bs-target="#folderNumberModal">
+                                        <span class="tf-icons bx bx-folder-plus bx-22px"></span>
+                                </button>
+                                @endif
+                                    
+                                @if(auth()->user()->can('cancel_vehicle_release'))
+                                <button type="button" class="btn btn-icon me-2 btn-danger cancel-btn" data-id="${data}">
+                                    <span class="tf-icons bx bxs-x-circle bx-22px"></span>
+                                </button>
+                                @endif
                         </div>`;
                     }
-            },
+            }, //17
             {
                 data: 'profit',
                 name: 'profit',
@@ -495,7 +545,7 @@
                                 <span class="tf-icons bx bxs-calculator bx-22px"></span>
                             </button>`;
                 }
-            },
+            }, //18
             {
                 data: 'lto_remarks',
                 name: 'lto_remarks',
@@ -510,7 +560,7 @@
                             </button>
                             @endif`;
                 }
-            },
+            }, //19
             {
                 data: 'released_remarks',
                 name: 'released_remarks',
@@ -525,14 +575,11 @@
                             </button>
                            `;
                 }
-            },
+            }, //20
+
+
         ],
-        order: [[0, 'desc']],  // Sort by 'unit' column by default
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
-            }
-        ],
+
     });
 
     $(document).ready(function () {
@@ -543,18 +590,6 @@
             currentButtonId = $(this).attr('id'); // Store the current button ID
         });
 
-        // Update the button text when "Save changes" is clicked
-        // $('#saveStatusButton').on('click', function () {
-        //     const selectedValue = $('#status').val();
-        //     if (currentButtonId && selectedValue) {
-        //     const $button = $('#' + currentButtonId);
-        //     $button.find('.status-label').text(selectedValue);
-        //     }
-
-        //     // Close the modal
-        //     const modal = bootstrap.Modal.getInstance(document.getElementById('releaseStatus'));
-        //     modal.hide();
-        // });
 
         $('#saveStatusButton').on('click', function() {
             const selectedValue = $('#status').val();
@@ -588,7 +623,6 @@
         $(document).on('click', '.status-btn', function() {
             const id = $(this).data('id');
             const currentStatus = $(this).data('status'); // Get the current status from the button
-            console.log(currentStatus);
             $('#statusTransactionID').val(id);
 
             $.ajax({
@@ -616,31 +650,29 @@
         // Toggle column visibility based on the active tab
         const isFoReleasedTab = $(this).text().trim() === 'For Release Units';
         @if(auth()->user()->can('process_vehicle_release') || auth()->user()->can('cancel_vehicle_release'))
-        vehicleReleasesTable.column(12).visible(isFoReleasedTab);
+        vehicleReleasesTable.column(17).visible(isFoReleasedTab);
         @endif
 
         const isReleasedTab = $(this).text().trim() === 'Released Units';
         @if(auth()->user()->can('get_status') && auth()->user()->can('update_status'))
-
-        vehicleReleasesTable.column(11).visible(isReleasedTab);
+        vehicleReleasesTable.column(16).visible(isReleasedTab);
         @endif
 
         @if(auth()->user()->can('update_profit'))
-        vehicleReleasesTable.column(13).visible(isReleasedTab);
+        vehicleReleasesTable.column(18).visible(isReleasedTab);
         @endif
 
         @if(auth()->user()->can('update_ltoremarks'))
-        vehicleReleasesTable.column(14).visible(isReleasedTab);
+        vehicleReleasesTable.column(19).visible(isReleasedTab);
         @endif
 
-        vehicleReleasesTable.column(15).visible(isReleasedTab);
+        vehicleReleasesTable.column(20).visible(isReleasedTab);
 
 
 
         var route = $(this).data('route');
         vehicleReleasesTable.ajax.url(route).load();
     });
-
 
     // datatables button tabs
     $(document).ready(function() {
@@ -658,8 +690,11 @@
     });
 
     //Process Data
-    $(document).on('click', '.processing-btn', function() {
-        const appID = $(this).data('id');
+    $(document).on('click', '.save-folder', function() {
+        const ID = $('#id').val();
+        const folderNum = $('#folderNumber').val();
+
+        console.log(ID, folderNum);
 
         Swal.fire({
             title: 'Are you sure?',
@@ -675,7 +710,8 @@
                     url: '{{ route("vehicle.releases.processing") }}',
                     type: 'POST',
                     data: {
-                        id: appID
+                       id: ID, 
+                       folder_number: folderNum ,
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -687,6 +723,7 @@
                                 response.message,
                                 'success'
                             );
+                             $('#folderNumberModal').modal('hide');
                             vehicleReleasesTable.ajax.reload();
                             statusTable.ajax.reload();
                             releasedUnitsTable.ajax.reload();
@@ -759,6 +796,13 @@
 
     });
 
+    $(document).on('click', '.folder-number-btn', function() {
+        const id = $(this).data('id');
+        const folder = $(this).data('folder');
+        $('#folderNumber').val(folder);
+        $('#id').val(id);
+    });
+
 
     // profit form validation on border-danger
     $(document).ready(function () {
@@ -796,7 +840,7 @@
                                 response.message,
                                 'success'
                             );
-                            // vehicleReleasesTable.ajax.reload();
+                            vehicleReleasesTable.ajax.reload();
                             $('#addProfitModal').modal('hide');
                             statusTable.ajax.reload();
                             getGrandTotalProfit();

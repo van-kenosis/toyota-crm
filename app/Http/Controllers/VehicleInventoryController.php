@@ -34,14 +34,15 @@ class VehicleInventoryController extends Controller
                         ->whereIn('incoming_status', ['Invoice', 'Pull Out', 'In Transit'])
                          ->whereNull('deleted_at')
                          ->where('status', '<>', 'Released')
-                        ;
+                         ->orderBy('updated_at', 'desc');
+
 
          if ($request->has('date_range') && !empty($request->date_range)) {
              [$startDate, $endDate] = explode(' to ', $request->date_range);
              $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
              $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-             $query->whereBetween('created_at', [$startDate, $endDate]);
+             $query->whereBetween('updated_at', [$startDate, $endDate]);
          }
 
          $list = $query->get();
@@ -80,6 +81,12 @@ class VehicleInventoryController extends Controller
 
          })
 
+         ->addColumn('updated_at', function($user){
+            return $user->updated_at->format('d/m/Y H:i:s');
+        })
+
+
+
          ->addColumn('tags', function($data) {
 
             $tag = $data->tag;
@@ -109,14 +116,15 @@ class VehicleInventoryController extends Controller
                         ->whereIn('incoming_status', ['On Stock', 'For Swapping', 'Reserved', 'Freeze', 'Ear Mark'])
                          ->whereNull('deleted_at')
                          ->where('status', '<>', 'Released')
-                        ;
+                         ->orderBy('updated_at', 'desc');
+
 
          if ($request->has('date_range') && !empty($request->date_range)) {
              [$startDate, $endDate] = explode(' to ', $request->date_range);
              $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
              $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-             $query->whereBetween('created_at', [$startDate, $endDate]);
+             $query->whereBetween('updated_at', [$startDate, $endDate]);
          }
 
          $list = $query->get();
@@ -145,6 +153,10 @@ class VehicleInventoryController extends Controller
          ->editColumn('ear_mark', function($data) {
              return '';
          })
+
+         ->addColumn('updated_at', function($user){
+            return $user->updated_at->format('d/m/Y H:i:s');
+        })
 
          ->addColumn('tags', function($data) {
 

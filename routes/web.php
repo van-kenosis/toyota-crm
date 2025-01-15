@@ -77,6 +77,9 @@ Route::post('vehicle-reservation/processing_reserved', [VehicleReservationContro
 Route::get('get-cs-number/{id}', [VehicleReservationController::class, 'getCSNumberByVehicleId'])->name('get-cs-number')->middleware('permission:get_cs_number');
 Route::post('vehicle/reservation/addCSNumber', [VehicleReservationController::class, 'addCSNumber'])->name('vehicle.reservation.addCSNumber')->middleware('permission:add_cs_number');
 Route::post('vehicle/reservation/cancel/pending', [VehicleReservationController::class, 'cancel_pending'])->name('vehicle.reservation.cancel.pending')->middleware('permission:cancel_pending_reservation');
+Route::get('vehicle-reservation/edit/{id}', [VehicleReservationController::class, 'editUnit'])->name('vehicle.reservation.edit')->middleware('permission:edit_unit');
+Route::post('vehicle-reservation/update/{id}', [VehicleReservationController::class, 'update'])->name('vehicle.reservation.update')->middleware('permission:edit_unit');
+
 
 
 // VEHICLE RELEASES

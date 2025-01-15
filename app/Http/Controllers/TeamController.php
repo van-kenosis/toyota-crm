@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class TeamController extends Controller
@@ -56,7 +57,9 @@ class TeamController extends Controller
     }
 
     public function listTeam(){
-        $query = Team::all();
+        DB::statement("SET SQL_MODE=''");
+
+        $query = Team::orderBy('updated_at', 'desc')->get();
 
         return DataTables::of($query)
         ->addColumn('id', function($data) {
@@ -66,7 +69,10 @@ class TeamController extends Controller
             return $data->updated_by ? $data->updatedBy->first_name . ' ' . $data->updatedBy->last_name : '';
         })
         ->addColumn('updated_at', function($data) {
-            return Carbon::parse($data->updated_at)->format('d/m/Y');
+            return $data->updated_at->format('d/m/Y H:i:s');
+        })
+        ->addColumn('action', function($data) {
+            return '';
         })
 
         ->make(true);

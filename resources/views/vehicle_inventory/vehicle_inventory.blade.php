@@ -668,12 +668,13 @@
         },
         pageLength: 10,
         paging: true,
-        responsive: true,
+        responsive: false,
         dom: '<"top"lf>rt<"bottom"ip>',
         language: {
             search: "",
             searchPlaceholder: "Search..."
         },
+        order: [[8, 'desc']],
 
         columns: [
             { data: 'id', name: 'id', title: 'ID', visible: false },
@@ -684,10 +685,9 @@
             { data: 'cs_number', name: 'cs_number', title: 'CS Number' },
             { data: 'actual_invoice_date', name: 'actual_invoice_date', title: 'Actual Invoice Date' },
             { data: 'invoice_number', name: 'invoice_number', title: 'Invoice No.' },
+            { data: 'updated_at', name: 'updated_at', title: 'Updated At' },
             { data: 'delivery_date', name: 'delivery_date', title: 'Delivery Date' },
             { data: 'tags', name: 'tags', title: 'TAGs' },
-            // { data: 'team', name: 'team', title: 'Team' },
-            // { data: 'date_assigned', name: 'date_assigned', title: 'Date Assigned' },
             { data: 'age', name: 'age', title: 'Age' },
             { data: 'status', name: 'status', title: 'Status' },
             { data: 'remarks', name: 'remarks', title: 'Remarks' },
@@ -699,9 +699,12 @@
                 orderable: false,
                 searchable: false,
                 render: function(data, type, row) {
-                    return `<button type="button" class="btn btn-icon me-2 btn-label-dark incoming-btn" data-bs-toggle="modal" data-bs-target="#incomingStatusModal" data-id="${row.id}" data-status="${row.incoming_status}">
-                                <span class="tf-icons bx bxs-truck bx-22px"></span>
-                            </button>`;
+                    return `
+                    <div class="d-flex">
+                            <button type="button" class="badge btn me-2 btn-label-dark incoming-btn" data-bs-toggle="modal" data-bs-target="#incomingStatusModal" data-id="${row.id}" data-status="${row.incoming_status}">
+                                <span > ${data}</span>
+                            </button>
+                    </div>`;
                 }
             },
             @endif
@@ -738,12 +741,14 @@
             },
             @endif
         ],
-        order: [[6, 'asc']],  // Sort by 'cs_number' column in ascending order
-        columnDefs: [
-            {
-                targets: [0, 1], // Columns to apply additional formatting (if needed)
+
+        rowCallback: function(row, data) {
+            // Check if the `tags` column has a value
+            if (data.tags) {
+                $(row).find('td').css('color', 'orange');
             }
-        ],
+        }
+
     });
 
     // datatables button tabs
@@ -770,7 +775,7 @@
             const isIncomingTab = $(this).text().trim() === 'Incoming';
 
             const isInventoryTab = $(this).text().trim() === 'Inventory';
-            vehicleInventoryTable.column(14).visible(isInventoryTab); // year_model
+            vehicleInventoryTable.column(15).visible(isInventoryTab); // year_model
         });
 
     });
@@ -1109,7 +1114,6 @@
                 success: function(response) {
                     const inventory = response.inventory;
                     const vehicle = response.vehicle;
-                    console.log(inventory);
                     $('#edit_id').val(id);
                     $('#edit_car_unit').val(vehicle.unit).trigger('change');
                     // Disable buttons initially
@@ -1191,7 +1195,6 @@
         $('#editInventoryFormData').on('submit', function(e) {
             e.preventDefault();
             let formData = $(this).serialize();
-            console.log(formData);
 
             $.ajax({
                 url: '{{ route("inventory.update") }}',
@@ -1302,7 +1305,6 @@
             let id = $(this).data('id'); // Get the inventory ID from the button
             $('#id').val(id);
             let mark = $(this).data('mark');
-            console.log(mark);
 
             $.ajax({
                 url: '{{ route("inventory.getAgent") }}',

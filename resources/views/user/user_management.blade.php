@@ -179,6 +179,15 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("user.management.list") }}',
+            pageLength: 10,
+            paging: true,
+            responsive: true,
+            dom: '<"top"lf>rt<"bottom"ip>',
+            language: {
+                search: "",
+                searchPlaceholder: "Search..."
+            },
+
             columns: [
                 {
                     data: 'id',
@@ -192,9 +201,11 @@
                 { data: 'usertype', name: 'usertype', title: 'User Type' },
                 { data: 'team', name: 'team', title: 'Group' },
                 { data: 'status', name: 'status', title: 'Status' },
+                { data: 'updated_at', name: 'updated_at', title: 'Updated_at' },
+
                 {
                     data: 'id',
-                    name: 'actions',
+                    name: 'id',
                     title: 'Actions',
                     orderable: false,
                     searchable: false,
@@ -209,8 +220,31 @@
                         </div>`;
                     }
                 }
+
             ],
-            order: [[0, 'asc']]
+            columnDefs: [
+                // {
+                //     targets: 0, // The 'Name' column (zero-based index)
+                //     render: function(data, type, row) {
+                //         if (type === 'display') {
+                //             return (row.first_name + ' ' + row.last_name).toUpperCase();
+                //         }
+                //         return data;
+                //     }
+                // },
+                {
+                    targets: 2, // The 'User Type' column (zero-based index)
+                    render: function(data, type, row) {
+                        return type === 'display' && typeof data === 'string' ? data.toUpperCase() : data;
+                    }
+                },
+                {
+                    targets: 4, // The 'User Type' column (zero-based index)
+                    render: function(data, type, row) {
+                        return type === 'display' && typeof data === 'string' ? data.toUpperCase() : data;
+                    }
+                }
+            ]
         });
 
         // Show/Hide Add User Form
@@ -321,7 +355,6 @@
         $(document).on('click', '.edit-user', function(e) {
             e.preventDefault();
             let userId = $(this).data('id');
-            console.log(userId);
             $.ajax({
                 url: `user-management/${userId}/edit`,
                 type: 'GET',

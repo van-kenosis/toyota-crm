@@ -13,6 +13,7 @@ class Transactions extends Model
     protected $table = 'transactions';
 
     protected $fillable = [
+        'folder_number',
         'inquiry_id',
         'application_id',
         'reservation_id',

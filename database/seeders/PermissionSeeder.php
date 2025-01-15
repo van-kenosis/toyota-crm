@@ -46,6 +46,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'get_cs_number', 'permission_description' => 'Allows the user to retrieve CS numbers for vehicles.'],
         ['permission_name' => 'add_cs_number', 'permission_description' => 'Allows the user to add a CS number to a vehicle reservation.'],
         ['permission_name' => 'cancel_pending_reservation', 'permission_description' => 'Allows the user to cancel a pending vehicle reservation.'],
+        ['permission_name' => 'edit_unit', 'permission_description' => 'Allows the user to edit unit on reservation table.'],
 
         ['permission_name' => 'view_vehicle_releases', 'permission_description' => 'Allows the user to view vehicle releases.'],
         ['permission_name' => 'released_units_list', 'permission_description' => 'Allows the user to view a list of released units.'],
@@ -59,6 +60,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'update_status', 'permission_description' => 'Allows the user to update the status of a vehicle release.'],
         ['permission_name' => 'grand_total_profit', 'permission_description' => 'Allows the user to get the grand total profit.'],
         ['permission_name' => 'update_released_remarks', 'permission_description' => 'Allows the user to update remarks on released unit.'],
+        ['permission_name' => 'add_folder_number', 'permission_description' => 'Allows the user to add and update folder number.'],
 
         ['permission_name' => 'view_vehicle_inventory', 'permission_description' => 'Allows the user to view vehicle inventory.'],
         // ['permission_name' => 'list_inventory', 'permission_description' => 'Allows the user to list vehicle inventory.'],

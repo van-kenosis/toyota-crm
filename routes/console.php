@@ -12,5 +12,5 @@ Schedule::command('inventory:reset-tags')
                 ->timezone('Asia/Manila');
 
 Schedule::command('app:backup-database')
-                ->hourly()
+                ->twiceDaily(12, 21)
                 ->timezone('Asia/Manila');
