@@ -44,7 +44,7 @@ class PermissionController extends Controller
 
     public function updatePermissions(Request $request)
     {
-        try{    
+        try{
             // Find the role by ID
             $role = Usertype::findOrFail($request->usertype_id);
             // dd(array_map('decrypt', $request->permissions));

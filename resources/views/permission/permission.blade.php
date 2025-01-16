@@ -106,7 +106,7 @@ const permissionTable = $('#permissionTable').DataTable({
         },
         { data: 'permission_name', name: 'permission_name', title: 'Name' },
         { data: 'permission_description', name: 'permission_description', title: 'Description' },
-       
+
     ],
     order: [[1, 'asc']], // Order by name
     paging: false, // Disable pagination
@@ -193,11 +193,11 @@ const permissionTable = $('#permissionTable').DataTable({
         // Add change event handler for usertype select
         $('#usertypeSelect').on('change', function() {
             const usertypeId = $(this).val();
-            
+
             // Clear all checkboxes first
             $('.permission-checkbox').prop('checked', false);
             $('#selectAllPermissionsHeader').prop('checked', false);
-            
+
             if (usertypeId) {
                 // Fetch and check permissions for selected usertype
                 $.ajax({
@@ -207,7 +207,7 @@ const permissionTable = $('#permissionTable').DataTable({
                         permissionIds.forEach(function(permissionId) {
                             $(`.permission-checkbox[value="${permissionId}"]`).prop('checked', true);
                         });
-                        
+
                         // Update "select all" checkbox state
                         const allChecked = $('.permission-checkbox:checked').length === $('.permission-checkbox').length;
                         $('#selectAllPermissionsHeader').prop('checked', allChecked);
@@ -273,8 +273,8 @@ const permissionTable = $('#permissionTable').DataTable({
         });
     });
 
-    
 
-    
+
+
 </script>
 @endsection

@@ -526,7 +526,7 @@
                                         <span class="tf-icons bx bx-folder-plus bx-22px"></span>
                                 </button>
                                 @endif
-                                    
+
                                 @if(auth()->user()->can('cancel_vehicle_release'))
                                 <button type="button" class="btn btn-icon me-2 btn-danger cancel-btn" data-id="${data}">
                                     <span class="tf-icons bx bxs-x-circle bx-22px"></span>
@@ -710,7 +710,7 @@
                     url: '{{ route("vehicle.releases.processing") }}',
                     type: 'POST',
                     data: {
-                       id: ID, 
+                       id: ID,
                        folder_number: folderNum ,
                     },
                     headers: {
