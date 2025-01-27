@@ -332,7 +332,7 @@
         $("input[type='text'], textarea").on("input", function () {
             $(this).val($(this).val().toUpperCase());
         });
-        
+
     });
 </script>
 @endsection

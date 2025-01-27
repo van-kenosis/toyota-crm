@@ -816,5 +816,5 @@ class VehicleReleasesController extends Controller
         return number_format($profit, 2);
     }
 
-   
+
 }

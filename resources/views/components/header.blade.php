@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="assets/vendor/libs/select2/select2.css" />
     <link rel="stylesheet" href="assets/vendor/libs/toastr/toastr.css" />
     <link rel="stylesheet" href="assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
-
+    {{-- <link rel="stylesheet" href="assets/vendor/libs/apex-charts/apex-charts.css" /> --}}
 
     <!-- Page CSS -->
 
