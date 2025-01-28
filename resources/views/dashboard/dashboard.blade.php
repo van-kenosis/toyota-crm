@@ -129,6 +129,7 @@
     <div class="col-md-8">
         <div class="card h-100">
             <div class="card-body">
+                <h5 class="" style="color: #ff0055;">Top MP/Agent Rankings</h5>
                 <div id="totalReleasesBarChart"></div>
             </div>
         </div>
@@ -141,7 +142,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="col-md">
-                    <h5 class="mb-0">Transaction Type</h5>
+                    <h5 class="mb-0" style="color: #ff0055;">Transaction Type</h5>
                     <div id="transactionTypePieGraph" class="d-flex justify-content-center h-100"></div>
                 </div>
             </div>
@@ -152,7 +153,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="col-md">
-                    <h5 class="mb-0">Bank</h5>
+                    <h5 class="mb-0" style="color: #ff0055;">Bank</h5>
                     <div id="bankPieGraph" class="d-flex justify-content-center h-100"></div>
                 </div>
             </div>
@@ -163,7 +164,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="col-md">
-                    <h5 class="mb-0">Source</h5>
+                    <h5 class="mb-0" style="color: #ff0055;">Source</h5>
                     <div id="sourePieGraph" class="d-flex justify-content-center h-100"></div>
                 </div>
             </div>
@@ -174,13 +175,13 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="col-md">
-                    <h5 class="mb-0">Gender</h5>
+                    <h5 class="mb-0" style="color: #ff0055;">Gender</h5>
                     <div id="genderPieGraph" class="d-flex justify-content-center h-100"></div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 
 @endsection
@@ -497,7 +498,7 @@
                 }
             },
             title: {
-                text: 'MONTHLY RELEASED UNITS',
+                text: '',
                 floating: true,
                 offsetY: 330,
                 align: 'center',

@@ -67,9 +67,7 @@
     <div class="col-md">
         <div class="card h-100">
             <div class="card-body">
-                <div class="mb-4">
-                    <div class="fw-bold text-secondary">Date</div>
-                </div>
+                <h5 class="mb-4" style="color: #ff0055;">Top MP/Agent Rankings</h5>
                 <ul class="p-0 m-0">
                     <li class="d-flex align-items-center border-bottom mb-5">
                         <div class="avatar flex-shrink-0 me-3">
@@ -109,6 +107,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
+                <h5 style="color: #ff0055;">Total Inquiries</h5>
                 <div id="totalInquiriesBarGraph"></div>
             </div>
         </div>
@@ -117,6 +116,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
+                <h5 style="color: #ff0055;">Total Reservation</h5>
                 <div id="totalReservationBarGraph"></div>
             </div>
         </div>
@@ -127,6 +127,7 @@
     <div class="col">
         <div class="card">
             <div class="card-body">
+                <h5 style="color: #ff0055;">Total Units Inquired</h5>
                 <div class="" id="unitInquiredLineGraph"></div>
             </div>
         </div>
@@ -366,7 +367,7 @@
           curve: 'straight'
         },
         title: {
-                text: 'TOTAL INQUIRIES',
+                text: '',
                 floating: true,
                 offsetY: 330,
                 position: 'top',
@@ -482,7 +483,7 @@
             curve: 'straight'
             },
             title: {
-                    text: 'TOTAL RESERVATION',
+                    text: '',
                     floating: true,
                     offsetY: 330,
                     position: 'top',
@@ -603,7 +604,7 @@
             curve: 'straight'
             },
             title: {
-                    text: 'TOTAL UNITS INQUIRED',
+                    text: '',
                     floating: true,
                     offsetY: 330,
                     align: 'center',

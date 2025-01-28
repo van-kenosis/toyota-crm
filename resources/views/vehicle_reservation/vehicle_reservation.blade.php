@@ -6,6 +6,52 @@
     #vehicleReservationTable td{
         white-space: nowrap;
     }
+
+    /* Ensure parent structure doesn't mess up the layout */
+    .table-responsive-wrapper {
+        position: relative;
+    }
+
+    .fixed-header-scroll {
+        position: sticky;
+        top: 0;
+        z-index: 999; /* Make sure it stays on top */
+        background-color: #fff;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table-responsive {
+        max-height: 510px; /* Adjust this based on your layout */
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Style the scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        width: 12px; /* Scrollbar width */
+        height: 12px; /* Horizontal scrollbar height */
+    }
+
+    /* Track (the empty space behind the scrollbar) */
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Light gray track */
+    }
+
+    /* Handle (the draggable part of the scrollbar) */
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #6f767e; /* Primary color, change to your color */
+        border-radius: 10px; /* Rounded edges */
+    }
+
+    /* Hover effect on the handle */
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #233446; /* Darker shade on hover */
+    }
+
+    /* Style for horizontal scrollbar */
+    .table-responsive::-webkit-scrollbar-horizontal {
+        height: 10px; /* Horizontal scrollbar height */
+    }
 </style>
 
 {{-- Title Header --}}
@@ -52,10 +98,10 @@
                         </select>
                         <small class="text-danger" id="validateColor">Please Select Color</small>
                     </div>
-                   
+
                 </div>
             </div>
-          
+
             <div class="row">
                 <div class="col-md d-flex justify-content-end gap-2">
                     <button type="button" class="btn btn-success" id="editReservationModalButton">Edit Details</button>
@@ -164,7 +210,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-label-dark active" data-route="{{ route("vehicle.reservation.pending.list") }}">Pending</button>
@@ -172,11 +218,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
+                {{-- Default Table Without Scroll Bar --}}
+                {{-- <div class="table-responsive">
                     <table id="vehicleReservationTable" class="table table-bordered table-hover" style="width:100%">
                         <tbody>
                         </tbody>
                     </table>
+                </div> --}}
+
+                {{-- Horizontal Scroll Bar with CSS --}}
+                <div class="table-responsive-wrapper">
+                    <div class="fixed-header-scroll">
+                      <div class="table-responsive">
+                        <table id="vehicleReservationTable" class="table table-bordered table-hover" style="width:100%">
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -381,7 +440,7 @@
                 searchable: false,
                 visible: false,
                 render: function(data, type, row) {
-                        let editButton = row.trans_type === 'Individual' ? 
+                        let editButton = row.trans_type === 'Individual' ?
                         `<button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editReservationFormModal"  data-id="${data}">
                             <span class="tf-icons bx bxs-show bx-22px"></span>
                         </button>` : '';
@@ -404,7 +463,7 @@
                 searchable: false,
                 visible: false,
                 render: function(data, type, row) {
-                    let editButton = row.trans_type === 'Individual' ? 
+                    let editButton = row.trans_type === 'Individual' ?
                         `<button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editReservationFormModal"  data-id="${data}">
                             <span class="tf-icons bx bxs-show bx-22px"></span>
                         </button>` : '';
@@ -423,7 +482,7 @@
                                         <span class="tf-icons bx bxs-x-circle bx-22px"></span>
                                     </button>
                                     @endif
-                                    
+
                                 </div>`;
                     }
             },
@@ -435,7 +494,7 @@
                 searchable: false,
                 visible: false,
                 render: function(data, type, row) {
-                    let editButton = row.trans_type === 'Individual' ? 
+                    let editButton = row.trans_type === 'Individual' ?
                         `<button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editReservationFormModal"  data-id="${row.application_id}">
                             <span class="tf-icons bx bxs-show bx-22px"></span>
                         </button>` : '';
@@ -445,13 +504,13 @@
                                     @endif
                                     <button type="button" class="btn btn-icon me-2 btn-primary processing-reserved-btn" data-id="${data}">
                                         <span class="tf-icons bx bxs-check-circle bx-22px"></span>
-                                    </button>  
+                                    </button>
                                 </div>`;
                     }
             },
 
         ],
-        
+
     });
 
      // button group active tabs
@@ -693,7 +752,7 @@
                     type: 'POST',
                     data: {
                         id: appID,
-                        
+
                         _token: '{{ csrf_token() }}' // Include CSRF token
                     },
                     success: function(response) {
@@ -881,7 +940,7 @@
 
                 // Populate the form fields with the inquiry data
                 $('#edit_car_unit').val(data.vehicle.unit).trigger('change');
-                
+
                 $.ajax({
                     url: '{{ route("leads.getVariants") }}',
                     type: 'GET',
@@ -890,7 +949,7 @@
                     success: function(variantsData) {
                         $('#edit_car_variant').val(data.vehicle.variant).trigger('change'); // Trigger change to update colors
                         // Close the loader after data is loaded
-                       
+
                     },
                     error: function(xhr) {
                         Swal.fire({
@@ -950,7 +1009,7 @@
         isValid = validateField('#edit_car_variant', 'Please Select Variant') && isValid;
         isValid = validateField('#edit_car_color', 'Please Select Color') && isValid;
 
-    
+
         // Restore original values on invalid fields
         if (!isValid) {
             $('#edit_id').val(originalValues.id);

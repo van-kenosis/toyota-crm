@@ -6,6 +6,53 @@
     #applicationTable td{
         white-space: nowrap;
     }
+
+    /* Ensure parent structure doesn't mess up the layout */
+    .table-responsive-wrapper {
+        position: relative;
+    }
+
+    .fixed-header-scroll {
+        position: sticky;
+        top: 0;
+        z-index: 999; /* Make sure it stays on top */
+        background-color: #fff;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table-responsive {
+        max-height: 580px; /* Adjust this based on your layout */
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Style the scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        width: 12px; /* Scrollbar width */
+        height: 12px; /* Horizontal scrollbar height */
+    }
+
+    /* Track (the empty space behind the scrollbar) */
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Light gray track */
+    }
+
+    /* Handle (the draggable part of the scrollbar) */
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #6f767e; /* Primary color, change to your color */
+        border-radius: 10px; /* Rounded edges */
+    }
+
+    /* Hover effect on the handle */
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #233446; /* Darker shade on hover */
+    }
+
+    /* Style for horizontal scrollbar */
+    .table-responsive::-webkit-scrollbar-horizontal {
+        height: 10px; /* Horizontal scrollbar height */
+    }
+
 </style>
 
 {{-- Page Title --}}
@@ -375,7 +422,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
                             @if(auth()->user()->can('list_pending_applications'))
@@ -393,11 +440,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
+                {{-- Default Table Without Scroll Bar --}}
+                {{-- <div class="table-responsive">
                     <table id="applicationTable" class="table table-bordered table-hover" style="width:100%">
                         <tbody>
                         </tbody>
                     </table>
+                </div> --}}
+
+                {{-- Horizontal Scroll Bar with CSS --}}
+                <div class="table-responsive-wrapper">
+                    <div class="fixed-header-scroll">
+                      <div class="table-responsive">
+                        <table id="applicationTable" class="table table-bordered table-hover" style="width:100%">
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>

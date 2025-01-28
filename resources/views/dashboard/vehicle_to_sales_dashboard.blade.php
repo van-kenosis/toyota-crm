@@ -7,7 +7,7 @@
         <div class="row mb-3">
             <div class="col-md d-flex align-items-center">
                 <i class='bx bxs-dashboard text-white' style="font-size: 24px;">&nbsp;</i>
-                <h4 class="text-white mb-0">Sales Funnel Management</h4>
+                <h4 class="text-white mb-0">Vehicle to Sales</h4>
             </div>
         </div>
     </div>

@@ -50,11 +50,12 @@ class RankingDashboardController extends Controller
         ->select('application.created_by', DB::raw('count(*) as total'))
         ->groupBy('application.created_by')
         ->orderBy('total', 'desc')
-        ->limit(3)
         ->get();
 
-        if ($topAgents->isNotEmpty()) {
-            $agents = $topAgents->map(function ($topAgent) {
+        $rankedAgents = $topAgents->groupBy('total')->take(3)->flatten();
+
+        if ($rankedAgents->isNotEmpty()) {
+            $agents = $rankedAgents->map(function ($topAgent) {
                 $agent = User::find($topAgent->created_by);
                 return ['agent' => $agent, 'total' => $topAgent->total];
             });
