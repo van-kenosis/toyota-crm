@@ -61,6 +61,11 @@
             <select id="selectGroup" class="form-control form-select-sm">
             </select>
         </div>
+        <div class="form-group text-end">
+            <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
+            <select id="filterAgent" class="form-control form-select-sm">
+            </select>
+        </div>
         {{-- <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Reset Filter</small></label><br>
             <button class="btn btn-sm btn-label-dark">Reset</button>
@@ -220,6 +225,42 @@
     }
     loadTeams();
 
+    function getAgent(){
+        $.ajax({
+            url: '{{ route('leads.getAgent') }}',
+            type: 'GET',
+            data : {
+                team_id: $('#selectGroup').val()
+            },
+            dataType: 'json',
+            success: function(data) {
+                let agentSelect = $('#filterAgent');
+                agentSelect.empty();
+                agentSelect.append('<option value="">Filter Agent...</option>');
+                data.forEach(function(item) {
+                    agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
+                });
+
+                agentSelect.select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+            
+            },
+            error: function(error) {
+                console.error('Error loading team:', error);
+            }
+        });
+    }
+
+    
+    $(document).ready(function () {
+      // Event listeners for filter dropdowns
+        $('#selectGroup').on('change', function() {
+            getAgent();
+        });
+    });
+
 
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize flatpickr for date range picker
@@ -328,6 +369,18 @@
             fetchGenderData();
             hideLoader();
         });
+
+         // Event listener for group selection
+         $('#filterAgent').on('change', function () {
+            showLoader();
+            releasedCount();
+            fetchMonthlyReleasedCount();
+            fetchReleasePerTransType();
+            fetchBankData();
+            fetchSourceData();
+            fetchGenderData();
+            hideLoader();
+        });
     });
 
 
@@ -338,7 +391,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 if (response.releasedCount !== undefined) {
@@ -404,7 +458,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 renderBarChart(response.monthlyData);
@@ -532,7 +587,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(), // Add the date range parameter
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 const labels = Object.keys(response);
@@ -612,7 +668,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val() // Add the date range parameter
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 const labels = response.map(item => item.bank_name.bank_name); // Access the nested 'bank_name' field
@@ -700,7 +757,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 const labels = response.map(item => item.source); // Access the nested 'bank_name' field
@@ -784,7 +842,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(), // Add the date range parameter
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 const labels = Object.keys(response);

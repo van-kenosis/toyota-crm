@@ -137,7 +137,7 @@ class ApplicationController extends Controller
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'approved')->first();
         if(Auth::user()->usertype->name === 'SuperAdmin'
-        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'General Manager'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'Financing Staff'
         ){
@@ -262,7 +262,7 @@ class ApplicationController extends Controller
         $statusIds = Status::whereIn('status', ['Denied', 'Cancel'])->pluck('id')->toArray();
 
         if(Auth::user()->usertype->name === 'SuperAdmin'
-        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'General Manager'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'Financing Staff'
         ){
@@ -387,7 +387,7 @@ class ApplicationController extends Controller
         $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
 
         if(Auth::user()->usertype->name === 'SuperAdmin'
-        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'General Manager'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'Financing Staff'
         ){
@@ -514,7 +514,7 @@ class ApplicationController extends Controller
         // dd($request->start_date);
         $pending_status = Status::where('status', 'like', 'pending')->first();
         if(Auth::user()->usertype->name === 'SuperAdmin'
-        || Auth::user()->usertype->name === 'Group Manager'
+        || Auth::user()->usertype->name === 'General Manager'
         || Auth::user()->usertype->name === 'Sales Admin Staff'
         || Auth::user()->usertype->name === 'Financing Staff'
         ){

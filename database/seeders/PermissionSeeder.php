@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
     $permissions = [
+        //LEADS Permissions
         ['permission_name' => 'view_dashboard', 'permission_description' => 'Allows the user to view the dashboard.'],
         ['permission_name' => 'view_leads', 'permission_description' => 'Allows the user to view leads.'],
         ['permission_name' => 'create_lead', 'permission_description' => 'Allows the user to create a new lead.'],
@@ -23,6 +24,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'update_lead', 'permission_description' => 'Allows the user to update lead information.'],
         ['permission_name' => 'update_remarks', 'permission_description' => 'Allows the user to update remarks on leads.'],
 
+        //APPLICATION Permissions
         ['permission_name' => 'view_application', 'permission_description' => 'Allows the user to view applications.'],
         ['permission_name' => 'list_pending_applications', 'permission_description' => 'Allows the user to list pending applications.'],
         ['permission_name' => 'list_approved_applications', 'permission_description' => 'Allows the user to list approved applications.'],
@@ -37,6 +39,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'update_bank_approval', 'permission_description' => 'Allows the user to update bank approval status.'],
         ['permission_name' => 'update_terms', 'permission_description' => 'Allows the user to update terms and percentage.'],
 
+        //reservation Permissions
         ['permission_name' => 'view_vehicle_reservation', 'permission_description' => 'Allows the user to view vehicle reservations.'],
         ['permission_name' => 'list_available_units', 'permission_description' => 'Allows the user to list available vehicle units.'],
         // ['permission_name' => 'get_reserved_count', 'permission_description' => 'Allows the user to get the count of reserved vehicles.'],
@@ -48,6 +51,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'cancel_pending_reservation', 'permission_description' => 'Allows the user to cancel a pending vehicle reservation.'],
         ['permission_name' => 'edit_unit', 'permission_description' => 'Allows the user to edit unit on reservation table.'],
 
+        //release Permissions
         ['permission_name' => 'view_vehicle_releases', 'permission_description' => 'Allows the user to view vehicle releases.'],
         ['permission_name' => 'released_units_list', 'permission_description' => 'Allows the user to view a list of released units.'],
         ['permission_name' => 'released_per_team', 'permission_description' => 'Allows the user to view released vehicles per team.'],
@@ -62,6 +66,7 @@ class PermissionSeeder extends Seeder
         ['permission_name' => 'update_released_remarks', 'permission_description' => 'Allows the user to update remarks on released unit.'],
         ['permission_name' => 'add_folder_number', 'permission_description' => 'Allows the user to add and update folder number.'],
 
+        //inventory Permissions
         ['permission_name' => 'view_vehicle_inventory', 'permission_description' => 'Allows the user to view vehicle inventory.'],
         // ['permission_name' => 'list_inventory', 'permission_description' => 'Allows the user to list vehicle inventory.'],
         // ['permission_name' => 'get_total_inventory', 'permission_description' => 'Allows the user to get the total vehicle inventory.'],
@@ -101,10 +106,6 @@ class PermissionSeeder extends Seeder
         // Permissions
         ['permission_name' => 'view_permissions', 'permission_description' => 'Allows the user to view permissions.'],
         ['permission_name' => 'manage_permissions', 'permission_description' => 'Allows the user to manage permissions.'],
-
-
-
-
     ];
 
     foreach ($permissions as $permission) {

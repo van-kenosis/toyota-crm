@@ -33,6 +33,11 @@ class SFMDashboardController extends Controller
             });
         }
 
+        if ($request->has('agent') && !empty($request->agent)) {
+
+            $query->where('created_by', $request->agent);
+        }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
@@ -57,15 +62,24 @@ class SFMDashboardController extends Controller
     public function fetchReservationCount(Request $request)
     {
         $reserved_status = Status::where('status', 'like', 'Reserved')->first();
+        $released_status = Status::where('status', 'like', 'Released')->first();
+        $posted_status = Status::where('status', 'like', 'Posted')->first();
 
         $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('deleted_at')
             ->whereNotNull('inventory_id')
             ->whereNotNull('reservation_id')
-            ->where('reservation_transaction_status', $reserved_status->id);
+            ->whereIn('reservation_transaction_status', [$reserved_status->id,  $released_status->id, $posted_status->id]);
 
             if ($request->has('group') && !empty($request->group)) {
                 $query->where('team_id', $request->group);
+            }
+
+            if ($request->has('agent') && !empty($request->agent)) {
+
+                $query->whereHas('application', function($subQuery)  use ($request) {
+                    $subQuery->where('created_by', $request->agent);
+                });
             }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -104,6 +118,11 @@ class SFMDashboardController extends Controller
             });
         }
 
+        if ($request->has('agent') && !empty($request->agent)) {
+
+            $query->where('inquiry.created_by', $request->agent);
+        }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
@@ -136,6 +155,11 @@ class SFMDashboardController extends Controller
             $query->whereHas('user', function ($q) use ($request) {
                 $q->where('team_id', $request->group);
             });
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+
+            $query->where('inquiry.created_by', $request->agent);
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {

@@ -24,11 +24,16 @@
             <label for="defaultFormControlInput" class="form-label"><small>Select Start to End Date</small></label>
             <input type="text" id="date-range-picker" class="form-control form-control-sm" placeholder="Filter Date">
         </div>
-        {{-- <div class="form-group text-end">
+        <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Filter Group</small></label>
             <select id="selectGroup" class="form-control form-select-sm">
             </select>
-        </div> --}}
+        </div>
+        <div class="form-group text-end">
+            <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
+            <select id="filterAgent" class="form-control form-select-sm">
+            </select>
+        </div>
         {{-- <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Reset Filter</small></label><br>
             <button class="btn btn-sm btn-label-dark">Reset</button>
@@ -135,9 +140,9 @@
                 // Add event listener to clear the date and reload the tables
                 clearButton.addEventListener("click", function () {
                     instance.clear(); // Clear the date range
+                    fetchAgentData();
                     fetchTopAgents();
                     rankingTable.ajax.reload(null, false);
-                    fetchAgentData();
 
                 });
 
@@ -148,15 +153,94 @@
             }
         });
 
+        // Load the Groups
+        function loadTeams() {
+            $.ajax({
+                url: '{{ route("teams.list") }}',
+                type: 'GET',
+                success: function(data) {
+                    let options = '<option value="">Select Group</option>';
+                    data.forEach(function(team) {
+                        options += `<option value="${team.id}">${team.name}</option>`;
+                    });
+                    $('#selectGroup').html(options);
+                }
+            });
+        }
+        loadTeams();
 
-        function fetchTopAgents() {
+        function getAgent(){
+            $.ajax({
+                url: '{{ route('leads.getAgent') }}',
+                type: 'GET',
+                data : {
+                    team_id: $('#selectGroup').val()
+                },
+                dataType: 'json',
+                success: function(data) {
+                    let agentSelect = $('#filterAgent');
+                    agentSelect.empty();
+                    agentSelect.append('<option value="">Filter Agent...</option>');
+                    data.forEach(function(item) {
+                        agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
+                    });
+                    // Initialize Select2
+                    agentSelect.select2({
+                        placeholder: "Select an option",
+                        allowClear: true
+                    });
+                
+                },
+                error: function(error) {
+                    console.error('Error loading team:', error);
+                }
+            });
+        }
+
+        
+        $(document).ready(function () {
+        // Event listeners for filter dropdowns
+            $('#selectGroup').on('change', function() {
+                getAgent();
+            });
+
+            // Event listener for group selection
+            $('#selectGroup').on('change', function () {
+                showLoader();
+
+                fetchTopAgents();
+                rankingTable.ajax.reload(null, false);
+                fetchAgentData();
+
+                hideLoader();
+
+            });
+            $('#filterAgent').on('change', function () {
+                showLoader();
+
+                fetchTopAgents();
+                rankingTable.ajax.reload(null, false);
+                fetchAgentData();
+
+                hideLoader();
+
+            });
+        });
+
+
+
+
+
+    function fetchTopAgents() {
         let url = '{{ route("dashboard.ranking-dashboard.topAgent") }}';
 
         $.ajax({
             url: url,
             method: 'GET',
             data: {
-                date_range: $('#date-range-picker').val()
+                date_range: $('#date-range-picker').val(),
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function (response) {
                 if (response.agents) {
@@ -251,6 +335,8 @@
                 url: '{{ route("dashboard.ranking-dashboard.topAgentList") }}',
                 data: function(d) {
                     d.date_range = $('#date-range-picker').val();
+                    d.group = $('#selectGroup').val();
+                    d.agent = $('#filterAgent').val();
                 },
             },
             pageLength: 10,
@@ -272,7 +358,7 @@
             ],
         });
 
-
+        var AgentData = null;
         // Total Inquiries in Inquiries Bar Graph
         function fetchAgentData() {
             $.ajax({
@@ -280,16 +366,24 @@
                 type: 'GET',
                 data: {
                     date_range: $('#date-range-picker').val(),
+                    group: $('#selectGroup').val(),
+                    agent: $('#filterAgent').val()
+
                 },
                 success: function(response) {
-                    const labels = response.agents.map(item => `${item.agent.first_name} ${item.agent.last_name}`);
-                    const data = response.agents.map(item => item.total);
-                    renderAgentDataChart(labels, data);
+                    if (response.agents && response.agents.length === 0) {
+                        $('#rankingBarChart').html('<p>No transaction found</p>');
+                    } else if (response.agents) {
+                        const labels = response.agents.map(item => `${item.agent.first_name} ${item.agent.last_name}`);
+                        const data = response.agents.map(item => item.total);
+                        renderAgentDataChart(labels, data);
+                    } else {
+                        $('#rankingBarChart').html('<p>No transaction found</p>');
+                    }
                 }
             });
         }
 
-        var AgentData = null;
 
         function renderAgentDataChart(labels, data){
              // Render the bar chart with the fetched data
@@ -399,10 +493,6 @@
 
         }
         fetchAgentData();
-
-
-
-
 
 </script>
 @endsection

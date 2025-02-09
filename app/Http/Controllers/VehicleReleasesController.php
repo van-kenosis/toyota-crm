@@ -413,6 +413,19 @@ class VehicleReleasesController extends Controller
             return $data->application->vehicle->color;
         })
 
+        ->addColumn('category', function($data) {
+            return $data->application->vehicle->category ?? '' ;
+        })
+
+        ->addColumn('insurance', function($data) {
+            return $data->insurance ?? 'Select Insurance';
+        })
+
+        ->addColumn('other_profit', function($data) {
+            return '0.00';
+        })
+
+
         ->addColumn('cs_number', function($data) {
             return $data->inventory->CS_number ?? '';
         })
@@ -556,6 +569,19 @@ class VehicleReleasesController extends Controller
             return $data->inventory->CS_number ?? '';
         })
 
+        ->addColumn('category', function($data) {
+            return $data->application->vehicle->category ?? '' ;
+        })
+
+        ->addColumn('insurance', function($data) {
+            return $data->insurance ?? 'Select Insurance';
+        })
+
+        ->addColumn('other_profit', function($data) {
+            return '0.00';
+        })
+
+
         // ->addColumn('trans_type', function($data) {
         //     return $data->inquiry->inquiryType->inquiry_type;
         // })
@@ -613,11 +639,20 @@ class VehicleReleasesController extends Controller
 
     public function processing(Request $request){
         try {
+        
 
             $posted_status = Status::where('status', 'like', 'Posted')->first()->id;
             $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first()->id;
 
             $transaction = Transactions::findOrFail(decrypt($request->id));
+
+            if (is_null($transaction->insurance)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insurance is required.'
+                ], 400);
+            }
+
 
             if($transaction->reservation_transaction_status == $pending_for_release_status){
 
@@ -666,11 +701,16 @@ class VehicleReleasesController extends Controller
             }
             return response()->json([
                 'success' => true,
-                'message' => 'Vehicle release request successfully processed'
+                'message' => 'Vehicle release request has been canceled'
             ]);
 
 
         } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating: ' . $e->getMessage()
+            ], 500);
 
         }
 
@@ -684,6 +724,7 @@ class VehicleReleasesController extends Controller
 
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->profit = $request->profit;
+            $transaction->timestamps = false;
             $transaction->save();
 
             return response()->json([
@@ -704,6 +745,7 @@ class VehicleReleasesController extends Controller
             // dd($request->all());
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->lto_remarks = $request->remarks;
+            $transaction->timestamps = false;
             $transaction->save();
 
             return response()->json([
@@ -723,6 +765,7 @@ class VehicleReleasesController extends Controller
             // dd($request->all());
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->released_remarks = $request->remarks;
+            $transaction->timestamps = false;
             $transaction->save();
 
             return response()->json([
@@ -814,6 +857,30 @@ class VehicleReleasesController extends Controller
         $profit = $query->sum('profit');
 
         return number_format($profit, 2);
+    }
+
+    public function addInsurance(Request $request){
+        try {
+            $request->validate([
+                'insurance' => 'required',
+            ]);
+
+            $transaction = Transactions::findOrFail(decrypt($request->id));
+            $transaction->insurance = $request->insurance;
+            $transaction->timestamps = false;
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transaction insurance updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating transaction insurance: ' . $e->getMessage()
+            ], 500);
+        }
+
     }
 
 

@@ -35,6 +35,12 @@ class RankingDashboardController extends Controller
             $query->where('team_id', $request->group);
         }
 
+        if ($request->has('agent') && !empty($request->agent)) {
+            $query->whereHas('application', function($subQuery)  use ($request) {
+                $subQuery->where('created_by', $request->agent);
+            });
+        }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
@@ -81,6 +87,12 @@ class RankingDashboardController extends Controller
 
         if ($request->has('group') && !empty($request->group)) {
             $query->where('team_id', $request->group);
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+            $query->whereHas('application', function($subQuery)  use ($request) {
+                $subQuery->where('created_by', $request->agent);
+            });
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -142,6 +154,12 @@ class RankingDashboardController extends Controller
 
         if ($request->has('group') && !empty($request->group)) {
             $query->where('team_id', $request->group);
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+            $query->whereHas('application', function($subQuery)  use ($request) {
+                $subQuery->where('created_by', $request->agent);
+            });
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {

@@ -62,6 +62,10 @@ class VehicleInventoryController extends Controller
              return $data->vehicle->color;
          })
 
+         ->editColumn('category', function($data) {
+             return $data->vehicle->category ?? '';
+         })
+
          ->editColumn('cs_number', function($data) {
              return $data->CS_number;
          })
@@ -141,6 +145,10 @@ class VehicleInventoryController extends Controller
          ->editColumn('color', function($data) {
              return $data->vehicle->color;
          })
+
+        ->editColumn('category', function($data) {
+            return $data->vehicle->category ?? '';
+        })
 
          ->editColumn('cs_number', function($data) {
              return $data->CS_number;
@@ -256,12 +264,14 @@ class VehicleInventoryController extends Controller
             'unit' => 'required|string|max:255',
             'variant' => 'required|string|max:255',
             'color' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
         ]);
 
         // Check for duplicate entry
         $exists = Vehicle::where('unit', $request->unit)
             ->where('variant', $request->variant)
             ->where('color', $request->color)
+            ->where('category', $request->category)
             ->exists();
 
         if ($exists) {
@@ -276,6 +286,7 @@ class VehicleInventoryController extends Controller
             'unit' => $request->unit,
             'variant' => $request->variant,
             'color' => $request->color,
+            'category' => $request->category,
             'created_by' => Auth::id(),
             'created_at' => now(),
             'updated_by' => Auth::id(),
@@ -296,7 +307,7 @@ class VehicleInventoryController extends Controller
             'car_variant' => 'required|string|max:255',
             'car_color' => 'required|string|max:255',
             'year_model' => 'required|string|max:255',
-            'cs_number' => 'required|string|max:255',
+            'cs_number' => 'required|string|max:255|unique:inventory,CS_number',
             'actual_invoice_date' => 'required|date',
             'delivery_date' => 'nullable|date',
             'invoice_number' => 'required|string|max:255',
@@ -379,10 +390,23 @@ class VehicleInventoryController extends Controller
 
     public function getAgent(Request $request){
         $usertype = Usertype::where('name', 'Agent')->first()->id;
-        $agent = User::where('usertype_id', $usertype)
+
+        if(Auth::user()->usertype->name === 'Group Manager'){
+            $agent = User::where('usertype_id', $usertype)
                         ->whereNull('deleted_at')
                         ->where('status', 'Active')
-                        ->get();
+                        ->where('team_id', Auth::user()->team_id)
+                        ;
+
+        }else{
+            $agent = User::where('usertype_id', $usertype)
+            ->whereNull('deleted_at')
+            ->where('status', 'Active')
+            ->get();
+        }
+
+
+
         return response()->json($agent);
     }
 

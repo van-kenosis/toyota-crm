@@ -482,15 +482,44 @@
     <div class="col">
         <div class="card custom-card">
             <div class="card-body">
-                <div class="row mb-2">
-                    <div class="d-flex w-50 gap-2">
-                        <div class="mb-3">
+                <div class="row mb-3">
+                    <div class="col-md">
+                        <div class="">
+                            <label for="exampleFormControlSelect1" class="form-label">Filter Date</label>
                             <div class="input-group">
                                 <input type="text" id="date-range-picker" class="form-control" placeholder="Select date range">
                             </div>
                         </div>
                     </div>
+                    @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'General Manager')
+                    <div class="col-md">
+                        <label for="exampleFormControlSelect1" class="form-label">Select Group</label>
+                        <select class="form-select" id="filterGroup" aria-label="Default select example">
+                        </select>
+                    </div>
+                    @endif
+                    @if(auth()->user()->usertype->name !== 'Agent')
+                    <div class="col-md">
+                        <label for="exampleFormControlSelect1" class="form-label">Select Agent</label>
+                        <select id="filterAgent" class="form-control" style="width:100%;">
+                        </select>
+                    </div>
+                    @endif
+                    <div class="col-md">
+                        <label for="exampleFormControlSelect1" class="form-label">Select Source</label>
+                        <select class="form-select" id="filterSource" aria-label="Default select example">
+                            <option value="">Filter Source</option>
+                            <option value="Repeat-Customer">Repeat Customer</option>
+                            <option value="Social-Media">Social-Media</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Mall Duty">Mall Duty</option>
+                            <option value="Show Room">Show Room</option>
+                            <option value="Saturation">Saturation</option>
+                        </select>
+                    </div>
+
                 </div>
+
                 <div class="row mb-3">
                     <div class="col-md">
                         <div class="btn-group d-flex flex-wrap w-100" role="group" aria-label="Basic example">
@@ -530,6 +559,56 @@
 
 @section('components.specific_page_scripts')
 <script>
+    function getTeams(){
+        $.ajax({
+            url: '{{ route('teams.list') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let teamSelect = $('#filterGroup');
+                teamSelect.empty();
+                teamSelect.append('<option value="">Filter Group...</option>');
+                data.forEach(function(item) {
+                    teamSelect.append(`<option value="${item.id}">${item.name}</option>`);
+                });
+            },
+            error: function(error) {
+                console.error('Error loading team:', error);
+            }
+        });
+    }
+    getTeams();
+
+    function getAgent(){
+        $.ajax({
+            url: '{{ route('leads.getAgent') }}',
+            type: 'GET',
+            data : {
+                team_id: $('#filterGroup').val()
+            },
+            dataType: 'json',
+            success: function(data) {
+                let agentSelect = $('#filterAgent');
+                agentSelect.empty();
+                agentSelect.append('<option value="">Filter Agent...</option>');
+                data.forEach(function(item) {
+                    agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
+                });
+                // Initialize Select2
+                agentSelect.select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+            },
+            error: function(error) {
+                console.error('Error loading team:', error);
+            }
+        });
+    }
+
+    @if(auth()->user()->usertype->name === 'Group Manager' )
+    getAgent();
+    @endif
 
     //Date filter
     flatpickr("#date-range-picker", {
@@ -580,6 +659,31 @@
         }
     });
 
+
+    $(document).ready(function () {
+      // Event listeners for filter dropdowns
+        $('#filterGroup').on('change', function() {
+            getAgent();
+            inquiryTable.ajax.reload();
+        });
+    });
+
+    $(document).ready(function () {
+      // Event listeners for filter dropdowns
+      $('#filterAgent').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+
+        $('#filterAgent, #filterSource').on('change', function() {
+            inquiryTable.ajax.reload();
+        });
+
+
+
+    });
+
+
     // DataTable initialization
     const inquiryTable = $('#inquiryTable').DataTable({
             processing: true,
@@ -589,8 +693,12 @@
                 data: function(d) {
                     // Include the date range in the AJAX request
                     d.date_range = $('#date-range-picker').val();
+                    d.group = $('#filterGroup').val();
+                    d.agent = $('#filterAgent').val();
+                    d.source = $('#filterSource').val();
                 },
             },
+            lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
             pageLength: 10,
             paging: true,
             responsive: false,

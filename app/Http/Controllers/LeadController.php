@@ -43,6 +43,7 @@ class LeadController extends Controller
                         })
                         ->where('status_id', '<>', $status)
                         ->orderBy('created_at', 'desc');
+
         }elseif(Auth::user()->usertype->name === 'Group Manager'){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
@@ -77,6 +78,23 @@ class LeadController extends Controller
 
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
+
+        if($request->has('group') && !empty($request->group)){
+            $query->whereHas('user', function($subQuery) use ($request) {
+                $subQuery->where('team_id', $request->group);
+            });
+        }
+
+        if($request->has('agent') && !empty($request->agent)){
+            $query->where('created_by', $request->agent);
+        }
+
+        if($request->has('source') && !empty($request->source)){
+            $query->whereHas('customer', function($subQuery) use ($request) {
+                $subQuery->where('source', $request->source);
+            });
+        }
+
 
         $list = $query->get();
 
@@ -179,6 +197,22 @@ class LeadController extends Controller
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
             $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if($request->has('group') && !empty($request->group)){
+            $query->whereHas('user', function($subQuery) use ($request) {
+                $subQuery->where('team_id', $request->group);
+            });
+        }
+
+        if($request->has('agent') && !empty($request->agent)){
+            $query->where('created_by', $request->agent);
+        }
+
+        if($request->has('source') && !empty($request->source)){
+            $query->whereHas('customer', function($subQuery) use ($request) {
+                $subQuery->where('source', $request->source);
+            });
         }
 
         $list = $query->get();
@@ -285,6 +319,22 @@ class LeadController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
+        if($request->has('group') && !empty($request->group)){
+            $query->whereHas('user', function($subQuery) use ($request) {
+                $subQuery->where('team_id', $request->group);
+            });
+        }
+
+        if($request->has('agent') && !empty($request->agent)){
+            $query->where('created_by', $request->agent);
+        }
+
+        if($request->has('source') && !empty($request->source)){
+            $query->whereHas('customer', function($subQuery) use ($request) {
+                $subQuery->where('source', $request->source);
+            });
+        }
+
         $list = $query->get();
 
         return DataTables::of($list)
@@ -385,6 +435,22 @@ class LeadController extends Controller
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
             $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if($request->has('group') && !empty($request->group)){
+            $query->whereHas('user', function($subQuery) use ($request) {
+                $subQuery->where('team_id', $request->group);
+            });
+        }
+
+        if($request->has('agent') && !empty($request->agent)){
+            $query->where('created_by', $request->agent);
+        }
+
+        if($request->has('source') && !empty($request->source)){
+            $query->whereHas('customer', function($subQuery) use ($request) {
+                $subQuery->where('source', $request->source);
+            });
         }
 
         $list = $query->get();
@@ -981,5 +1047,29 @@ class LeadController extends Controller
                 'message' => 'Error updating remarks: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function getAgent(Request $request){
+        $usertype = Usertype::where('name', 'Agent')->first()->id;
+
+        if(Auth::user()->usertype->name === 'Group Manager'){
+            $agent = User::where('usertype_id', $usertype)
+                        ->whereNull('deleted_at')
+                        ->where('status', 'Active')
+                        ->where('team_id', Auth::user()->team_id)
+                        ;
+
+        }else{
+            $agent = User::where('usertype_id', $usertype)
+            ->whereNull('deleted_at')
+            ->where('status', 'Active');
+        }
+
+        if($request->has('team_id') && !empty($request->team_id)){
+            $agent->where('team_id', $request->team_id);
+
+        };
+        $agent = $agent->get();
+        return response()->json($agent);
     }
 }

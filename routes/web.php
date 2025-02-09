@@ -42,6 +42,8 @@ Route::get('/getInquiryCount', [SFMDashboardController::class, 'getInquiryCount'
 
 //VEHICLE TO SALES DASHBOARD
 Route::get('/vehicle-to-sales-dashboard', [VehicleToSalesController::class, 'index'])->name('dashboard.vehicle-to-sales-dashboard');
+Route::get('/vehicle-to-sales-dashboard/getReleasedToday', [VehicleToSalesController::class, 'getReleasedToday'])->name('dashboard.vehicle-to-sales-dashboard.getReleasedToday');
+Route::get('/vehicle-to-sales-dashboard/totalDeliveriesToday', [VehicleToSalesController::class, 'totalDeliveriesToday'])->name('dashboard.vehicle-to-sales-dashboard.totalDeliveriesToday');
 
 //RANKING DASHBOARD
 Route::get('/ranking-dashboard', [RankingDashboardController::class, 'index'])->name('dashboard.ranking-dashboard');
@@ -74,6 +76,7 @@ Route::get('/leads/get-colors', [LeadController::class, 'getColor'])->name('lead
 Route::get('leads/edit/{id}', [LeadController::class, 'edit'])->name('leads.edit')->middleware('permission:edit_lead');
 Route::post('/leads/update/{id}', [LeadController::class, 'update'])->name('leads.update')->middleware('permission:update_lead');
 Route::post('/leads/updateRemarks/', [LeadController::class, 'updateRemarks'])->name('leads.updateRemarks')->middleware('permission:update_remarks');
+Route::get('/leads/getAgent/', [LeadController::class, 'getAgent'])->name('leads.getAgent');
 
 
 // APPLICATION
@@ -129,6 +132,7 @@ Route::get('vehicle-releases/getStatus', [VehicleReleasesController::class, 'get
 Route::post('vehicle-releases/updateStatus', [VehicleReleasesController::class, 'updateStatus'])->name('vehicle.releases.updateStatus')->middleware('permission:update_status');
 Route::get('vehicle-releases/GrandTotalProfit', [VehicleReleasesController::class, 'GrandTotalProfit'])->name('vehicle.releases.GrandTotalProfit')->middleware('permission:view_vehicle_releases');
 Route::post('vehicle-releases/updateReleasedRemarks', [VehicleReleasesController::class, 'updateReleasedRemarks'])->name('vehicle.releases.updateReleasedRemarks')->middleware('permission:update_released_remarks');
+Route::post('vehicle-releases/addInsurance', [VehicleReleasesController::class, 'addInsurance'])->name('vehicle.releases.addInsurance')->middleware('permission:add_insurance');
 
 // VEHICLE INVENTORY
 Route::get('vehicle-inventory', [VehicleInventoryController::class, 'index'])->name('vehicle.inventory')->middleware('permission:view_vehicle_inventory');
@@ -170,7 +174,7 @@ Route::get('banks/list', [BankController::class, 'list'])->name('banks.list')->m
 Route::get('user-management', [UserManagementController::class, 'index'])->name('user.management')->middleware('permission:view_users');
 Route::get('user-management/list', [UserManagementController::class, 'list'])->name('user.management.list')->middleware('permission:view_users');
 Route::get('user-management/usertypes/list', [UserManagementController::class, 'getUserTypes'])->name('usertypes.list')->middleware('permission:view_users');
-Route::get('user-management/teams/list', [UserManagementController::class, 'getTeams'])->name('teams.list')->middleware('permission:view_users');
+Route::get('user-management/teams/list', [UserManagementController::class, 'getTeams'])->name('teams.list');
 Route::post('user-management/store', [UserManagementController::class, 'store'])->name('user.management.store')->middleware('permission:create_user');
 Route::post('user-management/update', [UserManagementController::class, 'update'])->name('user.management.update')->middleware('permission:edit_user');
 Route::delete('user-management/{id}/destroy', [UserManagementController::class, 'destroy'])->name('user.management.destroy')->middleware('permission:delete_user');

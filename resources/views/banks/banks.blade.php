@@ -157,6 +157,8 @@
                     d.date_range = $('#date-range-picker').val();
                 },
             },
+            lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
+            pageLength: 10,
             columns: [
                 { data: 'bank_name', name: 'bank_name', title: 'Bank Name' },
                 { data: 'created_by', name: 'created_by', title: 'Created By' },

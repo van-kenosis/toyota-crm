@@ -17,6 +17,7 @@ class Vehicle extends Model
         'unit',
         'variant',
         'color',
+        'category',
         'created_by',
         'updated_by',
     ];

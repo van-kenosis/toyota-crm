@@ -37,6 +37,13 @@ class DashboardController extends Controller
             if ($request->has('group') && !empty($request->group)) {
                 $query->where('team_id', $request->group);
             }
+            
+            if ($request->has('agent') && !empty($request->agent)) {
+
+                $query->whereHas('application', function($subQuery)  use ($request) {
+                    $subQuery->where('created_by', $request->agent);
+                });
+            }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -82,6 +89,13 @@ class DashboardController extends Controller
                 }
                 $queryFinancing->whereBetween('updated_at', [$startDate, $endDate]);
 
+                if ($request->has('agent') && !empty($request->agent)) {
+
+                    $queryFinancing->whereHas('application', function($subQuery)  use ($request) {
+                        $subQuery->where('created_by', $request->agent);
+                    });
+                }
+
         $financingCount = $queryFinancing->count();
 
         $queryCash = Transactions::with(['inquiry', 'inventory', 'application'])
@@ -105,6 +119,13 @@ class DashboardController extends Controller
                 }
                 $queryCash->whereBetween('updated_at', [$startDate, $endDate]);
 
+                if ($request->has('agent') && !empty($request->agent)) {
+
+                    $queryCash->whereHas('application', function($subQuery)  use ($request) {
+                        $subQuery->where('created_by', $request->agent);
+                    });
+                }
+
         $cashCount = $queryCash->count();
 
         $queryPO = Transactions::with(['inquiry', 'inventory', 'application'])
@@ -127,6 +148,13 @@ class DashboardController extends Controller
                     $endDate = Carbon::now()->endOfMonth();
                 }
                 $queryPO->whereBetween('updated_at', [$startDate, $endDate]);
+
+                if ($request->has('agent') && !empty($request->agent)) {
+
+                    $queryPO->whereHas('application', function($subQuery)  use ($request) {
+                        $subQuery->where('created_by', $request->agent);
+                    });
+                }
 
         $poCount = $queryPO->count();
 
@@ -154,6 +182,13 @@ class DashboardController extends Controller
                 $endDate = Carbon::now()->endOfMonth();
             }
 
+            if ($request->has('agent') && !empty($request->agent)) {
+
+                $query->whereHas('application', function($subQuery)  use ($request) {
+                    $subQuery->where('created_by', $request->agent);
+                });
+            }
+
         // Apply date range filter if provided
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
@@ -165,6 +200,8 @@ class DashboardController extends Controller
             $endDate = Carbon::now()->endOfMonth();
         }
         $query->whereBetween('updated_at', [$startDate, $endDate]);
+
+
 
 
         // Group by bank_id and count released transactions per bank
@@ -209,6 +246,13 @@ class DashboardController extends Controller
                 }
                 $queryFemale->whereBetween('updated_at', [$startDate, $endDate]);
 
+                if ($request->has('agent') && !empty($request->agent)) {
+
+                    $queryFemale->whereHas('application', function($subQuery)  use ($request) {
+                        $subQuery->where('created_by', $request->agent);
+                    });
+                }
+
 
         $FemaleCount = $queryFemale->count();
 
@@ -226,6 +270,13 @@ class DashboardController extends Controller
 
         if ($request->has('group') && !empty($request->group)) {
             $queryMale->where('team_id', $request->group);
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+
+            $queryMale->whereHas('application', function($subQuery)  use ($request) {
+                $subQuery->where('created_by', $request->agent);
+            });
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
@@ -263,6 +314,13 @@ class DashboardController extends Controller
 
         if ($request->has('group') && !empty($request->group)) {
             $query->where('team_id', $request->group);
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+
+            $query->whereHas('application', function($subQuery)  use ($request) {
+                $subQuery->where('created_by', $request->agent);
+            });
         }
 
         // Apply date range filter if provided
@@ -305,6 +363,13 @@ class DashboardController extends Controller
                 $query->where('team_id', $request->group);
             }
 
+            if ($request->has('agent') && !empty($request->agent)) {
+
+                $query->whereHas('application', function($subQuery)  use ($request) {
+                    $subQuery->where('created_by', $request->agent);
+                });
+            }
+
             if ($request->has('date_range') && !empty($request->date_range)) {
                 [$startDate, $endDate] = explode(' to ', $request->date_range);
                 $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
@@ -322,4 +387,5 @@ class DashboardController extends Controller
 
         return response()->json(['releasedCount' => $releasedCount]);
     }
+    
 }

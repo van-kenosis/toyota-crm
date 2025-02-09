@@ -52,6 +52,18 @@
     .table-responsive::-webkit-scrollbar-horizontal {
         height: 10px; /* Horizontal scrollbar height */
     }
+
+    #vehicleReservationTable {
+        text-transform: uppercase;
+    }
+
+    #availableUnitsTable {
+        text-transform: uppercase;
+    }
+
+    #statusTable {
+        text-transform: uppercase;
+    }
 </style>
 
 {{-- Title Header --}}
@@ -321,14 +333,15 @@
             }
     });
 
-    // DataTable initialization
+    // DataTable initialization available units
     const availableUnitsTable = $('#availableUnitsTable').DataTable({
         processing: true,
         serverSide: true, // Use client-side processing since we're providing static data
         ajax: {
-                    url: '{{ route("vehicle.reservation.units.list") }}',
+                url: '{{ route("vehicle.reservation.units.list") }}',
 
-                },
+            },
+        lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
         pageLength: 10,
         paging: true,
         responsive: true,
@@ -353,12 +366,14 @@
         ],
     });
 
+    // DataTable initialization status table
     const statusTable = $('#statusTable').DataTable({
         processing: true,
         serverSide: true, // Use client-side processing since we're providing static data
         ajax: {
             url: '{{ route("vehicle.reservation.reservationPerTeam") }}',
         },
+        lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
         pageLength: 10,
         paging: true,
         responsive: false,
@@ -381,7 +396,8 @@
             }
         ],
     });
-
+    
+    // DataTable initialization Vehicle Reservation Table
     const vehicleReservationTable = $('#vehicleReservationTable').DataTable({
         processing: true,
         serverSide: true, // Use client-side processing since we're providing static data
@@ -391,6 +407,7 @@
                     d.date_range = $('#date-range-picker').val();
                 },
             },
+        lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
         pageLength: 10,
         paging: true,
         responsive: false,
@@ -401,11 +418,11 @@
         },
 
         columns: [
-            { data: 'client_name', name: 'client_name', title: 'Customer Name' },
-            { data: 'unit', name: 'unit', title: 'Unit' },
-            { data: 'year_model', name: 'year_model', title: 'Year Model', visible: false },
-            { data: 'variant', name: 'variant', title: 'Variant' },
-            { data: 'color', name: 'color', title: 'Color' },
+            { data: 'client_name', name: 'client_name', title: 'Customer Name' }, //0
+            { data: 'unit', name: 'unit', title: 'Unit' }, //1
+            { data: 'year_model', name: 'year_model', title: 'Year Model', visible: false }, //2
+            { data: 'variant', name: 'variant', title: 'Variant' }, //3
+            { data: 'color', name: 'color', title: 'Color' }, //4
             {
                 data: 'cs_number',
                 name: 'cs_number',
@@ -425,13 +442,13 @@
                     }
                     return data; // Default display for other types like export, search, etc.
                 }
-            },
-            { data: 'transaction', name: 'transaction', title: 'Transaction' },
-            { data: 'trans_type', name: 'trans_type', title: 'Type' },
-            { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' },
-            { data: 'agent', name: 'agent', title: 'Agent' },
-            { data: 'team', name: 'team', title: 'Group' },
-            { data: 'date_assigned', name: 'date_assigned', title: 'Date ' },
+            }, //5
+            { data: 'transaction', name: 'transaction', title: 'Transaction' }, //66
+            { data: 'trans_type', name: 'trans_type', title: 'Type' }, //7
+            { data: 'trans_bank', name: 'trans_bank', title: 'Trans Bank' }, //8
+            { data: 'agent', name: 'agent', title: 'Agent' }, //9
+            { data: 'team', name: 'team', title: 'Group' }, //10
+            { data: 'date_assigned', name: 'date_assigned', title: 'Date ' }, //11
             {
                 data: 'application_id',
                 name: 'application_id',
@@ -454,7 +471,7 @@
                                     </button>
                                 </div>`;
                     }
-            },
+            }, //12
             {
                 data: 'application_id',
                 name: 'application_id',
@@ -471,7 +488,6 @@
                                     @if(auth()->user()->can('edit_unit'))
                                     ${editButton}
                                     @endif
-
                                     @if(auth()->user()->can('process_pending_reservation'))
                                     <button type="button" class="btn btn-icon me-2 btn-primary processing-pending-btn" data-id="${data}">
                                         <span class="tf-icons bx bxs-check-circle bx-22px"></span>
@@ -485,7 +501,7 @@
 
                                 </div>`;
                     }
-            },
+            }, //13
             {
                 data: 'id',
                 name: 'id',
@@ -507,11 +523,12 @@
                                     </button>
                                 </div>`;
                     }
-            },
+            }, //14
 
         ],
 
     });
+
 
      // button group active tabs
      $('.btn-group .btn').on('click', function(e) {
@@ -524,6 +541,8 @@
         @if(auth()->user()->can('add_cs_number') && auth()->user()->can('get_cs_number'))
         vehicleReservationTable.column(5).visible(isReservationTab); // cs_number
         @endif
+
+        // vehicleReservationTable.column(12).visible(isReservationTab); // edit
 
         @if(auth()->user()->can('process_reserved_reservation'))
         vehicleReservationTable.column(14).visible(isReservationTab); // application_id

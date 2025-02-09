@@ -28,6 +28,11 @@
             <select id="selectGroup" class="form-control form-select-sm">
             </select>
         </div>
+        <div class="form-group text-end">
+            <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
+            <select id="filterAgent" class="form-control form-select-sm">
+            </select>
+        </div>
         {{-- <button type="button" class="btn btn-primary" id="filterButton">Filter</button> --}}
     </div>
 </div>
@@ -257,6 +262,43 @@
         }
         loadTeams();
 
+        function getAgent(){
+            $.ajax({
+                url: '{{ route('leads.getAgent') }}',
+                type: 'GET',
+                data : {
+                    team_id: $('#selectGroup').val()
+                },
+                dataType: 'json',
+                success: function(data) {
+                    let agentSelect = $('#filterAgent');
+                    agentSelect.empty();
+                    agentSelect.append('<option value="">Filter Agent...</option>');
+                    data.forEach(function(item) {
+                        agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
+                    });
+                    // Initialize Select2
+                    agentSelect.select2({
+                        placeholder: "Select an option",
+                        allowClear: true
+                    });
+                
+                },
+                error: function(error) {
+                    console.error('Error loading team:', error);
+                }
+            });
+        }
+
+        
+        $(document).ready(function () {
+        // Event listeners for filter dropdowns
+            $('#selectGroup').on('change', function() {
+                getAgent();
+            });
+        });
+
+
         const currentDate = new Date();
         const currentMonth = currentDate.toLocaleString('default', { month: 'short' });
         const currentYear = currentDate.getFullYear();
@@ -281,6 +323,17 @@
             hideLoader();
 
         });
+        $('#filterAgent').on('change', function () {
+            showLoader();
+
+            fetchInquiriesData();
+            fetchInquiriesCount();
+            fetchReservationCount();
+            fetchVehicleQuantity();
+
+            hideLoader();
+
+        });
     });
 
 
@@ -290,7 +343,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 $('#inquiriesCountCard').text(response.inquiryCount);
@@ -310,7 +364,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 renderInquiryCount(response.monthlyData);
@@ -424,7 +479,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 renderReservationCount(response.monthlyData);
@@ -541,7 +597,8 @@
             type: 'GET',
             data: {
                 date_range: $('#date-range-picker').val(),
-                group: $('#selectGroup').val()
+                group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val()
             },
             success: function(response) {
                 renderVehicleQuantityChart(response.inquiryCount);

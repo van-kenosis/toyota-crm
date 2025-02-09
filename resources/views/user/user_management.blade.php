@@ -242,6 +242,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("user.management.list") }}',
+            lengthMenu: [ [10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"] ],
             pageLength: 10,
             paging: true,
             responsive: true,
