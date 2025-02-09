@@ -19,7 +19,7 @@
 
 
       @can('view_dashboard')
-        <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->is('dashboard') || request()->is('sales-funnel-management-dashboard') || request()->is('vehicle-to-sales-dashboard') || request()->is('ranking-dashboard') ? 'active' : '' }}">
             <a href="/dashboard" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-dashboard'></i>
               <div class="text-truncate" data-i18n="Page 2">Dashboard</div>
