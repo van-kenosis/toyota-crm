@@ -26,6 +26,7 @@ class Transactions extends Model
         'reservation_date',
         'released_date',
         'status',
+        'notif_status'
     ];
 
     public function inquiry(){

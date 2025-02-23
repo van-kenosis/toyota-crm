@@ -44,6 +44,8 @@ Route::get('/getInquiryCount', [SFMDashboardController::class, 'getInquiryCount'
 Route::get('/vehicle-to-sales-dashboard', [VehicleToSalesController::class, 'index'])->name('dashboard.vehicle-to-sales-dashboard');
 Route::get('/vehicle-to-sales-dashboard/getReleasedToday', [VehicleToSalesController::class, 'getReleasedToday'])->name('dashboard.vehicle-to-sales-dashboard.getReleasedToday');
 Route::get('/vehicle-to-sales-dashboard/totalDeliveriesToday', [VehicleToSalesController::class, 'totalDeliveriesToday'])->name('dashboard.vehicle-to-sales-dashboard.totalDeliveriesToday');
+Route::get('/vehicle-to-sales-dashboard/getDailyDeliveries', [VehicleToSalesController::class, 'getDailyDeliveries'])->name('dashboard.vehicle-to-sales-dashboard.getDailyDeliveries');
+Route::get('/vehicle-to-sales-dashboard/getDailyReservation', [VehicleToSalesController::class, 'getDailyReservation'])->name('dashboard.vehicle-to-sales-dashboard.getDailyReservation');
 
 //RANKING DASHBOARD
 Route::get('/ranking-dashboard', [RankingDashboardController::class, 'index'])->name('dashboard.ranking-dashboard');
@@ -77,6 +79,8 @@ Route::get('leads/edit/{id}', [LeadController::class, 'edit'])->name('leads.edit
 Route::post('/leads/update/{id}', [LeadController::class, 'update'])->name('leads.update')->middleware('permission:update_lead');
 Route::post('/leads/updateRemarks/', [LeadController::class, 'updateRemarks'])->name('leads.updateRemarks')->middleware('permission:update_remarks');
 Route::get('/leads/getAgent/', [LeadController::class, 'getAgent'])->name('leads.getAgent');
+Route::get('/leads/count-inquiry', [LeadController::class, 'CountInquiry'])->name('leads.countInquiry');
+Route::post('/leads/updateNotifStatus', [LeadController::class, 'updateNotifStatus'])->name('leads.updateNotifStatus');
 
 
 // APPLICATION
@@ -97,6 +101,8 @@ Route::get('/application/banks/{id}', [ApplicationController::class, 'getApplica
 Route::post('/application/banks/approval/{id}', [ApplicationController::class, 'updateBankApproval'])->name('application.banks.approval')->middleware('permission:update_bank_approval');
 Route::post('/application/terms', [ApplicationController::class, 'updateTerms'])->name('application.terms')->middleware('permission:update_terms');
 Route::post('/application/banks/update', [ApplicationController::class, 'updateApplicationBank'])->name('application.banks.update');
+Route::get('/application/count', [ApplicationController::class, 'countApplication'])->name('application.count');
+Route::post('/application/notif/status', [ApplicationController::class, 'updateApplicationNotifStatus'])->name('application.notif.status');
 
 
 
@@ -114,7 +120,8 @@ Route::post('vehicle/reservation/addCSNumber', [VehicleReservationController::cl
 Route::post('vehicle/reservation/cancel/pending', [VehicleReservationController::class, 'cancel_pending'])->name('vehicle.reservation.cancel.pending')->middleware('permission:cancel_pending_reservation');
 Route::get('vehicle-reservation/edit/{id}', [VehicleReservationController::class, 'editUnit'])->name('vehicle.reservation.edit')->middleware('permission:edit_unit');
 Route::post('vehicle-reservation/update/{id}', [VehicleReservationController::class, 'update'])->name('vehicle.reservation.update')->middleware('permission:edit_unit');
-
+Route::get('vehicle-reservation/getVehicleReservationCount', [VehicleReservationController::class, 'getVehicleReservationCount'])->name('vehicle.reservation.getVehicleReservationCount')->middleware('permission:view_vehicle_reservation');
+Route::post('vehicle-reservation/updateNotifStatus', [VehicleReservationController::class, 'updateNotifStatus'])->name('vehicle.reservation.updateNotifStatus');
 
 
 // VEHICLE RELEASES
@@ -133,6 +140,8 @@ Route::post('vehicle-releases/updateStatus', [VehicleReleasesController::class, 
 Route::get('vehicle-releases/GrandTotalProfit', [VehicleReleasesController::class, 'GrandTotalProfit'])->name('vehicle.releases.GrandTotalProfit')->middleware('permission:view_vehicle_releases');
 Route::post('vehicle-releases/updateReleasedRemarks', [VehicleReleasesController::class, 'updateReleasedRemarks'])->name('vehicle.releases.updateReleasedRemarks')->middleware('permission:update_released_remarks');
 Route::post('vehicle-releases/addInsurance', [VehicleReleasesController::class, 'addInsurance'])->name('vehicle.releases.addInsurance')->middleware('permission:add_insurance');
+Route::get('vehicle-releases/getVehicleReleaseCount', [VehicleReleasesController::class, 'getVehicleReleaseCount'])->name('vehicle.releases.getVehicleReleaseCount')->middleware('permission:view_vehicle_releases');
+Route::post('vehicle-releases/updateNotifStatus', [VehicleReleasesController::class, 'updateNotifStatus'])->name('vehicle.releases.updateNotifStatus');
 
 // VEHICLE INVENTORY
 Route::get('vehicle-inventory', [VehicleInventoryController::class, 'index'])->name('vehicle.inventory')->middleware('permission:view_vehicle_inventory');
@@ -199,5 +208,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dispute/getDisputes', [DisputeController::class, 'getDisputes'])->name('dispute.getDisputes');
     Route::post('/dispute/cancel', [DisputeController::class, 'cancel'])->name('dispute.cancel');
     Route::post('/dispute/approved', [DisputeController::class, 'approved'])->name('dispute.approved');
+    Route::get('/dispute/getDisputeCount', [DisputeController::class, 'getDisputeCount'])->name('dispute.getDisputeCount');
+    Route::post('/dispute/updateDisputeStatus', [DisputeController::class, 'updateDisputeStatus'])->name('dispute.updateDisputeStatus');
 
 

@@ -883,5 +883,113 @@ class VehicleReleasesController extends Controller
 
     }
 
+    public function getVehicleReleaseCount(){
+        $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
+        $release_status = Status::where('status', 'like', 'Released')->first();
+        $posted_status = Status::where('status', 'like', 'Posted')->first();
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $pending_for_release_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->orderBy('updated_at', 'desc');
+            $released_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
+                        ->whereNotNull('reservation_id')
+                        ->orderBy('updated_at', 'desc');
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $pending_for_release_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->whereHas('user', function($subQuery) {
+                                $subQuery->where('team_id', Auth::user()->team_id);
+                            });
+                        })
+                        ->orderBy('updated_at', 'desc');
+            $released_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->whereHas('user', function($subQuery) {
+                                $subQuery->where('team_id', Auth::user()->team_id);
+                            });
+                        })
+                        ->orderBy('updated_at', 'desc');
+        }else{
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $pending_for_release_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+            $released_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+        }
+
+        $pending_count = $pending_query->count();
+        $released_count = $released_query->count();
+        
+        return response()->json([
+            'success' => true,
+            'pending_count' => $pending_count,
+            'released_count' => $released_count
+        ]);
+    }
+
+    public function updateNotifStatus(Request $request){
+        $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
+        $release_status = Status::where('status', 'like', 'Released')->first();
+        $posted_status = Status::where('status', 'like', 'Posted')->first();
+
+        if($request->buttonTitle === 'For Release Units'){
+            $query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $pending_for_release_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->orderBy('updated_at', 'desc');
+
+            $query->update([
+                'notif_status' => 'closed'
+            ]);
+        }elseif($request->buttonTitle === 'Released Units'){
+            $query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
+                        ->whereNotNull('reservation_id')
+                        ->orderBy('updated_at', 'desc');
+
+            $query->update([
+                'notif_status' => 'closed'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification status updated successfully'
+        ]);
+    }
+
 
 }

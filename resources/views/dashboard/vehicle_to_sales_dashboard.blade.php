@@ -26,12 +26,12 @@
     </div>
 </div>
 
-{{-- Card Deliveries Releases --}}
+{{-- Card Deliveriesx Releases --}}
 <div class="row mb-4">
     <div class="col-md">
         <div class="row">
             <div class="col-md">
-                <div class="card mb-3">
+                <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="">
@@ -44,19 +44,26 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-       <div class="row">
-        <div class="col-md">
-            <div class="card">
-                <div class="card-body">
-                    <div id="chart-timeline"></div>
-                </div>
+<div class="row mb-2">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-body">
+                {{-- <h5 class="" style="color: #ff0055;">Daily Deliveries</h5> --}}
+                <h6 class="">Month of: &nbsp; <b style="color: #ff0055;" id="deliveriesMonthLabel">Current</b></h6>
+                <div id="dailyDeliveriesChart"></div>
             </div>
         </div>
-       </div>
-       
     </div>
+</div>
 
+<div class="divider">
+    <div class="divider-text"><i class='bx bxs-car'></i></div>
+</div>
+
+<div class="row mb-4 mt-2">
     <div class="col-md">
         <div class="card">
             <div class="card-body">
@@ -71,12 +78,35 @@
         </div>
     </div>
 </div>
+
+<div class="row mb-2">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-body">
+                {{-- <h5 class="" style="color: #ff0055;">Daily Deliveries</h5> --}}
+                <h6 class="">Month of: &nbsp; <b style="color: #ff0055;" id="releasesMonthLabel">Current</b></h6>
+                <div id="dailyReleasesChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 
 
 @section('components.specific_page_scripts')
 <script>
+    // Add this function to get current month and year
+    function setCurrentMonthYear() {
+        const currentDate = new Date();
+        const monthYear = currentDate.toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric'
+        });
+        $('#deliveriesMonthLabel').text(monthYear);
+        $('#releasesMonthLabel').text(monthYear);
+    }
+
     // Initialize flatpickr for date range picker
     flatpickr("#date-range-picker", {
         mode: "range",
@@ -93,27 +123,18 @@
                         text: 'Please select a valid date range.',
                     });
                 } else {
+                    // Update month labels
+                    const monthName = startDate.toLocaleDateString('en-US', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                    $('#deliveriesMonthLabel').text(monthName);
+                    $('#releasesMonthLabel').text(monthName);
+
                     getReleasedToday();
                     totalDeliveriesToday();
-                }
-
-                // Update the month and year display
-                const startMonth = startDate.toLocaleString('default', { month: 'short' });
-                const endMonth = endDate.toLocaleString('default', { month: 'short' });
-                const startYear = startDate.getFullYear();
-                const endYear = endDate.getFullYear();
-
-                if (startMonth === endMonth && startYear === endYear) {
-                    document.getElementById('monthRange').textContent = startMonth;
-                } else {
-                    const monthRange = `${startMonth} - ${endMonth}`;
-                    document.getElementById('monthRange').textContent = monthRange;
-                }
-
-                if (startYear === endYear) {
-                    document.getElementById('year').textContent = startYear;
-                } else {
-                    document.getElementById('year').textContent = `${startYear} - ${endYear}`;
+                    getDailyDeliveries();
+                    getDailyReservation();
                 }
             }
         },
@@ -135,8 +156,12 @@
             // Add event listener to clear the date and reload the tables
             clearButton.addEventListener("click", function () {
                 instance.clear(); // Clear the date range
+                setCurrentMonthYear(); // Show current month and year instead of "Current"
+
                 getReleasedToday();
                 totalDeliveriesToday();
+                getDailyDeliveries();
+                getDailyReservation();
             });
 
             // Add event listener to close the calendar
@@ -145,6 +170,9 @@
             });
         }
     });
+
+    // Set current month and year on page load
+    setCurrentMonthYear();
 
     function getReleasedToday() {
         $.ajax({
@@ -184,7 +212,153 @@
     }
     totalDeliveriesToday();
 
-    
+    function getDailyDeliveries(){
+        $.ajax({
+            url: "{{ route('dashboard.vehicle-to-sales-dashboard.getDailyDeliveries') }}", // Replace with actual route
+            method: "GET",
+            data: {
+                date_range: $('#date-range-picker').val(),
+            },
+            success: function (data) {
+                renderChart(data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    var DailyDeliveries = null;
+
+    function renderChart(deliveryData) {
+            var options = {
+            series: [{
+                name: 'Deliveries',
+                data: deliveryData
+            }],
+            chart: {
+                height: 350,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 10,
+                    dataLabels: {
+                        position: 'top',
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val;
+                },
+                offsetY: -20,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#ff0055"]
+                }
+            },
+            colors: ['#282830'],
+            xaxis: {
+                categories: Array.from({ length: deliveryData.length }, (_, i) => `D${i + 1}`),
+                title: {
+                    text: "DAILY DELIVERIES",
+                    style: { fontSize: '14px', fontWeight: 'bold' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return val;
+                    }
+                }
+            }
+        };
+
+        if (DailyDeliveries) {
+            DailyDeliveries.destroy();
+        }
+
+        DailyDeliveries = new ApexCharts(document.querySelector("#dailyDeliveriesChart"), options);
+        DailyDeliveries.render();
+    }
+
+    getDailyDeliveries();
+
+    function getDailyReservation(){
+        $.ajax({
+            url: "{{ route('dashboard.vehicle-to-sales-dashboard.getDailyReservation') }}", // Replace with actual route
+            method: "GET",
+            data: {
+                date_range: $('#date-range-picker').val(),
+            },
+            success: function (data) {
+                renderReservationChart(data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    var DailyReservations = null;
+
+    function renderReservationChart(reservationData) {
+            var options = {
+            series: [{
+                name: 'Reservation',
+                data: reservationData
+            }],
+            chart: {
+                height: 350,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 10,
+                    dataLabels: {
+                        position: 'top',
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val;
+                },
+                offsetY: -20,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#ff0055"]
+                }
+            },
+            colors: ['#282830'],
+            xaxis: {
+                categories: Array.from({ length: reservationData.length }, (_, i) => `D${i + 1}`),
+                title: {
+                    text: "DAILY RESERVATION",
+                    style: { fontSize: '14px', fontWeight: 'bold' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return val;
+                    }
+                }
+            }
+        };
+
+        if (DailyReservations) {
+            DailyReservations.destroy();
+        }
+
+        DailyReservations = new ApexCharts(document.querySelector("#dailyReleasesChart"), options);
+        DailyReservations.render();
+    }
+
+    getDailyReservation();
 
 </script>
 @endsection

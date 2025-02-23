@@ -356,8 +356,14 @@
                 <div class="row">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
-                            <button id="forRelease" type="button" class="btn btn-label-dark active" data-route="{{ route("vehicle.releases.pending.list") }}">For Release Units</button>
-                            <button id="released" type="button" class="btn btn-label-dark" data-route="{{ route("vehicle.releases.list") }}">Released Units</button>
+                            <button id="forRelease" type="button" class="btn btn-label-dark active" data-route="{{ route("vehicle.releases.pending.list") }}">
+                                For Release Units
+                                <span id="forReleaseTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
+                            <button id="released" type="button" class="btn btn-label-dark" data-route="{{ route("vehicle.releases.list") }}">
+                                Released Units
+                                <span id="releasedTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -392,6 +398,8 @@
 
 <script>
      $(document).ready(function() {
+        updateVehicleReleaseBadge();
+        setInterval(updateVehicleReleaseBadge, 1000);
         $('.btn-group .btn.active').click();
     });
 
@@ -499,7 +507,7 @@
         });
     });
 
-    
+
     // DataTable initialization releasedn units table
     const releasedUnitsTable = $('#releasedUnitsTable').DataTable({
         processing: true,
@@ -599,9 +607,9 @@
             { data: 'color', name: 'color', title: 'Color' }, //6
             { data: 'cs_number', name: 'cs_number', title: 'CS Number' }, //7
             { data: 'transaction', name: 'transaction', title: 'Transaction' }, //8
-            {   
-                data: 'insurance', 
-                name: 'insurance', 
+            {
+                data: 'insurance',
+                name: 'insurance',
                 title: 'Insurance',
                 render: function(data, type, row) {
                     return `
@@ -778,15 +786,42 @@
     // button group active tabs
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
+
+        const buttonTitle = $(this).clone()    // Clone the button
+        .children()                        // Get all child elements
+        .remove()                          // Remove all child elements (including badge)
+        .end()                            // Go back to original element
+        .text()                           // Get remaining text
+        .trim();          
+        console.log(buttonTitle); // For debugging
+
+        // Update Notification Status
+        $.ajax({
+            url: '{{ route("vehicle.releases.updateNotifStatus") }}',
+            type: 'POST',
+            data: { buttonTitle: buttonTitle },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response){
+                console.log(response);
+                updateVehicleReleaseBadge();
+            },
+            error: function(xhr){
+                console.log(xhr);
+            }
+        });
+
+
         $('#date-range-picker').val('');
 
         // Toggle column visibility based on the active tab
-        const isFoReleasedTab = $(this).text().trim() === 'For Release Units';
+        const isFoReleasedTab = buttonTitle === 'For Release Units';
         @if(auth()->user()->can('process_vehicle_release') || auth()->user()->can('cancel_vehicle_release'))
         vehicleReleasesTable.column(22).visible(isFoReleasedTab);
         @endif
 
-        const isReleasedTab = $(this).text().trim() === 'Released Units';
+        const isReleasedTab = buttonTitle === 'Released Units';
         @if(auth()->user()->can('get_status') && auth()->user()->can('update_status'))
         vehicleReleasesTable.column(13).visible(isReleasedTab);
         @endif

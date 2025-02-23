@@ -66,6 +66,11 @@
             <select id="filterAgent" class="form-control form-select-sm">
             </select>
         </div>
+        <div class="form-group text-end">
+            <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
+            <select id="filterAgent" class="form-control form-select-sm">
+            </select>
+        </div>
         {{-- <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Reset Filter</small></label><br>
             <button class="btn btn-sm btn-label-dark">Reset</button>
@@ -245,7 +250,7 @@
                     placeholder: "Select an option",
                     allowClear: true
                 });
-            
+
             },
             error: function(error) {
                 console.error('Error loading team:', error);
@@ -253,7 +258,7 @@
         });
     }
 
-    
+
     $(document).ready(function () {
       // Event listeners for filter dropdowns
         $('#selectGroup').on('change', function() {
@@ -459,6 +464,7 @@
             data: {
                 date_range: $('#date-range-picker').val(),
                 group: $('#selectGroup').val(),
+                agent: $('#filterAgent').val(),
                 agent: $('#filterAgent').val()
             },
             success: function(response) {

@@ -37,10 +37,13 @@
       @endif
 
       @can('view_leads')
+        <!-- Your menu item -->
         <li class="menu-item {{ request()->is('leads') ? 'active' : '' }}">
             <a href="/leads" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-layer-plus'></i>
                 <div class="text-truncate" data-i18n="Page 2">Leads</div>
+                {{-- <span id="sideNavLeadsBadge" class="badge badge-dot bg-danger ms-2" style="display:;">1</span> --}}
+                <span id="sideNavLeadsBadge" class="position-absolute top-0 start-100 badge badge-dot badge-notifications border border-2 p-1 bg-danger" style="display: none;"></span>
             </a>
         </li>
       @endcan
@@ -49,6 +52,8 @@
             <a href="/application" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-list-plus'></i>
               <div class="text-truncate" data-i18n="Page 2">Application</div>
+              {{-- <span id="sideNavApplicationBadge" class="badge bg-danger ms-2" style="display:;">1</span> --}}
+              <span id="sideNavApplicationBadge" class="position-absolute top-0 start-100 badge badge-dot badge-notifications border border-2 p-1 bg-danger" style="display: none;"></span>
             </a>
         </li>
       @endcan
@@ -57,6 +62,8 @@
             <a href="/vehicle-reservation" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-car'></i>
                 <div class="text-truncate" data-i18n="Page 2">Vehicle Reservation</div>
+                {{-- <span id="sideNavReservationBadge" class="badge bg-danger ms-2" style="display:;">1</span> --}}
+                <span id="sideNavReservationBadge" class="position-absolute top-0 start-100 badge badge-dot badge-notifications border border-2 p-1 bg-danger" style="display: none;"></span>
             </a>
         </li>
       @endcan
@@ -65,6 +72,8 @@
             <a href="/vehicle-releases" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-right-top-arrow-circle'></i>
               <div class="text-truncate" data-i18n="Page 2">Vehicle Releases</div>
+              {{-- <span id="sideNavReleasesBadge" class="badge bg-danger ms-2" style="display:;">1</span> --}}
+              <span id="sideNavReleasesBadge" class="position-absolute top-0 start-100 badge badge-dot badge-notifications border border-2 p-1 bg-danger" style="display: none;"></span>
             </a>
         </li>
       @endcan
@@ -75,9 +84,12 @@
         </li>
 
         <li class="menu-item {{ request()->is('dispute') ? 'active' : '' }}">
-            <a href="/dispute" class="menu-link">
+            <a href="/dispute" class="menu-link" onclick="updateDisputeStatus()">
                 <i class='menu-icon tf-icons bx bxs-x-square'></i>
               <div class="text-truncate" data-i18n="Page 2">Disputes</div>
+              {{-- <span id="sideNavDisputeTabBadge" class="badge bg-danger ms-2" style="display:;">1</span> --}}
+              <span id="sideNavDisputeTabBadge" class="position-absolute top-0 start-100 badge badge-dot badge-notifications border border-2 p-1 bg-danger" style="display: none;"></span>
+
             </a>
         </li>
       @endcan

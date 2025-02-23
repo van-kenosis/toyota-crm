@@ -13,6 +13,10 @@ class Application extends Model
     
     protected $table = 'application';
 
+    protected $fillable = [
+        'notif_status'
+    ];
+
     public function user(){
         return $this->belongsTo(User::class, 'created_by', 'id')->with('team');
     }

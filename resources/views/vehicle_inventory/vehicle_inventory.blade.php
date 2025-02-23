@@ -326,7 +326,7 @@
                                 <option value="">Select Category</option>
                                 <option value="PC">PC</option>
                                 <option value="CV">CV</option>
-                                <option value="HAV">HAV</option>
+                                <option value="HEV">HEV</option>
                             </select>
                         </div>
                     </div>

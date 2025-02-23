@@ -523,10 +523,22 @@
                 <div class="row mb-3">
                     <div class="col-md">
                         <div class="btn-group d-flex flex-wrap w-100" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-label-dark active" data-route="{{ route('leads.individual.list') }}">Individual</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.fleet.list') }}">Fleet</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.company.list') }}">Company</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.government.list') }}">Government</button>
+                            <button type="button" class="btn btn-label-dark active" data-route="{{ route('leads.individual.list') }}">
+                                Individual
+                                <span id="leadsIndividualTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
+                            </button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.fleet.list') }}">
+                                Fleet
+                                <span id="leadsFleetTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
+                            </button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.company.list') }}">
+                                Company
+                                <span id="leadsCompanyTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
+                            </button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.government.list') }}">
+                                Government
+                                <span id="leadsGovernmentTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -559,6 +571,7 @@
 
 @section('components.specific_page_scripts')
 <script>
+   
     function getTeams(){
         $.ajax({
             url: '{{ route('teams.list') }}',
@@ -661,7 +674,10 @@
 
 
     $(document).ready(function () {
-      // Event listeners for filter dropdowns
+        updateLeadsBadge();
+
+        setInterval(updateLeadsBadge, 1000);
+        // Event listeners for filter dropdowns
         $('#filterGroup').on('change', function() {
             getAgent();
             inquiryTable.ajax.reload();
@@ -787,6 +803,34 @@
     $('.btn-group .btn').on('click', function (e) {
         e.preventDefault();
 
+        // Get the button text/title
+        const buttonTitle = $(this).clone()    // Clone the button
+        .children()                        // Get all child elements
+        .remove()                          // Remove all child elements (including badge)
+        .end()                            // Go back to original element
+        .text()                           // Get remaining text
+        .trim();          
+        console.log(buttonTitle); // For debugging
+
+        // Update the notification status
+        $.ajax({
+            url: '{{ route("leads.updateNotifStatus") }}',
+            type: 'POST',
+            data: { inquiry_type: buttonTitle },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                updateLeadsBadge();
+            },
+            error: function(error) {
+                console.error('Error updating notification status:', error);
+            }
+            
+        });
+        
         // Clear the date range picker
         $('#date-range-picker').val(''); // Clear the date range input
 

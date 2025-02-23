@@ -225,8 +225,14 @@
                 <div class="row mb-3">
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-label-dark active" data-route="{{ route("vehicle.reservation.pending.list") }}">Pending</button>
-                            <button type="button" class="btn btn-label-dark" data-route="{{ route("vehicle.reservation.list") }}">Reservation</button>
+                            <button type="button" class="btn btn-label-dark active" data-route="{{ route("vehicle.reservation.pending.list") }}">
+                                Pending
+                                <span id="pendingTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">0</span>
+                            </button>
+                            <button type="button" class="btn btn-label-dark" data-route="{{ route("vehicle.reservation.list") }}">
+                                Reservation
+                                <span id="reservationTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">0</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -260,6 +266,10 @@
 @section('components.specific_page_scripts')
 
 <script>
+
+    updateVehicleReservationBadge();
+
+    setInterval(updateVehicleReservationBadge, 1000);
 
     // button group
     $(document).ready(function() {
@@ -396,7 +406,7 @@
             }
         ],
     });
-    
+
     // DataTable initialization Vehicle Reservation Table
     const vehicleReservationTable = $('#vehicleReservationTable').DataTable({
         processing: true,
@@ -533,10 +543,19 @@
      // button group active tabs
      $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
+
         $('#date-range-picker').val('');
 
+        const buttonTitle = $(this).clone()    // Clone the button
+        .children()                        // Get all child elements
+        .remove()                          // Remove all child elements (including badge)
+        .end()                            // Go back to original element
+        .text()                           // Get remaining text
+        .trim();          
+        console.log(buttonTitle); // For debugging
+
         // Toggle column visibility based on the active tab
-        const isReservationTab = $(this).text().trim() === 'Reservation';
+        const isReservationTab = buttonTitle === 'Reservation';
         vehicleReservationTable.column(2).visible(isReservationTab); // year_model
         @if(auth()->user()->can('add_cs_number') && auth()->user()->can('get_cs_number'))
         vehicleReservationTable.column(5).visible(isReservationTab); // cs_number
@@ -548,13 +567,35 @@
         vehicleReservationTable.column(14).visible(isReservationTab); // application_id
         @endif
 
-        const isPendingTab = $(this).text().trim() === 'Pending';
+        const isPendingTab = buttonTitle === 'Pending';
         @if(auth()->user()->can('process_pending_reservation') || auth()->user()->can('cancel_pending_reservation'))
         vehicleReservationTable.column(13).visible(isPendingTab); // id
         @endif
 
         var route = $(this).data('route');
         vehicleReservationTable.ajax.url(route).load();
+
+      
+
+        $.ajax({
+            url: '{{ route("vehicle.reservation.updateNotifStatus") }}',
+            type: 'POST',
+            data: {
+                buttonTitle: buttonTitle
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response){
+                console.log(response);
+            },
+            error: function(xhr){
+                console.log(xhr);
+            }
+        });
+
+
+       
     });
 
     // Example usage when a CS number is selected

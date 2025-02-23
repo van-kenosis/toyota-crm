@@ -1138,4 +1138,176 @@ class ApplicationController extends Controller
             ], 500);
         }
     }
+
+    public function countApplication(){
+
+        $status = Status::where('status', 'like', 'approved')->first();
+        $pending_status = Status::where('status', 'like', 'pending')->first();
+        $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
+        $cancel_statuses = Status::whereIn('status', ['Cancel'])->pluck('id')->toArray();
+
+        if(Auth::user()->usertype->name === 'SuperAdmin'
+        || Auth::user()->usertype->name === 'General Manager'
+        || Auth::user()->usertype->name === 'Sales Admin Staff'
+        || Auth::user()->usertype->name === 'Financing Staff'
+        ){
+            $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->where('notif_status', 'open')
+                        ->whereNull('deleted_at')
+                        ->where('status_id', $status->id)
+                        ->orderBy('updated_at', 'desc');
+
+            $pending_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereNotIn('transaction', ['cash', 'po'])
+                                    ->where('status_id', $pending_status->id)
+                                    ->orderBy('updated_at', 'desc');
+                                    ;
+            $poOrCash_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereIn('transaction', ['cash', 'po'])
+                                    ->whereNotIn('status_id', $statusIds)
+                                    ->orderBy('updated_at', 'desc');
+            $cancel_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereIn('status_id', $cancel_statuses)
+                                    ->orderBy('updated_at', 'desc');
+        }
+        elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('status_id', $status->id)
+                        ->whereHas('user', function($subQuery) {
+                            $subQuery->where('team_id', Auth::user()->team_id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+
+            $pending_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereNotIn('transaction', ['cash', 'po'])
+                                    ->where('status_id', $status->id)
+                                    ->whereHas('user', function($subQuery) {
+                                        $subQuery->where('team_id', Auth::user()->team_id);
+                                    })
+                                    ->orderBy('updated_at', 'desc');
+            $poOrCash_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereIn('transaction', ['cash', 'po'])
+                                    ->whereNotIn('status_id', $statusIds)
+                                    ->whereHas('user', function($subQuery) {
+                                        $subQuery->where('team_id', Auth::user()->team_id);
+                                    })
+                                    ->orderBy('updated_at', 'desc');
+            $cancel_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open') 
+                                    ->whereIn('status_id', $cancel_statuses)
+                                    ->whereHas('user', function($subQuery) {
+                                        $subQuery->where('team_id', Auth::user()->team_id);
+                                    })
+                                    ->orderBy('updated_at', 'desc');
+            
+        }else{
+            $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('status_id', $status->id)
+                        ->where('created_by', Auth::user()->id)
+                        ->orderBy('updated_at', 'desc');
+            $pending_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereNotIn('transaction', ['cash', 'po'])
+                                    ->where('status_id', $pending_status->id)
+                                    ->where('created_by', Auth::user()->id)
+                                    ->orderBy('updated_at', 'desc');
+            $poOrCash_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereIn('transaction', ['cash', 'po'])
+                                    ->whereNotIn('status_id', $statusIds)
+                                    ->where('created_by', Auth::user()->id)
+                                    ->orderBy('updated_at', 'desc');
+            $cancel_application = Application::whereNull('deleted_at')
+                                    ->where('notif_status', 'open')
+                                    ->whereIn('status_id', $cancel_statuses)
+                                    ->where('created_by', Auth::user()->id)
+                                    ->orderBy('updated_at', 'desc');
+        }
+
+        return response()->json([
+            'success' => true,
+            'approved_application' => $approved_application->count(),
+            'pending_application' => $pending_application->count(),
+            'poOrCash_application' => $poOrCash_application->count(),
+            'cancel_application' => $cancel_application->count()
+        ]);
+    }
+
+    public function updateApplicationNotifStatus(Request $request){
+
+        $status = Status::where('status', 'like', 'approved')->first();
+        $pending_status = Status::where('status', 'like', 'pending')->first();
+        $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
+        $cancel_statuses = Status::whereIn('status', ['Cancel'])->pluck('id')->toArray();
+
+        if($request->tab_title === 'Cash/PO Applications'){
+            $poOrCash_application = Application::whereNull('deleted_at')
+            ->where('notif_status', 'open')
+            ->whereIn('transaction', ['cash', 'po'])
+            ->whereNotIn('status_id', $statusIds)
+            ->where('created_by', Auth::user()->id)
+            ->orderBy('updated_at', 'desc');
+
+            $poOrCash_application->update([
+                'notif_status' => 'closed'
+            ]);
+
+        }
+        elseif($request->tab_title === 'Pending Applications'){
+            
+            $pending_application = Application::whereNull('deleted_at')
+            ->where('notif_status', 'open')
+            ->whereNotIn('transaction', ['cash', 'po'])
+            ->where('status_id', $pending_status->id)
+            ->where('created_by', Auth::user()->id)
+            ->orderBy('updated_at', 'desc');
+
+            $pending_application->update([
+                'notif_status' => 'closed'
+            ]);
+
+        }elseif($request->tab_title === 'Approved Applications'){  
+
+            $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                    ->whereNull('deleted_at')
+                    ->where('notif_status', 'open')
+                    ->where('status_id', $status->id)
+                    ->where('created_by', Auth::user()->id)
+                    ->orderBy('updated_at', 'desc');
+
+            $approved_application->update([
+                'notif_status' => 'closed'
+            ]);
+                    
+        }elseif($request->tab_title === 'Denied/Canceled Applications'){
+
+            $cancel_application = Application::whereNull('deleted_at')
+            ->where('notif_status', 'open')
+            ->whereIn('status_id', $cancel_statuses)
+            ->where('created_by', Auth::user()->id)
+            ->orderBy('updated_at', 'desc');
+
+            $cancel_application->update([
+                'notif_status' => 'closed'
+            ]); 
+
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification status updated successfully'
+        ]);
+    }
+
+
+
 }

@@ -426,16 +426,28 @@
                     <div class="col-md">
                         <div class="btn-group w-100" role="group" aria-label="Basic example">
                             @if(auth()->user()->can('list_pending_applications'))
-                            <button id="pending-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.pending') }}">Pending Applications</button>
+                            <button id="pending-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.pending') }}">
+                                Pending Applications
+                                <span id="applicationPendingTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
                             @endif
                             @if(auth()->user()->can('list_cash_applications'))
-                            <button id="cash-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cash') }}">Cash/PO Applications</button>
+                            <button id="cash-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cash') }}">
+                                Cash/PO Applications
+                                <span id="applicationCashPOTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
                             @endif
                             @if(auth()->user()->can('list_approved_applications'))
-                            <button id="approved-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.approved') }}">Approved Applications</button>
+                            <button id="approved-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.approved') }}">
+                                Approved Applications
+                                <span id="applicationApprovedTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
                             @endif
                             @if(auth()->user()->can('list_cancelled_applications'))
-                            <button id="canceled-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cancel') }}">Denied/Canceled Applications</button>
+                            <button id="canceled-tab" type="button" class="btn btn-label-dark" data-route="{{ route('application.cancel') }}">
+                                Denied/Canceled Applications
+                                <span id="applicationDeniedTabBadge" class="badge bg-danger rounded-circle ms-2" style="display:;">1</span>
+                            </button>
                             @endif
                         </div>
                     </div>
@@ -470,6 +482,7 @@
 @section('components.specific_page_scripts')
 
 <script>
+
 
     //Date filter
     flatpickr("#date-range-picker", {
@@ -692,6 +705,9 @@
 
     // Automatically trigger the tab based on user access and remove active from the default active tab
     $(document).ready(function() {
+        updateApplicationBadge();
+        setInterval(updateApplicationBadge, 1000);
+        
         @if(auth()->user()->can('list_pending_applications'))
         $('.btn-group #pending-tab').addClass('active');
         @elseif(auth()->user()->can('list_cash_applications'))
@@ -711,6 +727,36 @@
     // Change DataTable route based on button click
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
+
+        const buttonTitle = $(this).clone()    // Clone the button
+        .children()                        // Get all child elements
+        .remove()                          // Remove all child elements (including badge)
+        .end()                            // Go back to original element
+        .text()                           // Get remaining text
+        .trim();          
+        console.log(buttonTitle); // For debugging
+
+
+        // Update the notification status
+        $.ajax({
+            url: '{{ route("application.notif.status") }}',
+            type: 'POST',
+            data: { tab_title: buttonTitle },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                updateApplicationBadge();
+            },
+            error: function(error) {
+                console.error('Error updating notification status:', error);
+            }
+            
+        });
+
+
          // Clear the date range picker
         $('#date-range-picker').val(''); // Clear the date range input
         applicationTable.ajax.reload(null, false); // Reload the table without resetting the paging

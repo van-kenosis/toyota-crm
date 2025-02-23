@@ -659,4 +659,115 @@ class VehicleReservationController extends Controller
         }
     }
 
+    public function getVehicleReservationCount(){
+
+        DB::statement("SET SQL_MODE=''");
+        $pending_status = Status::where('status', 'like', 'pending')->first();
+        $reserved_status = Status::where('status', 'like', 'Reserved')->first();
+        if(Auth::user()->usertype->name === 'SuperAdmin' || Auth::user()->usertype->name === 'General Manager' || Auth::user()->usertype->name === 'Sales Admin Staff'){
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->where('reservation_transaction_status', $pending_status->id)
+                            ->where('notif_status', 'open')
+                            ->whereNull('deleted_at')
+                        ->whereNotNull('reservation_id')
+                        ->orderBy('updated_at', 'desc');
+            $reserved_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                    ->whereNull('deleted_at')
+                    ->where('notif_status', 'open')
+                    ->where('reservation_transaction_status', $reserved_status->id)
+                    ->whereNotNull('reservation_id')
+                    ->orderBy('updated_at', 'desc');
+
+        }elseif(Auth::user()->usertype->name === 'Group Manager'){
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->where('reservation_transaction_status', $pending_status->id)
+                            ->where('notif_status', 'open')
+                            ->whereNull('deleted_at')
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->whereHas('user', function($subQuery) {
+                                $subQuery->where('team_id', Auth::user()->team_id);
+                            });
+                        })
+                        ->orderBy('updated_at', 'desc');
+            $reserved_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                    ->whereNull('deleted_at')
+                    ->where('notif_status', 'open')
+                    ->where('reservation_transaction_status', $reserved_status->id)
+                    ->whereNotNull('reservation_id')
+                    ->where('team_id', Auth::user()->team_id)
+                    ->orderBy('updated_at', 'desc');
+
+        }
+        else{
+            $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->where('reservation_transaction_status', $pending_status->id)
+                            ->where('notif_status', 'open')
+                            ->whereNull('deleted_at')
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+            $reserved_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $reserved_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+            
+
+        }
+
+        $pending_count = $pending_query->count();
+        $reserved_count = $reserved_query->count();
+        return response()->json([
+            'success' => true,
+            'pending_count' => $pending_count,
+            'reserved_count' => $reserved_count
+        ]);
+    }
+
+    public function updateNotifStatus(Request $request){
+        $pending_status = Status::where('status', 'like', 'pending')->first();
+        $reserved_status = Status::where('status', 'like', 'Reserved')->first();
+
+        if($request->buttonTitle === 'Pending'){
+        $pending_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->where('reservation_transaction_status', $pending_status->id)
+                            ->where('notif_status', 'open')
+                            ->whereNull('deleted_at')
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+
+            $pending_query->update([
+                'notif_status' => 'closed'
+            ]);
+        }elseif($request->buttonTitle === 'Reservation'){
+            $reserved_query = Transactions::with(['inquiry', 'inventory', 'application'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('reservation_transaction_status', $reserved_status->id)
+                        ->whereNotNull('reservation_id')
+                        ->whereHas('application', function($subQuery) {
+                            $subQuery->where('created_by', Auth::user()->id);
+                        })
+                        ->orderBy('updated_at', 'desc');
+
+            $reserved_query->update([
+                'notif_status' => 'closed'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification status updated successfully'
+        ]);
+    }
 }
