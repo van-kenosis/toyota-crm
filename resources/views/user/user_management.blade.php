@@ -122,10 +122,12 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md">
-                        <label for="edit_password" class="form-label text-info">Update Password?</label>
-                        <input type="password" class="form-control" id="edit_password" name="password">
-                        <small class="text-danger" id="edit_validate_password">Please enter password</small>
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <label for="edit_password" class="form-label text-info">Update Password?</label>
+                            <input type="password" class="form-control" id="edit_password" name="password">
+                            <small class="text-danger" id="edit_validate_password">Please enter password</small>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md d-flex justify-content-end gap-2">
@@ -251,6 +253,7 @@
                 search: "",
                 searchPlaceholder: "Search..."
             },
+            order: [[5, 'desc']], // Sort by 'updated_at' (6th column, index 5) in descending order
 
             columns: [
                 {

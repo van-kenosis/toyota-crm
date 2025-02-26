@@ -43,17 +43,7 @@
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md">
-        <div class="card">
-            <div class="card-body">
-                <h5 style="color: #ff0055;">Top Performing MP/Agents by Units Released</h5>
-                <div id="rankingBarChart"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
+{{-- Card & Table Graphs --}}
 <div class="row mb-4">
     <div class="col-md">
         <h5>Top MP/Agent Rankings</h5>
@@ -73,6 +63,18 @@
                     <table id="rankingTable" class="table table-hover">
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Bar Chart --}}
+<div class="row mb-4">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-body">
+                <h5 style="color: #ff0055;">Top Performing MP/Agents by Units Released</h5>
+                <div id="rankingBarChart"></div>
             </div>
         </div>
     </div>
@@ -196,7 +198,7 @@
                     //     placeholder: "Select an option",
                     //     allowClear: true
                     // });
-                
+
                 },
                 error: function(error) {
                     console.error('Error loading team:', error);
@@ -204,7 +206,7 @@
             });
         }
 
-        
+
         $(document).ready(function () {
         // Event listeners for filter dropdowns
             $('#selectGroup').on('change', function() {
@@ -422,7 +424,7 @@
 
                 xaxis: {
                 categories: labels,
-                position: 'top',
+                position: 'bottom',
                 axisBorder: {
                     show: false
                 },
