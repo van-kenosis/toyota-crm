@@ -70,12 +70,13 @@ class LeadController extends Controller
         }
 
 
-
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
-
+            
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
@@ -192,7 +193,9 @@ class LeadController extends Controller
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+             $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
@@ -312,7 +315,9 @@ class LeadController extends Controller
 
 
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+             $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
@@ -430,7 +435,9 @@ class LeadController extends Controller
         }
 
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+             $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 

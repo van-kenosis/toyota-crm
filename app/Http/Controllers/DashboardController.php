@@ -300,7 +300,7 @@ class DashboardController extends Controller
         $released_status = Status::where('status', 'like', 'Released')->first();
         $posted_status = Status::where('status', 'like', 'Posted')->first();
 
-        $source = ['Social-Media', 'Referral', 'Mall Duty', 'Show Room', 'Saturation'];
+        $source = ['Social-Media', 'Referral', 'Mall Duty', 'Show Room', 'Saturation', 'Repeat-Customer'];
 
         $query = Transactions::with(['inquiry', 'inventory', 'application'])
         ->whereNull('deleted_at')
@@ -308,7 +308,7 @@ class DashboardController extends Controller
         ->whereIn('reservation_transaction_status', [$released_status->id, $posted_status->id]);
         $query->whereHas('inquiry', function($subQuery) use ($source) {
             $subQuery->whereHas('customer', function($subQuery) {
-                $subQuery->whereIn('source', ['Social-Media', 'Referral', 'Mall Duty', 'Show Room', 'Saturation']);
+                $subQuery->whereIn('source', ['Social-Media', 'Referral', 'Mall Duty', 'Show Room', 'Saturation', 'Repeat-Customer']);
             });
         });
 

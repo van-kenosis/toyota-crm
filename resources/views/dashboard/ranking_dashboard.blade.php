@@ -24,16 +24,18 @@
             <label for="defaultFormControlInput" class="form-label"><small>Select Start to End Date</small></label>
             <input type="text" id="date-range-picker" class="form-control form-control-sm" placeholder="Filter Date">
         </div>
-        <div class="form-group text-end">
+        <div class="form-group text-end @if(!in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager', 'Sales Admin Staff']))  d-none @endif">
             <label for="defaultSelect" class="form-label"><small>Filter Group</small></label>
             <select id="selectGroup" class="form-control form-select-sm">
             </select>
         </div>
+        @if(!in_array(Auth::user()->usertype->name, ['Agent']))
         <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
             <select id="filterAgent" class="form-control form-select-sm">
             </select>
         </div>
+        @endif
         {{-- <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Reset Filter</small></label><br>
             <button class="btn btn-sm btn-label-dark">Reset</button>
@@ -153,8 +155,10 @@
             }
         });
 
+        const userTeamId = {{ Auth::user()->team_id ?? 'null' }};
+
         // Load the Groups
-        function loadTeams() {
+        function loadTeams(selectedTeamId = null) {
             $.ajax({
                 url: '{{ route("teams.list") }}',
                 type: 'GET',
@@ -164,10 +168,13 @@
                         options += `<option value="${team.id}">${team.name}</option>`;
                     });
                     $('#selectGroup').html(options);
+                    if (selectedTeamId) {
+                        $('#selectGroup').val(selectedTeamId).trigger('change');
+                    }
                 }
             });
         }
-        loadTeams();
+        loadTeams(userTeamId);
 
         function getAgent(){
             $.ajax({
@@ -185,10 +192,10 @@
                         agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
                     });
                     // Initialize Select2
-                    agentSelect.select2({
-                        placeholder: "Select an option",
-                        allowClear: true
-                    });
+                    // agentSelect.select2({
+                    //     placeholder: "Select an option",
+                    //     allowClear: true
+                    // });
                 
                 },
                 error: function(error) {
@@ -226,9 +233,6 @@
 
             });
         });
-
-
-
 
 
     function fetchTopAgents() {
@@ -389,8 +393,8 @@
              // Render the bar chart with the fetched data
             var options = {
             series: [{
-            name: 'Inflation',
-            data: data,
+                name: 'Released Units',
+                data: data,
                 }],
                 chart: {
                 height: 350,
@@ -484,12 +488,15 @@
             };
 
             if (AgentData) {
-                AgentData.destroy();
+                AgentData.updateSeries([{
+                    name: 'Released Units',
+                    data: data,
+                }]);
+            } else {
+                // Create a new chart instance
+                AgentData = new ApexCharts(document.querySelector("#rankingBarChart"), options);
+                AgentData.render();
             }
-
-            // Create a new chart instance
-            AgentData = new ApexCharts(document.querySelector("#rankingBarChart"), options);
-            AgentData.render();
 
         }
         fetchAgentData();

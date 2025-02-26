@@ -56,25 +56,21 @@
             <label for="defaultFormControlInput" class="form-label"><small>Select Start to End Date</small></label>
             <input type="text" id="date-range-picker" class="form-control form-control-sm" placeholder="Filter Date">
         </div>
-        <div class="form-group text-end">
+        {{-- @if(in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager', 'Sales Admin Staff'])) --}}
+        <div class="form-group text-end @if(!in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager', 'Sales Admin Staff']))  d-none @endif">
             <label for="defaultSelect" class="form-label"><small>Filter Group</small></label>
             <select id="selectGroup" class="form-control form-select-sm">
             </select>
         </div>
+        {{-- @endif --}}
+        @if(!in_array(Auth::user()->usertype->name, ['Agent']))
         <div class="form-group text-end">
             <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
             <select id="filterAgent" class="form-control form-select-sm">
             </select>
         </div>
-        <div class="form-group text-end">
-            <label for="defaultSelect" class="form-label"><small>Filter Agent</small></label>
-            <select id="filterAgent" class="form-control form-select-sm">
-            </select>
-        </div>
-        {{-- <div class="form-group text-end">
-            <label for="defaultSelect" class="form-label"><small>Reset Filter</small></label><br>
-            <button class="btn btn-sm btn-label-dark">Reset</button>
-        </div> --}}
+        @endif
+       
     </div>
 </div>
 
@@ -213,9 +209,10 @@
     function hideLoader() {
         Swal.close();
     }
-
+    
+    const userTeamId = {{ Auth::user()->team_id ?? 'null' }};
     // Load the Groups
-    function loadTeams() {
+    function loadTeams(selectedTeamId = null) {
         $.ajax({
             url: '{{ route("teams.list") }}',
             type: 'GET',
@@ -225,10 +222,14 @@
                     options += `<option value="${team.id}">${team.name}</option>`;
                 });
                 $('#selectGroup').html(options);
+
+                if (selectedTeamId) {
+                    $('#selectGroup').val(selectedTeamId).trigger('change');
+                }
             }
         });
     }
-    loadTeams();
+    loadTeams(userTeamId);
 
     function getAgent(){
         $.ajax({
@@ -246,10 +247,10 @@
                     agentSelect.append(`<option value="${item.id}">${item.first_name} ${item.last_name}</option>`);
                 });
 
-                agentSelect.select2({
-                    placeholder: "Select an option",
-                    allowClear: true
-                });
+                // agentSelect.select2({
+                //     placeholder: "Select an option",
+                //     allowClear: true
+                // });
 
             },
             error: function(error) {
@@ -257,6 +258,12 @@
             }
         });
     }
+
+    @if(in_array(Auth::user()->usertype->name, ['Agent', 'Group Manager']))
+    $(document).ready(function () {
+        getAgent();
+    });
+    @endif
 
 
     $(document).ready(function () {
@@ -358,14 +365,12 @@
         document.getElementById('year').textContent = currentYear;
 
         // Event listener for group selection
-        document.getElementById('selectGroup').addEventListener('change', function () {
-            const selectedGroup = this.options[this.selectedIndex].text;
-            document.getElementById('group').textContent = selectedGroup || 'All Group';
-        });
-
-        // Event listener for group selection
         $('#selectGroup').on('change', function () {
             showLoader();
+
+            const selectedGroup = this.options[this.selectedIndex].text;
+            document.getElementById('group').textContent = selectedGroup || 'All Group';
+
             releasedCount();
             fetchMonthlyReleasedCount();
             fetchReleasePerTransType();
@@ -388,8 +393,7 @@
         });
     });
 
-
-
+    
     function releasedCount() {
         $.ajax({
             url: '{{ route("api.released-data") }}', // Adjust the route as necessary
@@ -569,14 +573,16 @@
             }
         };
 
-         // Destroy the existing chart instance if it exists
-         if (releasedBarChart) {
-            releasedBarChart.destroy();
+        if (releasedBarChart) {
+            releasedBarChart.updateSeries([{
+                name: 'Releases',
+                data: monthlyData
+            }]);
+        } else {
+            releasedBarChart = new ApexCharts(document.querySelector("#totalReleasesBarChart"), options);
+            releasedBarChart.render();
         }
 
-        // Create a new chart instance
-        releasedBarChart = new ApexCharts(document.querySelector("#totalReleasesBarChart"), options);
-        releasedBarChart.render();
     }
 
     // Call the function to fetch and render the bar chart
@@ -650,14 +656,15 @@
             },
         };
 
-        // Destroy the existing chart instance if it exists
+        
         if (transactionTypePieChart) {
-            transactionTypePieChart.destroy();
+            transactionTypePieChart.updateSeries(data);
+        } else {
+            transactionTypePieChart = new ApexCharts(document.querySelector("#transactionTypePieGraph"), options);
+            transactionTypePieChart.render();
         }
-
-        // Create a new chart instance
-        transactionTypePieChart = new ApexCharts(document.querySelector("#transactionTypePieGraph"), options);
-        transactionTypePieChart.render();
+       
+       
     }
 
     // Fetch the release count per transaction type
@@ -738,14 +745,13 @@
             },
         };
 
-         // Destroy the existing chart instance if it exists
-         if (bankPieChart) {
-            bankPieChart.destroy();
+        if (bankPieChart) {
+            bankPieChart.updateSeries(data);
+        } else {
+            bankPieChart = new ApexCharts(document.querySelector("#bankPieGraph"), options);
+            bankPieChart.render();
         }
-
-        // Create a new chart instance
-        bankPieChart = new ApexCharts(document.querySelector("#bankPieGraph"), options);
-        bankPieChart.render();
+       
     }
 
     // Call the function to fetch and render the pie chart
@@ -823,15 +829,13 @@
                 }
             }]
         };
-             // Destroy the existing chart instance if it exists
+
         if (sourcePieChart) {
-            sourcePieChart.destroy();
+            sourcePieChart.updateSeries(data);
+        } else {
+            sourcePieChart = new ApexCharts(document.querySelector("#sourePieGraph"), options);
+            sourcePieChart.render();
         }
-
-        // Create a new chart instance
-        sourcePieChart = new ApexCharts(document.querySelector("#sourePieGraph"), options);
-        sourcePieChart.render();
-
     };
 
 
@@ -905,14 +909,13 @@
             }]
         };
 
-        // Destroy the existing chart instance if it exists
         if (genderPieChart) {
-            genderPieChart.destroy();
+            genderPieChart.updateSeries(data);
+        } else {
+            genderPieChart = new ApexCharts(document.querySelector("#genderPieGraph"), options);
+            genderPieChart.render();
         }
 
-        // Create a new chart instance
-        genderPieChart = new ApexCharts(document.querySelector("#genderPieGraph"), options);
-        genderPieChart.render();
     }
 
     fetchGenderData();

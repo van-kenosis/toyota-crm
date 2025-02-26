@@ -672,7 +672,6 @@
         }
     });
 
-
     $(document).ready(function () {
         updateLeadsBadge();
 

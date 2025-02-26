@@ -148,7 +148,11 @@ class UserManagementController extends Controller
 
     public function getTeams(){
 
-        $teams = Team::all();
+        if(in_array(Auth::user()->usertype->name, ['Agent', 'Group Manager'])){
+            $teams = Team::where('id', Auth::user()->team_id)->get();
+        }else{
+            $teams = Team::all();
+        }
         return response()->json($teams);
 
     }
