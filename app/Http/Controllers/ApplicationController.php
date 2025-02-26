@@ -163,12 +163,22 @@ class ApplicationController extends Controller
                         ->orderBy('updated_at', 'desc');
         }
 
+        // if ($request->has('date_range') && !empty($request->date_range)) {
+        //     [$startDate, $endDate] = explode(' to ', $request->date_range);
+        //     $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+        //     $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+
+        //     $query->whereBetween('updated_at', [$startDate, $endDate]);
+        // }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('updated_at', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -248,9 +258,13 @@ class ApplicationController extends Controller
             return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
-        ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+        // ->editColumn('date', function($data) {
+        //     return $data->updated_at->format('d/m/Y H:i:s');
 
+        // })
+
+        ->editColumn('date', function($data) {
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->make(true);
@@ -290,12 +304,22 @@ class ApplicationController extends Controller
         }
 
 
+        // if ($request->has('date_range') && !empty($request->date_range)) {
+        //     [$startDate, $endDate] = explode(' to ', $request->date_range);
+        //     $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+        //     $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+
+        //     $query->whereBetween('updated_at', [$startDate, $endDate]);
+        // }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('updated_at', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -374,8 +398,12 @@ class ApplicationController extends Controller
             return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
+        // ->editColumn('date', function($data) {
+        //     return $data->updated_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->make(true);
@@ -418,12 +446,22 @@ class ApplicationController extends Controller
                 ->orderBy('updated_at', 'desc');
         }
 
+        // if ($request->has('date_range') && !empty($request->date_range)) {
+        //     [$startDate, $endDate] = explode(' to ', $request->date_range);
+        //     $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+        //     $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+
+        //     $query->whereBetween('updated_at', [$startDate, $endDate]);
+        // }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('updated_at', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -502,8 +540,12 @@ class ApplicationController extends Controller
             return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
+        // ->editColumn('date', function($data) {
+        //     return $data->updated_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->make(true);
@@ -544,12 +586,22 @@ class ApplicationController extends Controller
 
         }
 
+        // if ($request->has('date_range') && !empty($request->date_range)) {
+        //     [$startDate, $endDate] = explode(' to ', $request->date_range);
+        //     $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+        //     $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+
+        //     $query->whereBetween('updated_at', [$startDate, $endDate]);
+        // }
+
         if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $dateRange = preg_replace('/\s*to\s*/i', ' to ', $request->date_range); // Normalize 'to' and 'TO'
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
 
-            $query->whereBetween('updated_at', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $list = $query->get();
@@ -628,8 +680,12 @@ class ApplicationController extends Controller
             return $transaction ? $transaction->reservation_status : 'N/A';
         })
 
+        // ->editColumn('date', function($data) {
+        //     return $data->updated_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('date', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->make(true);
@@ -1200,13 +1256,13 @@ class ApplicationController extends Controller
                                     })
                                     ->orderBy('updated_at', 'desc');
             $cancel_application = Application::whereNull('deleted_at')
-                                    ->where('notif_status', 'open') 
+                                    ->where('notif_status', 'open')
                                     ->whereIn('status_id', $cancel_statuses)
                                     ->whereHas('user', function($subQuery) {
                                         $subQuery->where('team_id', Auth::user()->team_id);
                                     })
                                     ->orderBy('updated_at', 'desc');
-            
+
         }else{
             $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                         ->whereNull('deleted_at')
@@ -1263,7 +1319,7 @@ class ApplicationController extends Controller
 
         }
         elseif($request->tab_title === 'Pending Applications'){
-            
+
             $pending_application = Application::whereNull('deleted_at')
             ->where('notif_status', 'open')
             ->whereNotIn('transaction', ['cash', 'po'])
@@ -1275,7 +1331,7 @@ class ApplicationController extends Controller
                 'notif_status' => 'closed'
             ]);
 
-        }elseif($request->tab_title === 'Approved Applications'){  
+        }elseif($request->tab_title === 'Approved Applications'){
 
             $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
                     ->whereNull('deleted_at')
@@ -1287,7 +1343,7 @@ class ApplicationController extends Controller
             $approved_application->update([
                 'notif_status' => 'closed'
             ]);
-                    
+
         }elseif($request->tab_title === 'Denied/Canceled Applications'){
 
             $cancel_application = Application::whereNull('deleted_at')
@@ -1298,7 +1354,7 @@ class ApplicationController extends Controller
 
             $cancel_application->update([
                 'notif_status' => 'closed'
-            ]); 
+            ]);
 
         }
 

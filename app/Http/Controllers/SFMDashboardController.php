@@ -107,9 +107,9 @@ class SFMDashboardController extends Controller
         DB::statement("SET SQL_MODE=''");
 
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        
+
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType']);
-       
+
 
         if ($request->has('group') && !empty($request->group)) {
 
@@ -130,7 +130,7 @@ class SFMDashboardController extends Controller
 
             $query->whereBetween('inquiry.updated_at', [$startDate, $endDate]);
         }
-        
+
         $query->join('vehicle', 'inquiry.vehicle_id', '=', 'vehicle.id')
         ->whereNull('inquiry.deleted_at')
         ->where('inquiry.is_dispute', '0')
@@ -169,7 +169,7 @@ class SFMDashboardController extends Controller
 
             $query->whereBetween('inquiry.updated_at', [$startDate, $endDate]);
         }
-        
+
         $Quantity = $query->join('vehicle', 'inquiry.vehicle_id', '=', 'vehicle.id')
         ->whereNull('inquiry.deleted_at')
         ->where('inquiry.is_dispute', '0')

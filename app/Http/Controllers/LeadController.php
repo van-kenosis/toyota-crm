@@ -76,7 +76,7 @@ class LeadController extends Controller
 
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
-            
+
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
@@ -145,8 +145,12 @@ class LeadController extends Controller
             return $data->status->status;
         })
 
+        // ->editColumn('created_at', function($data) {
+        //     return $data->created_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y H:i:s');
+            return $data->created_at ? $data->created_at->format('M d, Y h:i A') : '-';
         })
 
 
@@ -266,8 +270,12 @@ class LeadController extends Controller
             return $data->status->status;
         })
 
+        // ->editColumn('created_at', function($data) {
+        //     return $data->created_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y H:i:s');
+            return $data->created_at ? $data->created_at->format('M d, Y h:i A') : '-';
         })
 
 
@@ -388,8 +396,12 @@ class LeadController extends Controller
             return $data->status->status;
         })
 
+        // ->editColumn('created_at', function($data) {
+        //     return $data->created_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y H:i:s');
+            return $data->created_at ? $data->created_at->format('M d, Y h:i A') : '-';
         })
 
 
@@ -508,8 +520,12 @@ class LeadController extends Controller
             return $data->status->status;
         })
 
+        // ->editColumn('created_at', function($data) {
+        //     return $data->created_at->format('d/m/Y H:i:s');
+        // })
+
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y H:i:s');
+            return $data->created_at ? $data->created_at->format('M d, Y h:i A') : '-';
         })
 
 
@@ -1095,7 +1111,7 @@ class LeadController extends Controller
                 ->where('is_dispute', '0')
                 ->where('notif_status', 'open')
                 ->whereNotIn('status_id', [$processed_status])
-                ->count();    
+                ->count();
             $inquiryFleet = Inquiry::where('inquiry_type_id', $inquiry_type_fleet)
                 ->whereNull('deleted_at')
                 ->where('is_dispute', '0')
@@ -1114,8 +1130,8 @@ class LeadController extends Controller
                 ->where('notif_status', 'open')
                 ->whereNotIn('status_id', [$processed_status])
             ->count();
-          
-    
+
+
             }elseif(Auth::user()->usertype->name === 'Group Manager'){
                 $inquiryIndividual = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                     ->where('inquiry_type_id', $inquiry_type_individual)
@@ -1126,7 +1142,7 @@ class LeadController extends Controller
                     ->whereHas('user', function($subQuery) {
                         $subQuery->where('team_id', Auth::user()->team_id);
                     })
-                    ->count();    
+                    ->count();
                 $inquiryFleet = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                     ->where('inquiry_type_id', $inquiry_type_fleet)
                     ->whereNull('deleted_at')
@@ -1167,7 +1183,7 @@ class LeadController extends Controller
                     ->where('notif_status', 'open')
                     ->whereNotIn('status_id', [$processed_status])
                     ->where('created_by', Auth::user()->id)
-                    ->count();    
+                    ->count();
                 $inquiryFleet = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                     ->where('inquiry_type_id', $inquiry_type_fleet)
                     ->whereNull('deleted_at')
@@ -1217,7 +1233,7 @@ class LeadController extends Controller
         foreach ($inquiry as $item) {
             $item->notif_status = 'closed';
             $item->save();
-        }        
+        }
 
         return response()->json([
             'success' => true,

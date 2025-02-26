@@ -571,7 +571,7 @@
 
 @section('components.specific_page_scripts')
 <script>
-   
+
     function getTeams(){
         $.ajax({
             url: '{{ route('teams.list') }}',
@@ -722,80 +722,81 @@
                 search: "",
                 searchPlaceholder: "Search..."
             },
-        columns: [
-            @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'General Manager')
-            { data: 'team', name: 'team', title: 'Group' },
-            @endif
-            @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
-            { data: 'agent', name: 'agent', title: 'Agent' },
-            @endif
-            { data: 'client_name', name: 'client_name', title: 'Client Name' },
-            { data: 'contact_number', name: 'contact_number', title: 'Contact No.' },
-            { data: 'unit', name: 'unit', title: 'Unit' },
-            { data: 'variant', name: 'variant', title: 'Variant' },
-            { data: 'color', name: 'color', title: 'Color' },
-            { data: 'transaction', name: 'transaction', title: 'Transaction' },
-            { data: 'source', name: 'source', title: 'Source' },
-            { data: 'status', name: 'status', title: 'Status', render: function(data) { return data.charAt(0).toUpperCase() + data.slice(1); } },
-            @if(auth()->user()->can('update_remarks'))
-            {
-                data: 'id',
-                name: 'id',
-                title: 'Remarks',
-                render: function(data) {
-                    return `
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-icon me-2 btn-label-secondary border remarks-btn" data-bs-toggle="modal" data-bs-target="#viewRemarksModal" data-id="${data}">
-                                <span class="tf-icons bx bxs-message-rounded-detail bx-22px"></span>
-                            </button>
-                        </div>
-                            `;
-                }
-            },
-            @endif
-            { data: 'created_at', name: 'created_at', title: 'Date' },
-            @if(auth()->user()->can('edit_lead')||
-                auth()->user()->can('process_leads')  ||
-                auth()->user()->can('delete_leads')
-            )
-            {
-                data: 'id',
-                title: 'Action',
-                orderable: false,
-                searchable: false,
-                render: function(data) {
-                    return `
-                        <div class="d-flex">
-                             @if(auth()->user()->can('edit_lead'))
-                            <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editInquiryFormModal" data-id="${data}">
-                                <span class="tf-icons bx bxs-show bx-22px"></span>
-                            </button>
-                            @endif
-                            @if(auth()->user()->can('process_leads'))
-                            <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
-                                <span class="tf-icons bx bxs-check-circle bx-22px"></span>
-                            </button>
-                             @endif
-                             @if(auth()->user()->can('delete_leads'))
-                            <button type="button" class="btn btn-icon me-2 btn-danger delete-btn" data-id="${data}">
-                                <span class="tf-icons bx bxs-trash bx-22px"></span>
-                            </button>
-                            @endif
-                        </div>
-                    `;
-                }
-            },
-            @endif
-        ],
-        columnDefs: [
+            ordering: false,
+            columns: [
+                @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'General Manager')
+                { data: 'team', name: 'team', title: 'Group' },
+                @endif
+                @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Group Manager')
+                { data: 'agent', name: 'agent', title: 'Agent' },
+                @endif
+                { data: 'client_name', name: 'client_name', title: 'Client Name' },
+                { data: 'contact_number', name: 'contact_number', title: 'Contact No.' },
+                { data: 'unit', name: 'unit', title: 'Unit' },
+                { data: 'variant', name: 'variant', title: 'Variant' },
+                { data: 'color', name: 'color', title: 'Color' },
+                { data: 'transaction', name: 'transaction', title: 'Transaction' },
+                { data: 'source', name: 'source', title: 'Source' },
+                { data: 'status', name: 'status', title: 'Status', render: function(data) { return data.charAt(0).toUpperCase() + data.slice(1); } },
+                @if(auth()->user()->can('update_remarks'))
+                {
+                    data: 'id',
+                    name: 'id',
+                    title: 'Remarks',
+                    render: function(data) {
+                        return `
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-icon me-2 btn-label-secondary border remarks-btn" data-bs-toggle="modal" data-bs-target="#viewRemarksModal" data-id="${data}">
+                                    <span class="tf-icons bx bxs-message-rounded-detail bx-22px"></span>
+                                </button>
+                            </div>
+                                `;
+                    }
+                },
+                @endif
+                { data: 'created_at', name: 'created_at', title: 'Date' },
+                @if(auth()->user()->can('edit_lead')||
+                    auth()->user()->can('process_leads')  ||
+                    auth()->user()->can('delete_leads')
+                )
+                {
+                    data: 'id',
+                    title: 'Action',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data) {
+                        return `
+                            <div class="d-flex">
+                                @if(auth()->user()->can('edit_lead'))
+                                <button type="button" class="btn btn-icon me-2 btn-success edit-btn" data-bs-toggle="modal" data-bs-target="#editInquiryFormModal" data-id="${data}">
+                                    <span class="tf-icons bx bxs-show bx-22px"></span>
+                                </button>
+                                @endif
+                                @if(auth()->user()->can('process_leads'))
+                                <button type="button" class="btn btn-icon me-2 btn-primary processing-btn" data-id="${data}">
+                                    <span class="tf-icons bx bxs-check-circle bx-22px"></span>
+                                </button>
+                                @endif
+                                @if(auth()->user()->can('delete_leads'))
+                                <button type="button" class="btn btn-icon me-2 btn-danger delete-btn" data-id="${data}">
+                                    <span class="tf-icons bx bxs-trash bx-22px"></span>
+                                </button>
+                                @endif
+                            </div>
+                        `;
+                    }
+                },
+                @endif
+            ],
+            columnDefs: [
 
-            {
-                targets: '_all', // Apply to all columns
-                render: function (data, type, row) {
-                    return type === 'display' ? data.toUpperCase() : data;
+                {
+                    targets: '_all', // Apply to all columns
+                    render: function (data, type, row) {
+                        return type === 'display' ? data.toUpperCase() : data;
+                    }
                 }
-            }
-        ],
+            ],
     });
 
     // Change DataTable route based on button click
@@ -808,7 +809,7 @@
         .remove()                          // Remove all child elements (including badge)
         .end()                            // Go back to original element
         .text()                           // Get remaining text
-        .trim();          
+        .trim();
         console.log(buttonTitle); // For debugging
 
         // Update the notification status
@@ -827,9 +828,9 @@
             error: function(error) {
                 console.error('Error updating notification status:', error);
             }
-            
+
         });
-        
+
         // Clear the date range picker
         $('#date-range-picker').val(''); // Clear the date range input
 

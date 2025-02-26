@@ -561,6 +561,8 @@
             search: "",
             searchPlaceholder: "Search..."
         },
+
+        ordering: false,
         columns: [
             { data: 'id', name: 'id', title: 'ID' , visible: false},
             @if(auth()->user()->usertype->name === 'SuperAdmin' || auth()->user()->usertype->name === 'Financing Staff' || auth()->user()->usertype->name === 'Sales Admin Staff')
@@ -707,7 +709,7 @@
     $(document).ready(function() {
         updateApplicationBadge();
         setInterval(updateApplicationBadge, 1000);
-        
+
         @if(auth()->user()->can('list_pending_applications'))
         $('.btn-group #pending-tab').addClass('active');
         @elseif(auth()->user()->can('list_cash_applications'))
@@ -733,7 +735,7 @@
         .remove()                          // Remove all child elements (including badge)
         .end()                            // Go back to original element
         .text()                           // Get remaining text
-        .trim();          
+        .trim();
         console.log(buttonTitle); // For debugging
 
 
@@ -753,7 +755,7 @@
             error: function(error) {
                 console.error('Error updating notification status:', error);
             }
-            
+
         });
 
 
