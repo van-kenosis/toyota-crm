@@ -673,9 +673,9 @@
     });
 
     $(document).ready(function () {
-        updateLeadsBadge();
+        // updateLeadsBadge();
 
-        setInterval(updateLeadsBadge, 1000);
+        // setInterval(updateLeadsBadge, 1000);
         // Event listeners for filter dropdowns
         $('#filterGroup').on('change', function() {
             getAgent();
@@ -802,6 +802,8 @@
     // Change DataTable route based on button click
     $('.btn-group .btn').on('click', function (e) {
         e.preventDefault();
+        updateLeadsBadge();
+
 
         // Get the button text/title
         const buttonTitle = $(this).clone()    // Clone the button
@@ -1782,6 +1784,9 @@
             }
         });
     });
+
+    updateLeadsBadge();
+
 
 
 </script>

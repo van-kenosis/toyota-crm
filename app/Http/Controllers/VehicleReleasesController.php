@@ -957,38 +957,47 @@ class VehicleReleasesController extends Controller
     }
 
     public function updateNotifStatus(Request $request){
-        $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
-        $release_status = Status::where('status', 'like', 'Released')->first();
-        $posted_status = Status::where('status', 'like', 'Posted')->first();
+        if(!Auth::user()->usertype->name === 'SuperAdmin'){
+            $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
+            $release_status = Status::where('status', 'like', 'Released')->first();
+            $posted_status = Status::where('status', 'like', 'Posted')->first();
 
-        if($request->buttonTitle === 'For Release Units'){
-            $query = Transactions::with(['inquiry', 'inventory', 'application'])
-                        ->whereNull('deleted_at')
-                        ->where('notif_status', 'open')
-                        ->where('reservation_transaction_status', $pending_for_release_status->id)
-                        ->whereNotNull('reservation_id')
-                        ->orderBy('updated_at', 'desc');
+            if($request->buttonTitle === 'For Release Units'){
+                $query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->whereNull('deleted_at')
+                            ->where('notif_status', 'open')
+                            ->where('reservation_transaction_status', $pending_for_release_status->id)
+                            ->whereNotNull('reservation_id')
+                            ->orderBy('updated_at', 'desc');
 
-            $query->update([
-                'notif_status' => 'closed'
+                $query->update([
+                    'notif_status' => 'closed'
+                ]);
+            }elseif($request->buttonTitle === 'Released Units'){
+                $query = Transactions::with(['inquiry', 'inventory', 'application'])
+                            ->whereNull('deleted_at')
+                            ->where('notif_status', 'open')
+                            ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
+                            ->whereNotNull('reservation_id')
+                            ->orderBy('updated_at', 'desc');
+
+                $query->update([
+                    'notif_status' => 'closed'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification status updated successfully'
             ]);
-        }elseif($request->buttonTitle === 'Released Units'){
-            $query = Transactions::with(['inquiry', 'inventory', 'application'])
-                        ->whereNull('deleted_at')
-                        ->where('notif_status', 'open')
-                        ->whereIn('reservation_transaction_status', [$release_status->id, $posted_status->id])
-                        ->whereNotNull('reservation_id')
-                        ->orderBy('updated_at', 'desc');
 
-            $query->update([
-                'notif_status' => 'closed'
+        }else{
+            return response()->json([
+                'success' => true,
+                'message' => 'Not authorized for this action'
             ]);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification status updated successfully'
-        ]);
+        
     }
 
 

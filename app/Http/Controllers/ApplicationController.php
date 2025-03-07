@@ -1300,68 +1300,74 @@ class ApplicationController extends Controller
 
     public function updateApplicationNotifStatus(Request $request){
 
-        $status = Status::where('status', 'like', 'approved')->first();
-        $pending_status = Status::where('status', 'like', 'pending')->first();
-        $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
-        $cancel_statuses = Status::whereIn('status', ['Cancel'])->pluck('id')->toArray();
+        if(!Auth::user()->usertype->name === 'SuperAdmin'){
+            $status = Status::where('status', 'like', 'approved')->first();
+            $pending_status = Status::where('status', 'like', 'pending')->first();
+            $statusIds = Status::whereIn('status', ['Denied', 'Cancel', 'Processed', 'Approved', 'Reserved'])->pluck('id')->toArray();
+            $cancel_statuses = Status::whereIn('status', ['Cancel'])->pluck('id')->toArray();
+    
+            if($request->tab_title === 'Cash/PO Applications'){
+                $poOrCash_application = Application::whereNull('deleted_at')
+                ->where('notif_status', 'open')
+                ->whereIn('transaction', ['cash', 'po'])
+                ->whereNotIn('status_id', $statusIds)
+                ->orderBy('updated_at', 'desc');
+    
+                $poOrCash_application->update([
+                    'notif_status' => 'closed'
+                ]);
+    
+            }
+            elseif($request->tab_title === 'Pending Applications'){
+    
+                $pending_application = Application::whereNull('deleted_at')
+                ->where('notif_status', 'open')
+                ->whereNotIn('transaction', ['cash', 'po'])
+                ->where('status_id', $pending_status->id)
+                ->orderBy('updated_at', 'desc');
+    
+                $pending_application->update([
+                    'notif_status' => 'closed'
+                ]);
+    
+            }elseif($request->tab_title === 'Approved Applications'){
+    
+                $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
+                        ->whereNull('deleted_at')
+                        ->where('notif_status', 'open')
+                        ->where('status_id', $status->id)
+                        ->orderBy('updated_at', 'desc');
+    
+                $approved_application->update([
+                    'notif_status' => 'closed'
+                ]);
+    
+            }elseif($request->tab_title === 'Denied/Canceled Applications'){
+    
+                $cancel_application = Application::whereNull('deleted_at')
+                ->where('notif_status', 'open')
+                ->whereIn('status_id', $cancel_statuses)
+                ->orderBy('updated_at', 'desc');
+    
+                $cancel_application->update([
+                    'notif_status' => 'closed'
+                ]);
+    
+            }
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification status updated successfully'
+            ]);
 
-        if($request->tab_title === 'Cash/PO Applications'){
-            $poOrCash_application = Application::whereNull('deleted_at')
-            ->where('notif_status', 'open')
-            ->whereIn('transaction', ['cash', 'po'])
-            ->whereNotIn('status_id', $statusIds)
-            ->where('created_by', Auth::user()->id)
-            ->orderBy('updated_at', 'desc');
-
-            $poOrCash_application->update([
-                'notif_status' => 'closed'
+        }else{
+            return response()->json([
+                'success' => true,
+                'message' => 'Not authorized for this action'
             ]);
 
         }
-        elseif($request->tab_title === 'Pending Applications'){
-
-            $pending_application = Application::whereNull('deleted_at')
-            ->where('notif_status', 'open')
-            ->whereNotIn('transaction', ['cash', 'po'])
-            ->where('status_id', $pending_status->id)
-            ->where('created_by', Auth::user()->id)
-            ->orderBy('updated_at', 'desc');
-
-            $pending_application->update([
-                'notif_status' => 'closed'
-            ]);
-
-        }elseif($request->tab_title === 'Approved Applications'){
-
-            $approved_application = Application::with(['user', 'customer', 'vehicle','status', 'bank', 'transactions'])
-                    ->whereNull('deleted_at')
-                    ->where('notif_status', 'open')
-                    ->where('status_id', $status->id)
-                    ->where('created_by', Auth::user()->id)
-                    ->orderBy('updated_at', 'desc');
-
-            $approved_application->update([
-                'notif_status' => 'closed'
-            ]);
-
-        }elseif($request->tab_title === 'Denied/Canceled Applications'){
-
-            $cancel_application = Application::whereNull('deleted_at')
-            ->where('notif_status', 'open')
-            ->whereIn('status_id', $cancel_statuses)
-            ->where('created_by', Auth::user()->id)
-            ->orderBy('updated_at', 'desc');
-
-            $cancel_application->update([
-                'notif_status' => 'closed'
-            ]);
-
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification status updated successfully'
-        ]);
+       
     }
 
 

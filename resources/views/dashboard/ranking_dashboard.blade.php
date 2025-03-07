@@ -390,7 +390,6 @@
             });
         }
 
-
         function renderAgentDataChart(labels, data){
              // Render the bar chart with the fetched data
             var options = {
@@ -494,14 +493,15 @@
                     name: 'Released Units',
                     data: data,
                 }]);
-            } else {
-                // Create a new chart instance
+                AgentData.destroy();
+            }
+            // } else {
+            //     // Create a new chart instance
                 AgentData = new ApexCharts(document.querySelector("#rankingBarChart"), options);
                 AgentData.render();
-            }
+            // }
 
         }
         fetchAgentData();
-
 </script>
 @endsection

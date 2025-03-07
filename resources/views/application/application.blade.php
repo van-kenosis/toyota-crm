@@ -707,8 +707,6 @@
 
     // Automatically trigger the tab based on user access and remove active from the default active tab
     $(document).ready(function() {
-        updateApplicationBadge();
-        setInterval(updateApplicationBadge, 1000);
 
         @if(auth()->user()->can('list_pending_applications'))
         $('.btn-group #pending-tab').addClass('active');
@@ -729,6 +727,7 @@
     // Change DataTable route based on button click
     $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
+        updateApplicationBadge();
 
         const buttonTitle = $(this).clone()    // Clone the button
         .children()                        // Get all child elements

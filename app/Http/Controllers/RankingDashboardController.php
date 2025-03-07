@@ -145,12 +145,22 @@ class RankingDashboardController extends Controller
 
         $released_status = Status::where('status', 'like', 'Released')->first();
         $posted_status = Status::where('status', 'like', 'Posted')->first();
-        $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first();
 
         $query = Transactions::with(['inquiry', 'inventory', 'application'])
             ->whereNull('transactions.deleted_at')
             ->whereNotNull('transactions.reservation_id')
             ->whereIn('transactions.reservation_transaction_status', [$released_status->id, $posted_status->id]);
+
+        if ($request->has('date_range') && !empty($request->date_range)) {
+            [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+    
+        }else {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+        }
+        $query->whereBetween('transactions.updated_at', [$startDate, $endDate]);
 
         if ($request->has('group') && !empty($request->group)) {
             $query->where('team_id', $request->group);
@@ -162,28 +172,44 @@ class RankingDashboardController extends Controller
             });
         }
 
+        // dd($query->get());
+
+        $topAgents = $query->join('application', 'transactions.application_id', '=', 'application.id')
+        ->select('application.created_by', DB::raw('count(*) as total'));
+
         if ($request->has('date_range') && !empty($request->date_range)) {
             [$startDate, $endDate] = explode(' to ', $request->date_range);
             $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
- 
+    
         }else {
             $startDate = Carbon::now()->startOfMonth();
             $endDate = Carbon::now()->endOfMonth();
         }
-        $query->whereBetween('transactions.updated_at', [$startDate, $endDate]);
+        $topAgents->whereBetween('transactions.updated_at', [$startDate, $endDate]);
+        
 
-        $topAgents = $query->join('application', 'transactions.application_id', '=', 'application.id')
-        ->select('application.created_by', DB::raw('count(*) as total'))
+        if ($request->has('group') && !empty($request->group)) {
+            $topAgents->where('transactions.team_id', $request->group);
+        }
+
+        if ($request->has('agent') && !empty($request->agent)) {
+            $topAgents->where('application.created_by', $request->agent);
+
+        }
+        $topAgents = $topAgents
         ->groupBy('application.created_by')
         ->orderBy('total', 'desc')
         ->get();
 
         if ($topAgents->isNotEmpty()) {
             $agents = $topAgents->map(function ($topAgent) {
+                // dd($topAgent->created_by);
                 $agent = User::find($topAgent->created_by);
                 return ['agent' => $agent, 'total' => $topAgent->total];
             });
+
+            // dd($agents);
 
             return response()->json(['agents' => $agents]);
         }

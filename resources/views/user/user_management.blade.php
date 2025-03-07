@@ -202,7 +202,8 @@
 {{-- Add User Button --}}
 <div class="row mb-2">
     <div class="col-md d-flex justify-content-end">
-        <button class="btn btn-primary" id="addUserBtn">Add New User</button>
+        <button class="btn btn-primary me-2" id="addUserBtn">Add New User</button>
+        <button class="btn btn-danger" id="changeUsersPassword">Change Agents Password</button>
     </div>
 </div>
 
@@ -500,6 +501,60 @@
         // Real-time Uppercase Transformation
         $("input[type='text'], textarea").on("input", function () {
             $(this).val($(this).val().toUpperCase());
+        });
+
+        $('#changeUsersPassword').click(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will change the password of all agents to a temporary password. Do you want to proceed?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change all agents password'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                    url: '{{ route("user.managemen.changePasswordAll") }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function() {
+                    Swal.fire({
+                        title: 'Loading...',
+                        html: '<div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                    },
+                    success: function(response) {
+                        Swal.close(); // Hide loader
+
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Temporary password has been sent to all agents',
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.close(); // Hide loader
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON?.message || 'An error occurred',
+                        });
+                    }
+                });
+                }
+            });
+
+
         });
 
     });

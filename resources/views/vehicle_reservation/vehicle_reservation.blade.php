@@ -267,10 +267,6 @@
 
 <script>
 
-    updateVehicleReservationBadge();
-
-    setInterval(updateVehicleReservationBadge, 1000);
-
     // button group
     $(document).ready(function() {
         $('.btn-group .btn.active').click();
@@ -543,7 +539,7 @@
      // button group active tabs
      $('.btn-group .btn').on('click', function(e) {
         e.preventDefault();
-
+        updateVehicleReservationBadge();
         $('#date-range-picker').val('');
 
         const buttonTitle = $(this).clone()    // Clone the button

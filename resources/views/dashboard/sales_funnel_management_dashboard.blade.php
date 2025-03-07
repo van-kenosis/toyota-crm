@@ -712,12 +712,12 @@
                 name: "Desktops",
                 data: quantities
             }]);
-        } else {
+            unitCount.destroy();
+
+        } 
             // Create a new chart instance
             unitCount = new ApexCharts(document.querySelector("#unitInquiredLineGraph"), options);
             unitCount.render();
-        }
-
     }
 
     fetchVehicleQuantity();

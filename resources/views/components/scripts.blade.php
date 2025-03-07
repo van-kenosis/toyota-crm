@@ -96,8 +96,6 @@
         }
 
         updateLeadsBadge();
-        setInterval(updateLeadsBadge, 1000);
-
 
         function updateApplicationBadge(){
             $.ajax({
@@ -155,7 +153,6 @@
         }
 
         updateApplicationBadge();
-        setInterval(updateApplicationBadge, 1000);
 
        function updateVehicleReservationBadge(){
         $.ajax({
@@ -193,7 +190,6 @@
        }
 
        updateVehicleReservationBadge();
-       setInterval(updateVehicleReservationBadge, 1000);
 
        function updateVehicleReleaseBadge(){
         $.ajax({
@@ -232,8 +228,7 @@
         });
        }
 
-       updateVehicleReleaseBadge();
-       setInterval(updateVehicleReleaseBadge, 1000);
+         updateVehicleReleaseBadge();
 
        function updateDisputeBadge(){
         $.ajax({
@@ -258,8 +253,6 @@
        }
 
        updateDisputeBadge();
-       setInterval(updateDisputeBadge, 1000);
-
 
        function updateDisputeStatus(){
         $.ajax({

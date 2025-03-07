@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TemporaryPasswordMail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 class UserManagementController extends Controller
 {
@@ -172,6 +173,27 @@ class UserManagementController extends Controller
             return response()->json(['success' => 'Temporary password sent successfully', 'password' => $password], 200);
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changePasswordAll(){
+        try {
+            $defaultPassword = env('DEFAULT_PASSWORD'); // Fetch from .env, fallback to VSMS2025
+
+            if (!$defaultPassword) {
+                return response()->json(['error' => 'Default password not set'], 500);
+            }
+            $usertype = Usertype::where('name', 'Agent')->first()->id;
+            $users = User::where('usertype_id', $usertype)->get();
+            foreach ($users as $user) {
+                $user->password = Hash::make($defaultPassword);
+                $user->save();
+            }
+
+            return response()->json(['success' => 'Temporary password updated successfully'], 200);
+        } catch (\Exception $e) {
+            Log::error('Password Reset Error: ' . $e->getMessage()); // Log the error securely
+            return response()->json(['error' => 'Something went wrong. Please try again.'], 500);
         }
     }
 

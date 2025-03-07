@@ -127,6 +127,7 @@
                         <option value="FI">FI</option>
                         <option value="CI">CI</option>
                         <option value="POI">POI</option>
+                        <option value="Others">Others</option>
                     </select>
                     <div id="insuranceError" style="color: red; display: none;"></div>
                 </div>
@@ -397,13 +398,6 @@
 @section('components.specific_page_scripts')
 
 <script>
-     $(document).ready(function() {
-        updateVehicleReleaseBadge();
-        setInterval(updateVehicleReleaseBadge, 1000);
-        $('.btn-group .btn.active').click();
-    });
-
-
     //Date filter
     flatpickr("#date-range-picker", {
         mode: "range",
@@ -500,6 +494,8 @@
     // datatables button tabs
     $(document).ready(function() {
         $('.btn-group .btn').on('click', function() {
+            updateVehicleReleaseBadge();
+
             // Remove 'active' class from all buttons in the group
             $('.btn-group .btn').removeClass('active');
             // Add 'active' class to the clicked button
@@ -792,7 +788,7 @@
         .remove()                          // Remove all child elements (including badge)
         .end()                            // Go back to original element
         .text()                           // Get remaining text
-        .trim();          
+        .trim();
         console.log(buttonTitle); // For debugging
 
         // Update Notification Status

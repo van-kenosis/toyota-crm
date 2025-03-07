@@ -102,7 +102,7 @@ Route::post('/application/banks/approval/{id}', [ApplicationController::class, '
 Route::post('/application/terms', [ApplicationController::class, 'updateTerms'])->name('application.terms')->middleware('permission:update_terms');
 Route::post('/application/banks/update', [ApplicationController::class, 'updateApplicationBank'])->name('application.banks.update');
 Route::get('/application/count', [ApplicationController::class, 'countApplication'])->name('application.count');
-Route::post('/application/notif/status', [ApplicationController::class, 'updateApplicationNotifStatus'])->name('application.notif.status');
+Route::post('/application/notif/status', [ApplicationController::class, 'updateApplicationNotifStatus'])->name('application.notif.status')->middleware('permission:application_update_notification');
 
 
 
@@ -121,7 +121,7 @@ Route::post('vehicle/reservation/cancel/pending', [VehicleReservationController:
 Route::get('vehicle-reservation/edit/{id}', [VehicleReservationController::class, 'editUnit'])->name('vehicle.reservation.edit')->middleware('permission:edit_unit');
 Route::post('vehicle-reservation/update/{id}', [VehicleReservationController::class, 'update'])->name('vehicle.reservation.update')->middleware('permission:edit_unit');
 Route::get('vehicle-reservation/getVehicleReservationCount', [VehicleReservationController::class, 'getVehicleReservationCount'])->name('vehicle.reservation.getVehicleReservationCount')->middleware('permission:view_vehicle_reservation');
-Route::post('vehicle-reservation/updateNotifStatus', [VehicleReservationController::class, 'updateNotifStatus'])->name('vehicle.reservation.updateNotifStatus');
+Route::post('vehicle-reservation/updateNotifStatus', [VehicleReservationController::class, 'updateNotifStatus'])->name('vehicle.reservation.updateNotifStatus')->middleware('permission:reservation_update_notification');
 
 
 // VEHICLE RELEASES
@@ -141,7 +141,7 @@ Route::get('vehicle-releases/GrandTotalProfit', [VehicleReleasesController::clas
 Route::post('vehicle-releases/updateReleasedRemarks', [VehicleReleasesController::class, 'updateReleasedRemarks'])->name('vehicle.releases.updateReleasedRemarks')->middleware('permission:update_released_remarks');
 Route::post('vehicle-releases/addInsurance', [VehicleReleasesController::class, 'addInsurance'])->name('vehicle.releases.addInsurance')->middleware('permission:add_insurance');
 Route::get('vehicle-releases/getVehicleReleaseCount', [VehicleReleasesController::class, 'getVehicleReleaseCount'])->name('vehicle.releases.getVehicleReleaseCount')->middleware('permission:view_vehicle_releases');
-Route::post('vehicle-releases/updateNotifStatus', [VehicleReleasesController::class, 'updateNotifStatus'])->name('vehicle.releases.updateNotifStatus');
+Route::post('vehicle-releases/updateNotifStatus', [VehicleReleasesController::class, 'updateNotifStatus'])->name('vehicle.releases.updateNotifStatus')->middleware('permission:release_update_notification');
 
 // VEHICLE INVENTORY
 Route::get('vehicle-inventory', [VehicleInventoryController::class, 'index'])->name('vehicle.inventory')->middleware('permission:view_vehicle_inventory');
@@ -189,6 +189,7 @@ Route::post('user-management/update', [UserManagementController::class, 'update'
 Route::delete('user-management/{id}/destroy', [UserManagementController::class, 'destroy'])->name('user.management.destroy')->middleware('permission:delete_user');
 Route::get('user-management/{id}/edit', [UserManagementController::class, 'edit'])->name('user.management.edit')->middleware('permission:edit_user');
 Route::get('user-management/{id}/send-temporary-password', [UserManagementController::class, 'sendTemporaryPassword'])->name('user.management.sendTemporaryPassword')->middleware('permission:manage_passwords');
+Route::post('user-management/change-all-password', [UserManagementController::class, 'changePasswordAll'])->name('user.managemen.changePasswordAll')->middleware('permission:manage_passwords');
 
 // USER MANAGEMENT
 Route::middleware(['auth'])->group(function () {
