@@ -203,7 +203,7 @@
 <div class="row mb-2">
     <div class="col-md d-flex justify-content-end">
         <button class="btn btn-primary me-2" id="addUserBtn">Add New User</button>
-        <button class="btn btn-danger" id="changeUsersPassword">Change Agents Password</button>
+        <button class="btn btn-danger d-none" id="changeUsersPassword">Change Agents Password</button>
     </div>
 </div>
 
