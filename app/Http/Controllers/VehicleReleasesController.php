@@ -244,7 +244,6 @@ class VehicleReleasesController extends Controller
         ->make(true);
     }
 
-
     public function getReleasedCount(Request $request){
         $released_status = Status::where('status', 'like', 'Released')->first();
         $posted_status = Status::where('status', 'like', 'Posted')->first();
@@ -330,7 +329,6 @@ class VehicleReleasesController extends Controller
 
         return response()->json(['releasedCount' => $releasedCount, 'pendingForReleaseCount' => $pendingForReleaseCount]);
     }
-
 
     public function list_pending_for_release(Request $request){
 
@@ -639,7 +637,7 @@ class VehicleReleasesController extends Controller
 
     public function processing(Request $request){
         try {
-        
+
 
             $posted_status = Status::where('status', 'like', 'Posted')->first()->id;
             $pending_for_release_status = Status::where('status', 'like', 'Pending For Release')->first()->id;
@@ -787,21 +785,18 @@ class VehicleReleasesController extends Controller
 
     public function updateStatus(Request $request) {
         try {
-            // $request->validate([
-            //     'id' => 'required|exists:transactions,id',
-            //     'status' => 'required|exists:status,id' // Assuming you have a statuses table
-            // ]);
-
             $status = Status::where('status', 'like', 'Released')->first()->id;
 
             $transaction = Transactions::findOrFail(decrypt($request->id));
             $transaction->status = $request->status;
-            $transaction->reservation_transaction_status = $request->status; // Update the status
-            $transaction->released_date = now();
+            $transaction->reservation_transaction_status = $request->status;
+
+            // Use the selected date instead of `now()`
+            $transaction->released_date = $request->released_date ? Carbon::parse($request->released_date) : null;
             $transaction->updated_at = now();
             $transaction->save();
 
-            if($request->status == $status ){
+            if ($request->status == $status) {
                 $inventory = Inventory::findOrFail($transaction->inventory_id);
                 $inventory->CS_number_status = 'Released';
                 $inventory->status = 'Released';
@@ -819,6 +814,7 @@ class VehicleReleasesController extends Controller
             ], 500);
         }
     }
+
 
     public function GrandTotalProfit(Request $request){
         $released_status = Status::where('status', 'like', 'Released')->first();
@@ -948,7 +944,7 @@ class VehicleReleasesController extends Controller
 
         $pending_count = $pending_query->count();
         $released_count = $released_query->count();
-        
+
         return response()->json([
             'success' => true,
             'pending_count' => $pending_count,
@@ -997,7 +993,7 @@ class VehicleReleasesController extends Controller
                 'message' => 'Not authorized for this action'
             ]);
         }
-        
+
     }
 
 

@@ -82,18 +82,24 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Released Status</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md">
                     <input type="hidden" name="id", id="statusTransactionID">
                     <label for="status">Status</label>
                     <select class="form-control" id="status" name="status">
                     </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md d-flex flex-column">
+                    <label for="select-date-released">Select Date Released</label>
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="selectDateReleasedStatus" />
                 </div>
             </div>
           </div>
@@ -728,15 +734,47 @@
         });
 
 
+        // $('#saveStatusButton').on('click', function() {
+        //     const selectedValue = $('#status').val();
+        //     if (selectedValue) {
+        //         $.ajax({
+        //             url: '{{ route("vehicle.releases.updateStatus") }}', // Define this route in your controller
+        //             type: 'POST',
+        //             data: {
+        //                 id: $('#statusTransactionID').val(),
+        //                 status: selectedValue,
+        //                 _token: '{{ csrf_token() }}' // Include CSRF token
+        //             },
+        //             success: function(response) {
+        //                 if (response.success) {
+        //                     $('#releaseStatus').modal('hide');
+        //                     Swal.fire('Updated!', response.message, 'success');
+        //                     vehicleReleasesTable.ajax.reload();
+        //                     statusTable.ajax.reload();
+        //                     releasedUnitsTable.ajax.reload();
+        //                     releasedCount();
+        //                     // Optionally reload the DataTable or update the UI
+        //                 }
+        //             },
+        //             error: function(xhr) {
+        //                 Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong!', 'error');
+        //             }
+        //         });
+        //     }
+        // });
+
         $('#saveStatusButton').on('click', function() {
             const selectedValue = $('#status').val();
-            if (selectedValue) {
+            const selectedDate = $('#selectDateReleasedStatus').val(); // Get Flatpickr-selected date
+
+            if (selectedValue && selectedDate) {
                 $.ajax({
                     url: '{{ route("vehicle.releases.updateStatus") }}', // Define this route in your controller
                     type: 'POST',
                     data: {
                         id: $('#statusTransactionID').val(),
                         status: selectedValue,
+                        released_date: selectedDate, // Pass the selected date
                         _token: '{{ csrf_token() }}' // Include CSRF token
                     },
                     success: function(response) {
@@ -747,15 +785,17 @@
                             statusTable.ajax.reload();
                             releasedUnitsTable.ajax.reload();
                             releasedCount();
-                            // Optionally reload the DataTable or update the UI
                         }
                     },
                     error: function(xhr) {
                         Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong!', 'error');
                     }
                 });
+            } else {
+                Swal.fire('Warning!', 'Please select both status and release date!', 'warning');
             }
         });
+
 
         $(document).on('click', '.status-btn', function() {
             const id = $(this).data('id');
@@ -1201,7 +1241,12 @@
         });
     });
 
+    var flatpickrDate = document.querySelector("#selectDateReleasedStatus");
 
+    flatpickrDate.flatpickr({
+        monthSelectorType: "static",
+        static: true
+    });
 
 </script>
 
