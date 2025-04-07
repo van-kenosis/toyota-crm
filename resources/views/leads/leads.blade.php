@@ -1299,7 +1299,6 @@
 
     });
 
-
     // Mobile Number Validation
     $(document).ready(function () {
         $("#mobile_number, #edit_mobile_number").on("input", function () {

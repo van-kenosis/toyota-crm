@@ -41,7 +41,8 @@ class UserManagementController extends Controller
                 return $user->team->name ?? '';
             })
             ->addColumn('updated_at', function($user){
-                return $user->updated_at;
+                // return $user->updated_at;
+                return $user->updated_at->format('M d, Y h:i A');
             })
             ->make(true);
 

@@ -69,7 +69,7 @@ class TeamController extends Controller
             return $data->updated_by ? $data->updatedBy->first_name . ' ' . $data->updatedBy->last_name : '';
         })
         ->addColumn('updated_at', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at->format('M d, Y h:i A');
         })
         ->addColumn('action', function($data) {
             return '';

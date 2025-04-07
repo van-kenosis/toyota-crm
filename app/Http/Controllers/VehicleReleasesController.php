@@ -449,6 +449,7 @@ class VehicleReleasesController extends Controller
 
         ->addColumn('date_released', function($data) {
             return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('d/m/Y') : '';
+            // return $data->released_date ? $data->released_date->format('M d, Y h:i A') : '-';
         })
 
         ->addColumn('status', function($data) {
@@ -604,8 +605,8 @@ class VehicleReleasesController extends Controller
         })
 
         ->addColumn('date_released', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
-
+            // return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->addColumn('status', function($data) {

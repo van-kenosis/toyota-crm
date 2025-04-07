@@ -98,11 +98,12 @@ class DisputeController extends Controller
         })
 
         ->editColumn('created_at', function($data) {
-            return $data->created_at->format('d/m/Y H:i:s');
+            return $data->created_at->format('M d, Y h:i A');
+            // return $data->created_at ? $data->created_at->format('M d, Y h:i A') : '-';
         })
 
         ->editColumn('updated_at', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at->format('M d, Y h:i A');
         })
 
         ->editColumn('created_by', function($data){

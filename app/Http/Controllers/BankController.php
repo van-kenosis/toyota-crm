@@ -115,10 +115,10 @@ class BankController extends Controller
                 return $row->updatedBy->first_name . ' ' . $row->updatedBy->last_name;
             })
             ->editColumn('created_at', function($row){
-                return $row->updated_at->format('d/m/Y H:i:s');
+                return $row->updated_at->format('M d, Y h:i A');
             })
             ->editColumn('updated_at', function($row){
-                return $row->updated_at->format('d/m/Y H:i:s');
+                return $row->updated_at->format('M d, Y h:i A');
             })
             ->make(true);
 

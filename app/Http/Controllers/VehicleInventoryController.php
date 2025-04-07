@@ -34,7 +34,8 @@ class VehicleInventoryController extends Controller
                         ->whereIn('incoming_status', ['Invoice', 'Pull Out', 'In Transit'])
                          ->whereNull('deleted_at')
                          ->where('status', '<>', 'Released')
-                         ->orderBy('updated_at', 'desc');
+                        //  ->orderBy('updated_at', 'desc');
+                        ->orderBy('actual_invoice_date', 'desc');
 
 
          if ($request->has('date_range') && !empty($request->date_range)) {
@@ -78,15 +79,15 @@ class VehicleInventoryController extends Controller
              return '';
          })
          ->editColumn('actual_invoice_date', function($data) {
-            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('d/m/Y') : '';
+            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('M d, Y h:i A') : '';
          })
          ->editColumn('delivery_date', function($data) {
-            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('d/m/Y') : '';
+            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('M d, Y h:i A') : '';
 
          })
 
          ->addColumn('updated_at', function($user){
-            return $user->updated_at->format('d/m/Y H:i:s');
+            return $user->updated_at->format('M d, Y h:i A');
         })
 
 
@@ -120,7 +121,7 @@ class VehicleInventoryController extends Controller
                         ->whereIn('incoming_status', ['On Stock', 'For Swapping', 'Reserved', 'Freeze', 'Ear Mark'])
                          ->whereNull('deleted_at')
                          ->where('status', '<>', 'Released')
-                         ->orderBy('updated_at', 'desc');
+                         ->orderBy('actual_invoice_date', 'desc');
 
 
          if ($request->has('date_range') && !empty($request->date_range)) {
@@ -163,7 +164,7 @@ class VehicleInventoryController extends Controller
          })
 
          ->addColumn('updated_at', function($user){
-            return $user->updated_at->format('d/m/Y H:i:s');
+            return $user->updated_at->format('M d, Y h:i A');
         })
 
          ->addColumn('tags', function($data) {
@@ -184,14 +185,12 @@ class VehicleInventoryController extends Controller
         })
 
         ->editColumn('actual_invoice_date', function($data) {
-            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('d/m/Y') : '';
+            return $data->actual_invoice_date ? \Carbon\Carbon::parse($data->actual_invoice_date)->format('M d, Y h:i A') : '';
          })
          ->editColumn('delivery_date', function($data) {
-            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('d/m/Y') : '';
+            return $data->delivery_date ? \Carbon\Carbon::parse($data->delivery_date)->format('M d, Y h:i A') : '';
 
          })
-
-
 
          ->make(true);
 

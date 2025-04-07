@@ -417,6 +417,8 @@
         pageLength: 10,
         paging: true,
         responsive: false,
+        "ordering": true, // Ensures ordering is enabled
+        "order": [[11, "desc"]], // Orders the first column in descending order
         dom: '<"top"lf>rt<"bottom"ip>',
         language: {
             search: "",

@@ -130,7 +130,8 @@
                 search: "",
                 searchPlaceholder: "Search..."
             },
-
+            "ordering": true, // Ensures ordering is enabled
+            "order": [[1, "asc"]], //Orders the first column in descending order
             columns: [
                 { data: 'id', name: 'id', title: 'ID', visible: false },
                 { data: 'name', name: 'name', title: 'Group Name' },

@@ -200,7 +200,8 @@ class VehicleReservationController extends Controller
         })
 
         ->addColumn('date_assigned', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            // return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
 
         })
 
@@ -306,7 +307,8 @@ class VehicleReservationController extends Controller
         })
 
         ->addColumn('date_assigned', function($data) {
-            return $data->updated_at->format('d/m/Y H:i:s');
+            // return $data->updated_at->format('d/m/Y H:i:s');
+            return $data->updated_at ? $data->updated_at->format('M d, Y h:i A') : '-';
         })
 
         ->addColumn('vehicle_id', function($data) {

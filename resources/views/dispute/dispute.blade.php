@@ -133,7 +133,8 @@
             }
             @endif
         ],
-        order: [[2, 'desc']],
+        "ordering": true, // Ensures ordering is enabled
+        "order": [[4, "desc"]], // Orders the first column in descending order
     });
 
     $(document).on('click', '.dislike-btn', function() {
