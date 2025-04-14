@@ -32,23 +32,6 @@
 {{-- Navlink Include --}}
 @include('dashboard.dashboard_navlink')
 
-{{-- Profile Name Card --}}
-{{-- <div class="row mb-3">
-    <div class="col-md">
-        <div class="card">
-          <div class="row d-flex align-items-start">
-            <div class="col-md">
-              <div class="card-body">
-                <h1 class="card-title mb-3" style="color: #ff0055;">Welcome to VSMS John! 🎉</h1>
-                <p class="mb-6">Wow! Checkout your dashboard<br />You are doing great!</p>
-                <a href="/profile" class="btn btn-sm btn-label-dark">Jump to Profile</a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-</div> --}}
-
 {{-- Start Date - End Date Filter Group --}}
 <div class="row mb-4">
     <div class="col-md d-flex justify-content-end gap-4">
@@ -70,7 +53,7 @@
             </select>
         </div>
         @endif
-       
+
     </div>
 </div>
 
@@ -79,7 +62,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="fw-bold mb-0">Total Released Units</h5>
+                <h5 class="mb-0" style="color: #ff0055;">Units Released <small>(As of This Month)</small></h5>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex flex-column align-items-center gap-1">
                         <h1 class="fw-bold" id="totalRelease" style="color: #ff0055;"></h1>
@@ -135,7 +118,7 @@
     <div class="col-md-8">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="" style="color: #ff0055;">Top MP/Agent Rankings</h5>
+                <h5 class="" style="color: #ff0055;">Monthly Released Units</h5>
                 <div id="totalReleasesBarChart"></div>
             </div>
         </div>
@@ -209,7 +192,7 @@
     function hideLoader() {
         Swal.close();
     }
-    
+
     const userTeamId = {{ Auth::user()->team_id ?? 'null' }};
     // Load the Groups
     function loadTeams(selectedTeamId = null) {
@@ -393,7 +376,7 @@
         });
     });
 
-    
+
     function releasedCount() {
         $.ajax({
             url: '{{ route("api.released-data") }}', // Adjust the route as necessary
@@ -656,15 +639,15 @@
             },
         };
 
-        
+
         if (transactionTypePieChart) {
             transactionTypePieChart.updateSeries(data);
         } else {
             transactionTypePieChart = new ApexCharts(document.querySelector("#transactionTypePieGraph"), options);
             transactionTypePieChart.render();
         }
-       
-       
+
+
     }
 
     // Fetch the release count per transaction type
@@ -751,7 +734,7 @@
             bankPieChart = new ApexCharts(document.querySelector("#bankPieGraph"), options);
             bankPieChart.render();
         }
-       
+
     }
 
     // Call the function to fetch and render the pie chart
