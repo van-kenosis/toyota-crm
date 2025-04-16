@@ -269,7 +269,16 @@
                 { data: 'usertype', name: 'usertype', title: 'User Type' },
                 { data: 'team', name: 'team', title: 'Group' },
                 { data: 'status', name: 'status', title: 'Status' },
-                { data: 'updated_at', name: 'updated_at', title: 'Updated_at' },
+                // { data: 'updated_at', name: 'updated_at', title: 'Updated_at' },
+                {
+                    data: 'updated_at',
+                    name: 'updated_at',
+                    title: 'Updated_at',
+                    render: {
+                        _: 'display',   // shows formatted date
+                        sort: 'timestamp' // sorts by raw timestamp
+                    }
+                },
 
                 {
                     data: 'id',
