@@ -157,7 +157,7 @@
               <div class="text-truncate" data-i18n="Page 2">Inventory Backlogs</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('releases_backlogs') ? 'active' : '' }}">
+        <li class="menu-item d-none {{ request()->is('releases_backlogs') ? 'active' : '' }}">
             <a href="/releases_backlogs" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-group'></i>
               <div class="text-truncate" data-i18n="Page 2">Releases Backlogs</div>
