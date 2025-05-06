@@ -17,7 +17,8 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\DisputeController;
-
+use App\Http\Controllers\InventoryBacklogsController;
+use App\Http\Controllers\ReleasesBacklogsController;
 
 //LOGIN
 Route::get('/', [LoginController::class, 'index']);
@@ -213,3 +214,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dispute/updateDisputeStatus', [DisputeController::class, 'updateDisputeStatus'])->name('dispute.updateDisputeStatus');
 
 
+//UPLOAD BACKLOGS
+    //INVENTORY BACKLOGS
+        Route::get('/inventory_backlogs', [InventoryBacklogsController::class, 'index'])->name('inventorybacklogs.index');
+        Route::post('/inventory_backlogs/upload', [InventoryBacklogsController::class, 'uploadBacklogs'])->name('inventory.backlogs.upload');
+        Route::get('/inventory_backlogs/list', [InventoryBacklogsController::class, 'inventoryBacklogsList'])->name('inventory.backlogs.list');
+        Route::post('/inventory_backlogs/transfer', [InventoryBacklogsController::class, 'transferToInventory'])->name('inventory.backlogs.transfer');
+        Route::post('/inventory_backlogs/delete', [InventoryBacklogsController::class, 'deleteInventoryBacklog'])->name('inventory.backlogs.delete');
+
+
+    //RELEASES BACKLOGS
+        Route::get('/releases_backlogs', [ReleasesBacklogsController::class, 'index'])->name('releasesbacklogs.index');
+        Route::get('/releases_backlogs/list', [ReleasesBacklogsController::class, 'list_release_backlogs'])->name('releases.backlogs.list');

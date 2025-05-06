@@ -38,10 +38,10 @@ class SFMDashboardController extends Controller
             $query->where('created_by', $request->agent);
         }
 
-        if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
-            $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
-            $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+        if ($request->has('start_date') && !empty($request->start_date) && $request->has('end_date') && !empty($request->end_date)) {
+            // [$startDate, $endDate] = explode(' to ', $request->date_range);
+            $startDate = Carbon::createFromFormat('m/d/Y', $request->start_date)->startOfDay();
+            $endDate = Carbon::createFromFormat('m/d/Y', $request->end_date)->endOfDay();
 
             $query->whereBetween('updated_at', [$startDate, $endDate]);
         }
@@ -82,13 +82,13 @@ class SFMDashboardController extends Controller
                 });
             }
 
-        if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
-            $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
-            $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+            if ($request->has('start_date') && !empty($request->start_date) && $request->has('end_date') && !empty($request->end_date)) {
+                // [$startDate, $endDate] = explode(' to ', $request->date_range);
+                $startDate = Carbon::createFromFormat('m/d/Y', $request->start_date)->startOfDay();
+                $endDate = Carbon::createFromFormat('m/d/Y', $request->end_date)->endOfDay();
 
-            $query->whereBetween('updated_at', [$startDate, $endDate]);
-        }
+                $query->whereBetween('updated_at', [$startDate, $endDate]);
+            }
 
         $monthlyReservationCount = $query->selectRaw('MONTH(updated_at) as month, COUNT(*) as count')
             ->groupBy('month')
@@ -123,10 +123,9 @@ class SFMDashboardController extends Controller
             $query->where('inquiry.created_by', $request->agent);
         }
 
-        if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
-            $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
-            $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+        if ($request->has('start_date') && !empty($request->start_date) && $request->has('end_date') && !empty($request->end_date)) {
+            $startDate = Carbon::createFromFormat('m/d/Y', $request->start_date)->startOfDay();
+            $endDate = Carbon::createFromFormat('m/d/Y', $request->end_date)->endOfDay();
 
             $query->whereBetween('inquiry.updated_at', [$startDate, $endDate]);
         }
@@ -162,13 +161,20 @@ class SFMDashboardController extends Controller
             $query->where('inquiry.created_by', $request->agent);
         }
 
-        if ($request->has('date_range') && !empty($request->date_range)) {
-            [$startDate, $endDate] = explode(' to ', $request->date_range);
-            $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
-            $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+        if ($request->has('start_date') && !empty($request->start_date) && $request->has('end_date') && !empty($request->end_date)) {
+            $startDate = Carbon::createFromFormat('m/d/Y', $request->start_date)->startOfDay();
+            $endDate = Carbon::createFromFormat('m/d/Y', $request->end_date)->endOfDay();
 
             $query->whereBetween('inquiry.updated_at', [$startDate, $endDate]);
         }
+
+        // if ($request->has('date_range') && !empty($request->date_range)) {
+        //     [$startDate, $endDate] = explode(' to ', $request->date_range);
+        //     $startDate = Carbon::createFromFormat('m/d/Y', $startDate)->startOfDay();
+        //     $endDate = Carbon::createFromFormat('m/d/Y', $endDate)->endOfDay();
+
+        //     $query->whereBetween('inquiry.updated_at', [$startDate, $endDate]);
+        // }
 
         $Quantity = $query->join('vehicle', 'inquiry.vehicle_id', '=', 'vehicle.id')
         ->whereNull('inquiry.deleted_at')

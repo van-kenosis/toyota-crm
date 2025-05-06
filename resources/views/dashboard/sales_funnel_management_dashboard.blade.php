@@ -20,8 +20,12 @@
 <div class="row mb-4">
     <div class="col-md d-flex justify-content-end gap-4">
         <div class="form-group text-end">
-            <label for="defaultFormControlInput" class="form-label"><small>Select Start to End Date</small></label>
-            <input type="text" id="date-range-picker" class="form-control form-control-sm" placeholder="Filter Date">
+            <label for="startDate" class="form-label"><small>Select Start Date</small></label>
+            <input type="text" id="startDate" class="form-control form-control-sm" placeholder="Start Date">
+        </div>
+        <div class="form-group text-end">
+            <label for="endDate" class="form-label"><small>Select End Date</small></label>
+            <input type="text" id="endDate" class="form-control form-control-sm" placeholder="End Date">
         </div>
         <div class="form-group text-end @if(!in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager', 'Sales Admin Staff']))  d-none @endif">
             <label for="defaultSelect" class="form-label"><small>Filter Group</small></label>
@@ -35,7 +39,6 @@
             </select>
         </div>
         @endif
-        {{-- <button type="button" class="btn btn-primary" id="filterButton">Filter</button> --}}
     </div>
 </div>
 
@@ -166,86 +169,151 @@
         }
 
         // Initialize flatpickr for date range picker
-        flatpickr("#date-range-picker", {
-            mode: "range",
+        // flatpickr("#date-range-picker", {
+        //     mode: "range",
+        //     dateFormat: "m/d/Y",
+        //     onChange: function (selectedDates, dateStr, instance) {
+        //         if (selectedDates.length === 2) {
+        //             const startDate = selectedDates[0];
+        //             const endDate = selectedDates[1];
+
+        //             showLoader();
+
+        //             if (selectedDates[1] <= selectedDates[0]) {
+        //                 Swal.fire({
+        //                     icon: 'warning',
+        //                     title: 'Warning!',
+        //                     text: 'Please select a valid date range.',
+        //                 });
+        //             } else {
+
+        //                 fetchInquiriesData();
+        //                 fetchInquiriesCount();
+        //                 fetchReservationCount();
+        //                 fetchVehicleQuantity();
+
+        //             }
+
+        //             // Update the month and year display
+        //             const startMonth = startDate.toLocaleString('default', { month: 'short' });
+        //             const endMonth = endDate.toLocaleString('default', { month: 'short' });
+        //             const startYear = startDate.getFullYear();
+        //             const endYear = endDate.getFullYear();
+
+        //             if (startMonth === endMonth && startYear === endYear) {
+        //                 document.getElementById('monthRange').textContent = startMonth;
+        //             } else {
+        //                 const monthRange = `${startMonth} - ${endMonth}`;
+        //                 document.getElementById('monthRange').textContent = monthRange;
+        //             }
+
+        //             if (startYear === endYear) {
+        //                 document.getElementById('year').textContent = startYear;
+        //             } else {
+        //                 document.getElementById('year').textContent = `${startYear} - ${endYear}`;
+        //             }
+
+        //             hideLoader();
+        //         }else{
+
+
+        //         }
+        //     },
+        //     onReady: function (selectedDates, dateStr, instance) {
+        //         // Create a "Clear" button
+        //         const clearButton = document.createElement("button");
+        //         clearButton.innerHTML = "Clear";
+        //         clearButton.classList.add("clear-btn");
+
+        //         // Create a "Close" button
+        //         const closeButton = document.createElement("button");
+        //         closeButton.innerHTML = "Close";
+        //         closeButton.classList.add("close-btn");
+
+        //         // Append the buttons to the flatpickr calendar
+        //         instance.calendarContainer.appendChild(clearButton);
+        //         instance.calendarContainer.appendChild(closeButton);
+
+        //         // Add event listener to clear the date and reload the tables
+        //         clearButton.addEventListener("click", function () {
+        //             instance.clear(); // Clear the date range
+
+        //             fetchInquiriesData();
+        //             fetchInquiriesCount();
+        //             fetchReservationCount();
+        //             fetchVehicleQuantity();
+
+
+        //         });
+
+        //         // Add event listener to close the calendar
+        //         closeButton.addEventListener("click", function () {
+        //             instance.close(); // Close the flatpickr calendar
+        //         });
+        //     }
+        // });
+
+        // Initialize flatpickr for startDate and endDate
+        flatpickr("#startDate", {
             dateFormat: "m/d/Y",
             onChange: function (selectedDates, dateStr, instance) {
-                if (selectedDates.length === 2) {
-                    const startDate = selectedDates[0];
-                    const endDate = selectedDates[1];
-
-                    showLoader();
-
-                    if (selectedDates[1] <= selectedDates[0]) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Warning!',
-                            text: 'Please select a valid date range.',
-                        });
-                    } else {
-
-                        fetchInquiriesData();
-                        fetchInquiriesCount();
-                        fetchReservationCount();
-                        fetchVehicleQuantity();
-
-                    }
-
-                    // Update the month and year display
-                    const startMonth = startDate.toLocaleString('default', { month: 'short' });
-                    const endMonth = endDate.toLocaleString('default', { month: 'short' });
-                    const startYear = startDate.getFullYear();
-                    const endYear = endDate.getFullYear();
-
-                    if (startMonth === endMonth && startYear === endYear) {
-                        document.getElementById('monthRange').textContent = startMonth;
-                    } else {
-                        const monthRange = `${startMonth} - ${endMonth}`;
-                        document.getElementById('monthRange').textContent = monthRange;
-                    }
-
-                    if (startYear === endYear) {
-                        document.getElementById('year').textContent = startYear;
-                    } else {
-                        document.getElementById('year').textContent = `${startYear} - ${endYear}`;
-                    }
-
-                    hideLoader();
-                }
-            },
-            onReady: function (selectedDates, dateStr, instance) {
-                // Create a "Clear" button
-                const clearButton = document.createElement("button");
-                clearButton.innerHTML = "Clear";
-                clearButton.classList.add("clear-btn");
-
-                // Create a "Close" button
-                const closeButton = document.createElement("button");
-                closeButton.innerHTML = "Close";
-                closeButton.classList.add("close-btn");
-
-                // Append the buttons to the flatpickr calendar
-                instance.calendarContainer.appendChild(clearButton);
-                instance.calendarContainer.appendChild(closeButton);
-
-                // Add event listener to clear the date and reload the tables
-                clearButton.addEventListener("click", function () {
-                    instance.clear(); // Clear the date range
-
-                    fetchInquiriesData();
-                    fetchInquiriesCount();
-                    fetchReservationCount();
-                    fetchVehicleQuantity();
-
-
-                });
-
-                // Add event listener to close the calendar
-                closeButton.addEventListener("click", function () {
-                    instance.close(); // Close the flatpickr calendar
-                });
+                validateDateRange();
             }
         });
+
+        flatpickr("#endDate", {
+            dateFormat: "m/d/Y",
+            onChange: function (selectedDates, dateStr, instance) {
+                validateDateRange();
+            }
+        });
+
+        function validateDateRange() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            // if (end <= start) {
+            //     Swal.fire({
+            //         icon: 'warning',
+            //         title: 'Warning!',
+            //         text: 'Please select a valid date range.',
+            //     });
+            // } else {
+                showLoader();
+
+                // Fetch data based on the selected date range
+                fetchInquiriesData();
+                fetchInquiriesCount();
+                fetchReservationCount();
+                fetchVehicleQuantity();
+
+                // Update the month and year display
+                const startMonth = start.toLocaleString('default', { month: 'short' });
+                const endMonth = end.toLocaleString('default', { month: 'short' });
+                const startYear = start.getFullYear();
+                const endYear = end.getFullYear();
+
+                if (startMonth === endMonth && startYear === endYear) {
+                    document.getElementById('monthRange').textContent = startMonth;
+                } else {
+                    const monthRange = `${startMonth} - ${endMonth}`;
+                    document.getElementById('monthRange').textContent = monthRange;
+                }
+
+                if (startYear === endYear) {
+                    document.getElementById('year').textContent = startYear;
+                } else {
+                    document.getElementById('year').textContent = `${startYear} - ${endYear}`;
+                }
+
+                hideLoader();
+            // }
+        }
+    }
 
         const userTeamId = {{ Auth::user()->team_id ?? 'null' }};
 
@@ -289,7 +357,7 @@
                     //     placeholder: "Select an option",
                     //     allowClear: true
                     // });
-                
+
                 },
                 error: function(error) {
                     console.error('Error loading team:', error);
@@ -297,7 +365,7 @@
             });
         }
 
-        
+
         $(document).ready(function () {
         // Event listeners for filter dropdowns
             $('#selectGroup').on('change', function() {
@@ -349,7 +417,8 @@
             url: '{{ route("dashboard.getInquiryCount") }}',
             type: 'GET',
             data: {
-                date_range: $('#date-range-picker').val(),
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val(),
                 group: $('#selectGroup').val(),
                 agent: $('#filterAgent').val()
             },
@@ -370,13 +439,17 @@
             url: '{{ route("dashboard.fetchInquiryCount") }}',
             type: 'GET',
             data: {
-                date_range: $('#date-range-picker').val(),
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val(),
                 group: $('#selectGroup').val(),
                 agent: $('#filterAgent').val()
             },
             success: function(response) {
                 renderInquiryCount(response.monthlyData);
-            }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching inquiry count:', error);
+            },
         });
     }
 
@@ -474,7 +547,7 @@
             InquiryCount = new ApexCharts(document.querySelector("#totalInquiriesBarGraph"), options);
             InquiryCount.render();
         }
-       
+
     }
 
     fetchInquiriesCount();
@@ -488,7 +561,8 @@
             url: '{{ route("dashboard.fetchReservationCount") }}',
             type: 'GET',
             data: {
-                date_range: $('#date-range-picker').val(),
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val(),
                 group: $('#selectGroup').val(),
                 agent: $('#filterAgent').val()
             },
@@ -607,7 +681,8 @@
             url: '{{ route("dashboard.fetchVehicleQuantity") }}',
             type: 'GET',
             data: {
-                date_range: $('#date-range-picker').val(),
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val(),
                 group: $('#selectGroup').val(),
                 agent: $('#filterAgent').val()
             },
@@ -714,7 +789,7 @@
             }]);
             unitCount.destroy();
 
-        } 
+        }
             // Create a new chart instance
             unitCount = new ApexCharts(document.querySelector("#unitInquiredLineGraph"), options);
             unitCount.render();

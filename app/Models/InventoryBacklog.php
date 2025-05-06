@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Inventory extends Model
+class InventoryBacklog extends Model
 {
     use HasFactory;
 
-    protected $table = 'inventory';
+    protected $table = 'inventory_backlogs';
 
     protected $fillable = [
         'id',
@@ -30,9 +30,16 @@ class Inventory extends Model
         'tag',
         'team_id',
         'created_by',
-        'updated_by',
-        'backlogs_status'
-,    ];
+        'updated_by'
+    ];
+
+    protected $dates = [
+        'actual_invoice_date',
+        'delivery_date',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id', 'id');
@@ -49,5 +56,4 @@ class Inventory extends Model
         return $this->belongsTo(Team::class, 'team_id', 'id');
 
     }
-
 }

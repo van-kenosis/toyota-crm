@@ -148,5 +148,21 @@
         </li>
         @endcan
 
+        <li class="menu-item">
+            <div style="margin-left: 5%; margin-top: 5%; color: #b4b0c4;">Upload Backlogs</div>
+        </li>
+        <li class="menu-item {{ request()->is('inventory_backlogs') ? 'active' : '' }}">
+            <a href="/inventory_backlogs" class="menu-link">
+                <i class='menu-icon tf-icons bx bxs-group'></i>
+              <div class="text-truncate" data-i18n="Page 2">Inventory Backlogs</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('releases_backlogs') ? 'active' : '' }}">
+            <a href="/releases_backlogs" class="menu-link">
+                <i class='menu-icon tf-icons bx bxs-group'></i>
+              <div class="text-truncate" data-i18n="Page 2">Releases Backlogs</div>
+            </a>
+        </li>
+
       </ul>
   </aside>

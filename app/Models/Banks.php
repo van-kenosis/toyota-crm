@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Banks extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $table = 'banks';
 
     public function createdBy(){

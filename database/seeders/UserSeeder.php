@@ -17,7 +17,17 @@ class UserSeeder extends Seeder
     public function run(): void
     {
 
-        
+        User::updateOrCreate(
+            ['email' => 'crudph.dev@gmail.com'],
+            [
+                'first_name' => 'Super',
+                'last_name' => 'admin',
+                'status' => 'Active',
+                'usertype_id' => 1,
+                'team_id' => null,
+                'password' => Hash::make('qwerty...')
+            ]
+        );
 
 
     }
