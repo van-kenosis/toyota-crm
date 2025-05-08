@@ -532,7 +532,7 @@
                                 <span id="leadsFleetTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
                             </button>
                             <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.company.list') }}">
-                                Company
+                                Corporate
                                 <span id="leadsCompanyTabBadge" class="badge bg-danger rounded-circle ms-2" style="display: none;">1</span>
                             </button>
                             <button type="button" class="btn btn-label-dark" data-route="{{ route('leads.government.list') }}">
