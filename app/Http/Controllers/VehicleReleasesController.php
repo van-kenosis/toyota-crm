@@ -605,9 +605,9 @@ class VehicleReleasesController extends Controller
         })
 
         ->addColumn('date_released', function($data) {
-            return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('M d, Y h:i A') : '';
+            return $data->released_date ? \Carbon\Carbon::parse($data->released_date)->format('M d, Y') : '';
             // return $data->released_date ? $data->released_date->format('M d, Y h:i A') : '-';
-        })
+        })  
 
         ->addColumn('status', function($data) {
             $status = Status::where('id', $data->status)->first()->status;
