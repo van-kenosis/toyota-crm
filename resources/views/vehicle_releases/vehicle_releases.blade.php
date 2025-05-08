@@ -98,7 +98,7 @@
             </div>
             <div class="row">
                 <div class="col-md d-flex flex-column">
-                    <label for="select-date-released">Select Date Released</label>
+                    <label for="select-date-released">Select Actual Date Released</label>
                     <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="selectDateReleasedStatus" />
                 </div>
             </div>
@@ -718,9 +718,6 @@
                     }
             }, //22
             { data: 'status', name: 'status', title: 'status', visible:false }, //23
-
-
-
         ],
 
     });
@@ -763,13 +760,14 @@
         //     }
         // });
 
+
         $('#saveStatusButton').on('click', function() {
             const selectedValue = $('#status').val();
             const selectedDate = $('#selectDateReleasedStatus').val(); // Get Flatpickr-selected date
 
             if (selectedValue && selectedDate) {
                 $.ajax({
-                    url: '{{ route("vehicle.releases.updateStatus") }}', // Define this route in your controller
+                    url: '{{ route("vehicle.releases.updateStatus") }}',
                     type: 'POST',
                     data: {
                         id: $('#statusTransactionID').val(),
@@ -781,10 +779,9 @@
                         if (response.success) {
                             $('#releaseStatus').modal('hide');
                             Swal.fire('Updated!', response.message, 'success');
-                            vehicleReleasesTable.ajax.reload();
-                            statusTable.ajax.reload();
-                            releasedUnitsTable.ajax.reload();
-                            releasedCount();
+                            
+                            // Reload the DataTable to reflect the updated date_released
+                            vehicleReleasesTable.ajax.reload(null, false);
                         }
                     },
                     error: function(xhr) {
