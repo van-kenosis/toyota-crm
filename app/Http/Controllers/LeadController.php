@@ -34,7 +34,7 @@ class LeadController extends Controller
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
 
-        if(Auth::user()->usertype->name === 'SuperAdmin'){
+        if (in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager'])){
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '0')
@@ -162,7 +162,7 @@ class LeadController extends Controller
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
 
-        if(Auth::user()->usertype->name === 'SuperAdmin'){
+        if (in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager'])){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '0')
@@ -286,7 +286,7 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        if(Auth::user()->usertype->name === 'SuperAdmin'){
+        if (in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager'])){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '0')
@@ -412,7 +412,7 @@ class LeadController extends Controller
 
         // dd($request->start_date);
         $status = Status::where('status', 'like', 'Processed')->first()->id;
-        if(Auth::user()->usertype->name === 'SuperAdmin'){
+        if (in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager'])){
             $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '0')
