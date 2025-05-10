@@ -5,6 +5,10 @@
     #disputeTable {
         text-transform: uppercase;
     }
+
+    #disputeTable td{
+        white-space: nowrap;
+    }
 </style>
 
 {{-- Page Title --}}

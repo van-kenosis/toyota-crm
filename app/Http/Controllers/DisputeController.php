@@ -24,7 +24,7 @@ class DisputeController extends Controller
     public function getDisputes(Request $request){
         $status = Status::where('status', 'like', 'Processed')->first()->id;
 
-        if(Auth::user()->usertype->name === 'SuperAdmin'){
+        if (in_array(Auth::user()->usertype->name, ['SuperAdmin', 'General Manager'])) {
         $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                         ->whereNull('deleted_at')
                         ->where('is_dispute', '1')
@@ -167,7 +167,7 @@ class DisputeController extends Controller
 
                 $firstInquiry->save();
                 $firstInquiry->delete();
-                
+
             }
 
             return response()->json([
@@ -194,7 +194,7 @@ class DisputeController extends Controller
                             ->where('is_dispute', '1')
                             ->where('status_id', '<>', $status)
                             ->orderBy('updated_at', 'desc');
-    
+
             }elseif(Auth::user()->usertype->name === 'Group Manager'){
                 $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
                             ->where('notif_status', 'open')
@@ -205,7 +205,7 @@ class DisputeController extends Controller
                             })
                             ->where('status_id', '<>', $status)
                             ->orderBy('updated_at', 'desc');
-    
+
             }
             else{
                 $query = Inquiry::with([ 'user', 'customer', 'vehicle', 'status', 'inquiryType', 'updateBy'])
@@ -223,7 +223,7 @@ class DisputeController extends Controller
                             })
                             ->where('status_id', '<>', $status)
                             ->orderBy('updated_at', 'desc');
-    
+
             }
 
             $count = $query->count();
